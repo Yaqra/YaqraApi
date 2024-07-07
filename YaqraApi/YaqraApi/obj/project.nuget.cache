@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "CQm56C+ae9xnTnoH8kBR++yOihsMWblgqKDVHMb74mJ8I8Gz4E+/BfOK0bkbvFVpWSEIswVPpkDTP3QRP6+zXw==",
+  "dgSpecHash": "io9YAg3VwxhdMk0BlV093t6JUm1SEYgEc3TCLijcnuWKH9keSigPMZuYekkKRS9Gs0J+gAeLPHih0SL84i9MFg==",
   "success": true,
   "projectFilePath": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\YaqraApi.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Omar AbdelAziz\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\Omar AbdelAziz\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\Omar AbdelAziz\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
     "C:\\Users\\Omar AbdelAziz\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
