@@ -25,14 +25,14 @@ namespace YaqraApi.Services
         {
             if (await _userManager.FindByNameAsync(registerDto.Username) != null)
                 return new AuthDto { Message = "username already exists" };
-            
+
             var user = new ApplicationUser { UserName = registerDto.Username };
             var result = await _userManager.CreateAsync(user, registerDto.Password);
             if (result.Succeeded == false)
             {
                 var errors = new StringBuilder();
                 foreach (var error in result.Errors)
-                    errors.Append($"{error}, ");
+                    errors.Append($"{error.Description}, ");
                 return new AuthDto { Message= errors.ToString() };
             }
 

@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using YaqraApi.Models;
 using YaqraApi.Repositories.Context;
@@ -27,6 +28,11 @@ namespace YaqraApi
             });
             builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                     .AddEntityFrameworkStores<ApplicationContext>();
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            });
+
 
             builder.Services.AddScoped<IAuthService, AuthService>();
 
