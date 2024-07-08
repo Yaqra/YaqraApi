@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "91hJEg8lHAiWAplpF+4jpXL3KPdg2oMONUULVOhVHNU=",
+  "Source": "YaqraApi",
+  "BasePath": "_content/YaqraApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "YaqraApi\\wwwroot",
+      "Source": "YaqraApi",
+      "ContentRoot": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\",
+      "BasePath": "_content/YaqraApi",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}
