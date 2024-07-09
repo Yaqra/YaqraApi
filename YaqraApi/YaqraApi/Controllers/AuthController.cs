@@ -34,5 +34,26 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.Message);
             return Ok(result);
         }
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAsync(LoginDto loginDto)
+        {
+            var result = await _authService.LoginAsync(loginDto);
+            if(result.IsAuthenticated == false)
+                return BadRequest(result.Message);
+
+            SetRefreshTokenInCookies(result.RefreshToken,result.RefreshTokenExpiration);
+            return Ok(result);
+        }
+
+        private void SetRefreshTokenInCookies(string refreshToken, DateTime expiration)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = expiration.ToLocalTime(),
+            };
+            Response.Cookies.Append("refreshToken",refreshToken, cookieOptions);
+        }
+
     }
 }

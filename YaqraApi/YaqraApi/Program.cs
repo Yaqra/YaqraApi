@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Repositories.Context;
 using YaqraApi.Services;
@@ -33,7 +34,7 @@ namespace YaqraApi
                 options.User.RequireUniqueEmail = true;
             });
 
-
+            builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JWT"));
             builder.Services.AddScoped<IAuthService, AuthService>();
 
             var app = builder.Build();
