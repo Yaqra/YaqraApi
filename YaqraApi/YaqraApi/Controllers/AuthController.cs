@@ -66,6 +66,19 @@ namespace YaqraApi.Controllers
 
             return Ok(result);
         }
+        [HttpPost("revokeRefreshToken")]
+        public async Task<IActionResult> RevokeRefreshTokenAsync(RevokeRefreshTokenDto dto)
+        {
+            var token = dto.RefreshToken;
+            if (string.IsNullOrEmpty(token))
+                return BadRequest("token is required");
+
+            var result = await _authService.RevokeRefreshTokenAsync(token);
+            if (result == false)
+                return NotFound("token is invalid");
+
+            return Ok();
+        }
 
     }
 }
