@@ -3,15 +3,12 @@
   "WorkspaceRootPath": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/./YaqraApi/True/SqlTable/dbo.RefreshToken.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+      "AbsoluteMoniker": "D:0:0:{703FCEB8-B5AC-4F45-8ACD-B91F5C0E022E}|YaqraApiWorker\\YaqraApiWorker.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapiworker\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{703FCEB8-B5AC-4F45-8ACD-B91F5C0E022E}|YaqraApiWorker\\YaqraApiWorker.csproj|solutionrelative:yaqraapiworker\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|solutionrelative:yaqraapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapi\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|solutionrelative:yaqraapi\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{703FCEB8-B5AC-4F45-8ACD-B91F5C0E022E}|YaqraApiWorker\\YaqraApiWorker.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapiworker\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{703FCEB8-B5AC-4F45-8ACD-B91F5C0E022E}|YaqraApiWorker\\YaqraApiWorker.csproj|solutionrelative:yaqraapiworker\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -21,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -29,38 +26,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "dbo.RefreshToken [Data]",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/./YaqraApi/True/SqlTable/dbo.RefreshToken.sql",
-              "ToolTip": "dbo.RefreshToken [Data]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-07-09T16:18:46.726Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Controllers\\AuthController.cs",
-              "RelativeDocumentMoniker": "YaqraApi\\Controllers\\AuthController.cs",
-              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Controllers\\AuthController.cs",
-              "RelativeToolTip": "YaqraApi\\Controllers\\AuthController.cs",
-              "ViewState": "AQIAAEcAAAAAAAAAAIAwwFAAAAAIAAAA",
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApiWorker\\Program.cs",
+              "RelativeDocumentMoniker": "YaqraApiWorker\\Program.cs",
+              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApiWorker\\Program.cs",
+              "RelativeToolTip": "YaqraApiWorker\\Program.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAwAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-09T16:31:32.407Z",
+              "WhenOpened": "2024-07-09T17:30:22.22Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AuthService.cs",
-              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Services\\AuthService.cs",
-              "RelativeDocumentMoniker": "YaqraApi\\Services\\AuthService.cs",
-              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Services\\AuthService.cs",
-              "RelativeToolTip": "YaqraApi\\Services\\AuthService.cs",
-              "ViewState": "AQIAAK0AAAAAAAAAAIAwwLkAAAAIAAAA",
+              "DocumentIndex": 0,
+              "Title": "Worker.cs",
+              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApiWorker\\Worker.cs",
+              "RelativeDocumentMoniker": "YaqraApiWorker\\Worker.cs",
+              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApiWorker\\Worker.cs",
+              "RelativeToolTip": "YaqraApiWorker\\Worker.cs",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAkwA8AAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-09T12:48:43.268Z",
+              "WhenOpened": "2024-07-09T16:46:24.216Z",
               "EditorCaption": ""
             }
           ]
