@@ -44,7 +44,6 @@ namespace YaqraApi.Controllers
             SetRefreshTokenInCookies(result.RefreshToken,result.RefreshTokenExpiration);
             return Ok(result);
         }
-
         private void SetRefreshTokenInCookies(string refreshToken, DateTime expiration)
         {
             var cookieOptions = new CookieOptions
@@ -53,6 +52,19 @@ namespace YaqraApi.Controllers
                 Expires = expiration.ToLocalTime(),
             };
             Response.Cookies.Append("refreshToken",refreshToken, cookieOptions);
+        }
+        [HttpGet("refreshToken")]
+        public async Task<IActionResult> RefreshAccessTokenAsync()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            var result = await _authService.RefreshAccessTokenAsync(refreshToken);
+
+            if (result.IsAuthenticated == false)
+                return BadRequest(result.Message);
+
+            SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
+
+            return Ok(result);
         }
 
     }

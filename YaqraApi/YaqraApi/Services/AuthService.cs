@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -41,7 +42,7 @@ namespace YaqraApi.Services
             if (user == null || await _userManager.CheckPasswordAsync(user, loginDto.Password) == false)
                 return new AuthDto { Message = "username or password is incorrect" };
 
-            var token = await CreateAccessToken(user);
+            var token = await CreateAccessTokenAsync(user);
             var roles = await _userManager.GetRolesAsync(user);
 
             var authDto = new AuthDto
@@ -69,8 +70,7 @@ namespace YaqraApi.Services
             }
             return authDto;
         }
-
-        private async Task<JwtSecurityToken> CreateAccessToken(ApplicationUser user)
+        private async Task<JwtSecurityToken> CreateAccessTokenAsync(ApplicationUser user)
         {
             var userRoles = await _userManager.GetRolesAsync(user);
             var roleClaims = new List<Claim>();
@@ -139,6 +139,33 @@ namespace YaqraApi.Services
                 Token = Convert.ToBase64String(randomNumber),
                 ExpiresOn = DateTime.UtcNow.AddDays(_configuration.GetValue<int>("RefreshTokenDurationInDays")),
                 CreatedOn = DateTime.UtcNow,
+            };
+        }
+        public async Task<AuthDto> RefreshAccessTokenAsync(string refreshToken)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshTokens.Any(r => r.Token == refreshToken));
+            if (user == null)
+                return new AuthDto { Message = "invalid token" };
+
+            var userRefreshToken = user.RefreshTokens.Single(r => r.Token == refreshToken);
+            if (userRefreshToken.IsActive == false)
+                return new AuthDto { Message = "inactive token" };
+
+            userRefreshToken.RevokedOn = DateTime.UtcNow;
+            var newRefreshToken = GenerateRefreshToken();
+            user.RefreshTokens.Add(newRefreshToken);
+            await _userManager.UpdateAsync(user);
+
+            var accessToken = await CreateAccessTokenAsync(user);
+            return new AuthDto
+            {
+                IsAuthenticated = true,
+                Token = new JwtSecurityTokenHandler().WriteToken(accessToken),
+                Username = user.UserName,
+                Email = user.Email,
+                RefreshToken = newRefreshToken.Token,
+                RefreshTokenExpiration = newRefreshToken.ExpiresOn,
+                Roles = (await _userManager.GetRolesAsync(user)).ToList()
             };
         }
     }
