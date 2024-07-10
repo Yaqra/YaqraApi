@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace YaqraApi.DTOs
+namespace YaqraApi.DTOs.Auth
 {
     public class RevokeRefreshTokenDto
     {

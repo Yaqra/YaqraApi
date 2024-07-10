@@ -21,7 +21,8 @@ namespace YaqraApiWorker
                 if(connectionString != null)
                     DeleteRevokedOrExpiredRefreshTokens(connectionString);
                 
-                await Task.Delay(86400000, stoppingToken);//run script 1 time a day
+                var delay = TimeSpan.FromDays(1);
+                await Task.Delay(delay, stoppingToken); ;//run script 1 time a day
             }
         }
         private void DeleteRevokedOrExpiredRefreshTokens(string constr)

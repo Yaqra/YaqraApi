@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace YaqraApi.DTOs
+namespace YaqraApi.DTOs.Auth
 {
     public class AuthDto
     {
