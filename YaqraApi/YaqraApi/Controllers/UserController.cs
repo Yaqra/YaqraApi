@@ -24,11 +24,20 @@ namespace YaqraApi.Controllers
         }
         
         [HttpPut("bio")]
-        public async Task<IActionResult> EditBio(BioDto dto)
+        public async Task<IActionResult> UpdateBio(BioUpdateDto dto)
         {
-            if (await _userService.EditBioAsync(dto.NewBio, UserHelpers.GetUserId(User)) == false)
+            if (await _userService.UpdateBioAsync(dto.NewBio, UserHelpers.GetUserId(User)) == false)
                 return BadRequest("something went wrong");
             return Ok("bio updated successfully");
+        }
+
+        [HttpPut("username")]
+        public async Task<IActionResult> UpdateUsername(UsernameUpdateDto dto)
+        {
+            if (await _userService.UpdateUsernameAsync(dto.Username, UserHelpers.GetUserId(User)) == false)
+                return BadRequest("something went wrong");
+            return Ok("username updated successfully");
+
         }
     }
 }

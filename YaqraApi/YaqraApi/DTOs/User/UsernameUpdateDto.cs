@@ -2,9 +2,9 @@
 
 namespace YaqraApi.DTOs.User
 {
-    public class BioDto
+    public class UsernameUpdateDto
     {
         [Required]
-        public string NewBio { get; set; }
+        public string Username { get; set; }
     }
 }
