@@ -1,4 +1,4 @@
-﻿using YaqraApi.DTOs;
+﻿using YaqraApi.DTOs.Auth;
 
 namespace YaqraApi.Services.IServices
 {

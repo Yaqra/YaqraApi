@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using YaqraApi.DTOs;
+using YaqraApi.DTOs.Auth;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Repositories.Context;

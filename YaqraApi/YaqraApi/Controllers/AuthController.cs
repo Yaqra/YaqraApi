@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using YaqraApi.DTOs;
+using YaqraApi.DTOs.Auth;
 using YaqraApi.Helpers;
 using YaqraApi.Services;
 using YaqraApi.Services.IServices;
