@@ -4,6 +4,7 @@ namespace YaqraApi.Services.IServices
 {
     public interface IUserService
     {
-        Task<bool> EditBioAsync(string bio, string userId);
+        Task<bool> UpdateBioAsync(string bio, string userId);
+        Task<bool> UpdateUsernameAsync(string username, string userId);
     }
 }

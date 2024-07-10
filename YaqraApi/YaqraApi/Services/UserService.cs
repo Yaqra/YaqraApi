@@ -16,7 +16,7 @@ namespace YaqraApi.Services
         {
             _userManager = userManager;
         }
-        public async Task<bool> EditBioAsync(string bio, string userId)
+        public async Task<bool> UpdateBioAsync(string bio, string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if(user == null) 
@@ -24,6 +24,14 @@ namespace YaqraApi.Services
 
             user.Bio = bio;
             await _userManager.UpdateAsync(user);
+            return true;
+        }
+        public async Task<bool> UpdateUsernameAsync(string username, string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if(user == null) 
+                return false;
+            await _userManager.SetUserNameAsync(user, username);
             return true;
         }
     }
