@@ -1,0 +1,20 @@
+﻿<Project>
+  <ItemGroup>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ProfilePictures\0cca08a1809076586c912020062f2d6c5d6ef264-6c67-4753-8193-05c27c14f525.gif))">
+      <SourceType>Package</SourceType>
+      <SourceId>YaqraApi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/YaqraApi</BasePath>
+      <RelativePath>ProfilePictures/0cca08a1809076586c912020062f2d6c5d6ef264-6c67-4753-8193-05c27c14f525.gif</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\ProfilePictures\0cca08a1809076586c912020062f2d6c5d6ef264-6c67-4753-8193-05c27c14f525.gif))</OriginalItemSpec>
+    </StaticWebAsset>
+  </ItemGroup>
+</Project>

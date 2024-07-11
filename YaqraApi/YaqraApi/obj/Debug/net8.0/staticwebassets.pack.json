@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\ProfilePictures\\0cca08a1809076586c912020062f2d6c5d6ef264-6c67-4753-8193-05c27c14f525.gif",
+      "PackagePath": "staticwebassets\\ProfilePictures\\0cca08a1809076586c912020062f2d6c5d6ef264-6c67-4753-8193-05c27c14f525.gif"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.YaqraApi.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.YaqraApi.props",
+      "PackagePath": "build\\YaqraApi.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.YaqraApi.props",
+      "PackagePath": "buildMultiTargeting\\YaqraApi.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.YaqraApi.props",
+      "PackagePath": "buildTransitive\\YaqraApi.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
