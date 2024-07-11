@@ -56,5 +56,13 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok("profile picture updated successfully");
         }
+        [HttpPut("profileCover")]
+        public async Task<IActionResult> UpdateProfileCover(IFormFile pic)
+        {
+            var result = await _userService.UpdateProfileCoverAsync(pic, UserHelpers.GetUserId(User));
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok("profile picture updated successfully");
+        }
     }
 }
