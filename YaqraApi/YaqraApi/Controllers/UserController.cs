@@ -48,5 +48,13 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok("password updated successfully");
         }
+        [HttpPut("profilePic")]
+        public async Task<IActionResult> UpdateProfilePicture(IFormFile pic)
+        {
+            var result = await _userService.UpdateProfilePictureAsync(pic, UserHelpers.GetUserId(User));
+            if(result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok("profile picture updated successfully");
+        }
     }
 }

@@ -10,5 +10,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<ApplicationUser>> UpdateBioAsync(string bio, string userId);
         Task<GenericResultDto<ApplicationUser>> UpdateUsernameAsync(string username, string userId);
         Task<GenericResultDto<ApplicationUser>> UpdatePasswordAsync(PasswordUpdateDto dto, string userId);
+        Task<GenericResultDto<ApplicationUser>> UpdateProfilePictureAsync(IFormFile pic, string userId);
+
     }
 }
