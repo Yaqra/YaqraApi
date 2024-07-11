@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace YaqraApi.Models
 {
@@ -7,6 +8,8 @@ namespace YaqraApi.Models
         public string? Bio { get; set; }
         public string? ProfilePicture { get; set; }
         public string? ProfileCover { get; set; }
+        public ICollection<ApplicationUser> Followings { get; set; } //i follow them
+        public ICollection<ApplicationUser> Followers { get; set; } // they follow me
         public ICollection<RefreshToken> RefreshTokens { get; set; }
     }
 }
