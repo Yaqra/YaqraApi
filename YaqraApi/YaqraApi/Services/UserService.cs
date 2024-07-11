@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text;
+using YaqraApi.DTOs;
+using YaqraApi.DTOs.User;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Services.IServices;
@@ -16,23 +19,52 @@ namespace YaqraApi.Services
         {
             _userManager = userManager;
         }
-        public async Task<bool> UpdateBioAsync(string bio, string userId)
+        public async Task<GenericResultDto<ApplicationUser>> UpdateBioAsync(string bio, string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            if(user == null) 
-                return false;
+            if(user == null)
+                return new GenericResultDto<ApplicationUser>() { Succeeded = false, ErrorMessage = "user not found" };
 
             user.Bio = bio;
-            await _userManager.UpdateAsync(user);
-            return true;
+            var identityResult = await _userManager.UpdateAsync(user);
+            if(identityResult.Succeeded == false)
+                return new GenericResultDto<ApplicationUser>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
+            return new GenericResultDto<ApplicationUser> { Succeeded = true, Result=user };
         }
-        public async Task<bool> UpdateUsernameAsync(string username, string userId)
+        public async Task<GenericResultDto<ApplicationUser>> UpdateUsernameAsync(string username, string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if(user == null) 
-                return false;
-            await _userManager.SetUserNameAsync(user, username);
-            return true;
+                return new GenericResultDto<ApplicationUser>() {Succeeded = false, ErrorMessage = "user not found" };
+            var identityResult = await _userManager.SetUserNameAsync(user, username);
+            if (identityResult.Succeeded == false)
+                return new GenericResultDto<ApplicationUser> 
+                { 
+                    Succeeded = false, 
+                    ErrorMessage = UserHelpers.GetErrors(identityResult) 
+                };
+
+            return new GenericResultDto<ApplicationUser> { Succeeded = true, Result = user };
+        }
+        public async Task<GenericResultDto<ApplicationUser>> UpdatePasswordAsync(PasswordUpdateDto dto, string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new GenericResultDto<ApplicationUser> { Succeeded = false, ErrorMessage = "user not found" };
+            
+            var identityResult = await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+            if(identityResult.Succeeded == false)
+                return new GenericResultDto<ApplicationUser> 
+                { 
+                    Succeeded = false, 
+                    ErrorMessage = UserHelpers.GetErrors(identityResult) 
+                };
+            
+            return new GenericResultDto<ApplicationUser> { Succeeded = true, Result = user };
         }
     }
 }
