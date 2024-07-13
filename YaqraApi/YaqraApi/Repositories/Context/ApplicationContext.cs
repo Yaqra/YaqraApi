@@ -17,10 +17,10 @@ namespace YaqraApi.Repositories.Context
                 .WithMany(u => u.Followings)
                 .UsingEntity("UsersFollowers",
                 l => l.HasOne(typeof(ApplicationUser))
-                    .WithMany().HasForeignKey("UserId"),
-                r => r.HasOne(typeof(ApplicationUser))
                     .WithMany().HasForeignKey("FollowerId"),
-                j => j.HasKey("UserId", "FollowerId"));
+                r => r.HasOne(typeof(ApplicationUser))
+                    .WithMany().HasForeignKey("FollowedId"),
+                j => j.HasKey("FollowerId", "FollowedId"));
 
             });
 

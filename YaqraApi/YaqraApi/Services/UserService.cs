@@ -142,5 +142,26 @@ namespace YaqraApi.Services
                 };
             return new GenericResultDto<ApplicationUser> { Succeeded = true, Result = user };
         }
+        public async Task<GenericResultDto<UserFollowerDto>> FollowUserAsync(FollowUserDto dto, string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new GenericResultDto<UserFollowerDto> { Succeeded = false, ErrorMessage = "user not found" };
+            
+            var followedUser = await _userManager.FindByIdAsync(dto.FollowedUserId);
+            if (followedUser == null)
+                return new GenericResultDto<UserFollowerDto> { Succeeded = false, ErrorMessage = "the user you want to follow not found" };
+
+            user.Followings = new List<ApplicationUser> { followedUser };
+
+            var identityResult = await _userManager.UpdateAsync(user);
+            if(identityResult.Succeeded == false)
+                return new GenericResultDto<UserFollowerDto>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
+            return new GenericResultDto<UserFollowerDto> { Succeeded = true, Result = new UserFollowerDto {Follower= user, Followed= followedUser} };
+        }
     }
 }

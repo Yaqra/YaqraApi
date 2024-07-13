@@ -64,5 +64,13 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok("profile picture updated successfully");
         }
+        [HttpPost("follow")]
+        public async Task<IActionResult> FollowUser(FollowUserDto dto)
+        {
+            var result = await _userService.FollowUserAsync(dto, UserHelpers.GetUserId(User));
+            if(result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok($"{result.Result.Follower.UserName} followed {result.Result.Followed.UserName} successfully");
+        }
     }
 }
