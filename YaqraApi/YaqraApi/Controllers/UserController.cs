@@ -72,5 +72,13 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok($"{result.Result.Follower.UserName} followed {result.Result.Followed.UserName} successfully");
         }
+        [HttpGet("getuser")]
+        public async Task<IActionResult> GetUserAsync(GetUserIdDto dto)
+        {
+            var result = await _userService.GetUserAsync(dto.UserId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
     }
 }

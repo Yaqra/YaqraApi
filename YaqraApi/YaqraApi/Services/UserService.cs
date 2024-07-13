@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Text;
+using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.User;
 using YaqraApi.Helpers;
@@ -14,10 +17,11 @@ namespace YaqraApi.Services
     public class UserService : IUserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-
+        private readonly Mapper _mapper;
         public UserService(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
+            _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         public async Task<GenericResultDto<ApplicationUser>> UpdateBioAsync(string bio, string userId)
         {
@@ -162,6 +166,39 @@ namespace YaqraApi.Services
                     ErrorMessage = UserHelpers.GetErrors(identityResult)
                 };
             return new GenericResultDto<UserFollowerDto> { Succeeded = true, Result = new UserFollowerDto {Follower= user, Followed= followedUser} };
+        }
+
+        public async Task<GenericResultDto<UserDto>> GetUserAsync(string userId)
+        {
+            var dto = await _userManager.Users.Select(u => new
+            {
+                Id = u.Id,
+                Username = u.UserName,
+                Bio = u.Bio,
+                ProfilePicture = u.ProfilePicture,
+                ProfileCover = u.ProfileCover,
+                FollowersCount = u.Followers.Count(),
+                FollowingsCount = u.Followings.Count(),
+            }).FirstOrDefaultAsync(x => x.Id == userId);
+
+            if (dto == null)
+                return new GenericResultDto<UserDto> { Succeeded = false, ErrorMessage = "user not found" };
+
+            return new GenericResultDto<UserDto>
+            {
+                Succeeded = true,
+                Result = new UserDto
+                {
+                    UserId = dto.Id,
+                    Username = dto.Username,
+                    Bio = dto?.Bio,
+                    ProfilePicture = dto?.ProfilePicture,
+                    ProfileCover = dto?.ProfileCover,
+                    FollowersCount = dto.FollowersCount,
+                    FollowingsCount = dto.FollowingsCount,
+                }
+            };
+            
         }
     }
 }
