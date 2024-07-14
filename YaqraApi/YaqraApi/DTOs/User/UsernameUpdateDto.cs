@@ -2,7 +2,7 @@
 
 namespace YaqraApi.DTOs.User
 {
-    public class UsernameUpdateDto
+    public class UsernameDto
     {
         [Required]
         public string Username { get; set; }
