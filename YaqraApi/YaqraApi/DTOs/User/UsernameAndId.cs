@@ -1,7 +1,8 @@
 ﻿namespace YaqraApi.DTOs.User
 {
-    public class GetUserIdDto
+    public class UsernameAndId
     {
         public string UserId { get; set; }
+        public string Username { get; set; }
     }
 }

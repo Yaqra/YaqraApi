@@ -22,6 +22,8 @@ namespace YaqraApi.Repositories.Context
                     .WithMany().HasForeignKey("FollowedId"),
                 j => j.HasKey("FollowerId", "FollowedId"));
 
+                u.Property(x => x.UserName).IsRequired();
+
             });
 
             base.OnModelCreating(builder);

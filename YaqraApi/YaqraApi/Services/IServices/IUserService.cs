@@ -12,7 +12,10 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<ApplicationUser>> UpdatePasswordAsync(PasswordUpdateDto dto, string userId);
         Task<GenericResultDto<ApplicationUser>> UpdateProfilePictureAsync(IFormFile pic, string userId);
         Task<GenericResultDto<ApplicationUser>> UpdateProfileCoverAsync(IFormFile pic, string userId);
-        Task<GenericResultDto<UserFollowerDto>> FollowUserAsync(FollowUserDto dto, string userId);
+        Task<GenericResultDto<UserFollowerDto>> FollowUserAsync(UserIdDto dto, string userId);
         Task<GenericResultDto<UserDto>> GetUserAsync(string userId);
+        GenericResultDto<List<UsernameAndId>> GetUserFollowersNames(string userId);
+        GenericResultDto<List<UsernameAndId>> GetUserFollowingsNames(string userId);
+        
     }
 }

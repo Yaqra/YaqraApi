@@ -146,13 +146,13 @@ namespace YaqraApi.Services
                 };
             return new GenericResultDto<ApplicationUser> { Succeeded = true, Result = user };
         }
-        public async Task<GenericResultDto<UserFollowerDto>> FollowUserAsync(FollowUserDto dto, string userId)
+        public async Task<GenericResultDto<UserFollowerDto>> FollowUserAsync(UserIdDto dto, string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
                 return new GenericResultDto<UserFollowerDto> { Succeeded = false, ErrorMessage = "user not found" };
             
-            var followedUser = await _userManager.FindByIdAsync(dto.FollowedUserId);
+            var followedUser = await _userManager.FindByIdAsync(dto.UserId);
             if (followedUser == null)
                 return new GenericResultDto<UserFollowerDto> { Succeeded = false, ErrorMessage = "the user you want to follow not found" };
 
@@ -167,7 +167,6 @@ namespace YaqraApi.Services
                 };
             return new GenericResultDto<UserFollowerDto> { Succeeded = true, Result = new UserFollowerDto {Follower= user, Followed= followedUser} };
         }
-
         public async Task<GenericResultDto<UserDto>> GetUserAsync(string userId)
         {
             var dto = await _userManager.Users.Select(u => new
@@ -179,7 +178,7 @@ namespace YaqraApi.Services
                 ProfileCover = u.ProfileCover,
                 FollowersCount = u.Followers.Count(),
                 FollowingsCount = u.Followings.Count(),
-            }).FirstOrDefaultAsync(x => x.Id == userId);
+            }).SingleOrDefaultAsync(x => x.Id == userId);
 
             if (dto == null)
                 return new GenericResultDto<UserDto> { Succeeded = false, ErrorMessage = "user not found" };
@@ -199,6 +198,33 @@ namespace YaqraApi.Services
                 }
             };
             
+        }
+        public GenericResultDto<List<UsernameAndId>> GetUserFollowersNames(string userId)
+        {
+            var followersList = from user in _userManager.Users
+                                where user.Id == userId
+                                from follower in user.Followers
+                                select new { follower.Id, follower.UserName }; 
+
+            var followersDto = new List<UsernameAndId>();
+            foreach (var follower in followersList)
+                followersDto.Add(new UsernameAndId { UserId = follower.Id, Username = follower.UserName });
+
+            return new GenericResultDto<List<UsernameAndId>> { Succeeded= true, Result = followersDto };
+        
+        }
+        public GenericResultDto<List<UsernameAndId>> GetUserFollowingsNames(string userId)
+        {
+            var followingsList = from user in _userManager.Users
+                                where user.Id == userId
+                                from following in user.Followings
+                                select new { following.Id, following.UserName };
+
+            var followingDto = new List<UsernameAndId>();
+            foreach (var following in followingsList)
+                followingDto.Add(new UsernameAndId { UserId = following.Id, Username = following.UserName });
+
+            return new GenericResultDto<List<UsernameAndId>> { Succeeded = true, Result = followingDto };
         }
     }
 }

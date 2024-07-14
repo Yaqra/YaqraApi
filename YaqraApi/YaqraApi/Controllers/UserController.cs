@@ -24,7 +24,7 @@ namespace YaqraApi.Controllers
         }
         
         [HttpPut("bio")]
-        public async Task<IActionResult> UpdateBio(BioUpdateDto dto)
+        public async Task<IActionResult> UpdateBio(BioDto dto)
         {
             var result = await _userService.UpdateBioAsync(dto.NewBio, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
@@ -33,7 +33,7 @@ namespace YaqraApi.Controllers
         }
 
         [HttpPut("username")]
-        public async Task<IActionResult> UpdateUsername(UsernameUpdateDto dto)
+        public async Task<IActionResult> UpdateUsername(UsernameDto dto)
         {
             var result = await _userService.UpdateUsernameAsync(dto.Username, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
@@ -65,7 +65,7 @@ namespace YaqraApi.Controllers
             return Ok("profile picture updated successfully");
         }
         [HttpPost("follow")]
-        public async Task<IActionResult> FollowUser(FollowUserDto dto)
+        public async Task<IActionResult> FollowUser(UserIdDto dto /*the user u want to follow*/)
         {
             var result = await _userService.FollowUserAsync(dto, UserHelpers.GetUserId(User));
             if(result.Succeeded == false)
@@ -73,12 +73,30 @@ namespace YaqraApi.Controllers
             return Ok($"{result.Result.Follower.UserName} followed {result.Result.Followed.UserName} successfully");
         }
         [HttpGet("getuser")]
-        public async Task<IActionResult> GetUserAsync(GetUserIdDto dto)
+        public async Task<IActionResult> GetUserAsync(UserIdDto dto)
         {
             var result = await _userService.GetUserAsync(dto.UserId);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
+        }
+        [HttpGet("followrs")]
+        public async Task<IActionResult> GetFollowrsListAsync(UserIdDto dto)
+        {
+            var result = _userService.GetUserFollowersNames(dto.UserId);
+            if(result.Succeeded==false)
+                return BadRequest(result.ErrorMessage);
+            else 
+                return Ok(result.Result);
+        }
+        [HttpGet("followings")]
+        public async Task<IActionResult> GetFollowingsListAsync(UserIdDto dto)
+        {
+            var result = _userService.GetUserFollowingsNames(dto.UserId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            else
+                return Ok(result.Result);
         }
     }
 }
