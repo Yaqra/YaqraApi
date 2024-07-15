@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using YaqraApi.DTOs;
+using YaqraApi.DTOs.Genre;
 using YaqraApi.DTOs.User;
 using YaqraApi.Models;
 
@@ -16,6 +17,9 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<UserDto>> GetUserAsync(string userId);
         GenericResultDto<List<UsernameAndId>> GetUserFollowersNames(string userId);
         GenericResultDto<List<UsernameAndId>> GetUserFollowingsNames(string userId);
-        
+        //Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenreAsync(GenreDto genre, string userId);
+
+
+
     }
 }

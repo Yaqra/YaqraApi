@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using YaqraApi.DTOs.Genre;
 using YaqraApi.DTOs.User;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
@@ -98,5 +99,14 @@ namespace YaqraApi.Controllers
             else
                 return Ok(result.Result);
         }
+        //[HttpPost("addFavGenre")]
+        //public async Task<IActionResult> AddFavouriteGenre(GenreDto genre)
+        //{
+        //    var result = await _userService.AddFavouriteGenreAsync(genre, UserHelpers.GetUserId(User));
+
+        //    if (result.Succeeded == false)
+        //        return BadRequest(result.ErrorMessage);
+        //    return Ok(result.Result);
+        //}
     }
 }

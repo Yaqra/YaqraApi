@@ -10,6 +10,8 @@ using YaqraApi.Services;
 using YaqraApi.Services.IServices;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using YaqraApi.Repositories.IRepositories;
+using YaqraApi.Repositories;
 
 namespace YaqraApi
 {
@@ -63,6 +65,9 @@ namespace YaqraApi
             builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JWT"));
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+            builder.Services.AddScoped<IGenreService, GenreService>();
+
 
             var app = builder.Build();
 
