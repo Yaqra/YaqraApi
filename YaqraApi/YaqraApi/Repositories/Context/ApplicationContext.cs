@@ -26,7 +26,26 @@ namespace YaqraApi.Repositories.Context
 
             });
 
+            builder.Entity<ApplicationUser>(u =>
+            {
+                u.HasMany(x => x.FavouriteGenres)
+                .WithMany(g => g.Users)
+                .UsingEntity("UserFavouriteGenres",
+                l => l.HasOne(typeof(Genre))
+                    .WithMany().HasForeignKey("GenreId"),
+                r => r.HasOne(typeof(ApplicationUser))
+                    .WithMany().HasForeignKey("UserId"),
+                j => j.HasKey("UserId", "GenreId"));
+
+                builder.Entity<ApplicationUser>()
+                .OwnsMany(u => u.RefreshTokens);
+
+            });
+
+            builder.Entity<Genre>().HasIndex(x => x.Name).IsUnique();
+
             base.OnModelCreating(builder);
         }
+        public DbSet<Genre> Genres { get; set; }
     }
 }

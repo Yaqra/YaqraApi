@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
+using YaqraApi.DTOs.Genre;
 using YaqraApi.DTOs.User;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
@@ -226,5 +227,25 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<List<UsernameAndId>> { Succeeded = true, Result = followingDto };
         }
+        //public async Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenreAsync(GenreDto genre, string userId)
+        //{
+        //    //var user = await _userManager.Users.Include(u=>u.FavouriteGenres).SingleOrDefaultAsync(u=>u.Id == userId);
+        //    //if (user == null)
+        //    //    return new GenericResultDto<List<GenreDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+        //    //user.FavouriteGenres.Add(new Genre { Name = genre.GenreName });
+        //    //var identityResult = await _userManager.UpdateAsync(user);
+        //    //if (identityResult.Succeeded == false)
+        //    //    return new GenericResultDto<List<GenreDto>>
+        //    //    {
+        //    //        Succeeded = false,
+        //    //        ErrorMessage = UserHelpers.GetErrors(identityResult)
+        //    //    };
+        //    //var favGenresDto = new List<GenreDto>();
+        //    //foreach (var item in user.FavouriteGenres)
+        //    //    favGenresDto.Add(new GenreDto { GenreName = item.Name });
+            
+        //    //return new GenericResultDto<List<GenreDto>> { Succeeded = true, Result = favGenresDto};
+        //}
     }
 }
