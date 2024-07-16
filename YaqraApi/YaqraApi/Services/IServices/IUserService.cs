@@ -17,9 +17,10 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<UserDto>> GetUserAsync(string userId);
         GenericResultDto<List<UsernameAndId>> GetUserFollowersNames(string userId);
         GenericResultDto<List<UsernameAndId>> GetUserFollowingsNames(string userId);
-        //Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenreAsync(GenreDto genre, string userId);
-
-
+        Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenresAsync(List<GenreIdDto> genres, string userId);
+        Task<GenericResultDto<List<GenreDto>>> GetFavouriteGenresAsync(string userId);
+        Task<GenericResultDto<List<GenreDto>>> GetAllGenresExceptUserGenresAsync(string userId);
+        Task<GenericResultDto<List<GenreDto>>> DeleteFavouriteGenresAsync(GenreIdDto genre, string userId);
 
     }
 }

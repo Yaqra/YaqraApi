@@ -14,7 +14,7 @@ namespace YaqraApi.Repositories
         }
         public async Task<List<Genre>> GetAllAsync()
         {
-            var genres = await _context.Genres.ToListAsync();
+            var genres = await _context.Genres.AsNoTracking().ToListAsync();
             return genres;
         }
         private async Task SaveChangesAsync()
@@ -27,12 +27,12 @@ namespace YaqraApi.Repositories
         }
         public async Task<Genre> GetByIdAsync(int id)
         {
-            var genre = await _context.Genres.SingleOrDefaultAsync(g => g.Id == id);
+            var genre = await _context.Genres.AsNoTracking().SingleOrDefaultAsync(g => g.Id == id);
             return genre;
         }
         public async Task<Genre> GetByNameAsync(string name)
         {
-            var genre = await _context.Genres.SingleOrDefaultAsync(g => g.Name == name);
+            var genre = await _context.Genres.AsNoTracking().SingleOrDefaultAsync(g => g.Name == name);
             return genre;
         }
         public async Task<Genre> AddAsync(Genre genre)
@@ -55,9 +55,10 @@ namespace YaqraApi.Repositories
             var genre = await GetByIdAsync(currentGenreId);
             if (genre == null)
                 return null;
-            genre.Name = editedGenre.Name;
-            await SaveChangesAsync();
-            return genre.Id == 0 ? null : genre;
+            editedGenre.Id= genre.Id;
+            _context.Genres.Update(editedGenre);
+            SaveChanges();
+            return editedGenre;
         }
     }
 }

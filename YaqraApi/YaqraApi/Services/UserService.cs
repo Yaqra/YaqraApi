@@ -18,10 +18,12 @@ namespace YaqraApi.Services
     public class UserService : IUserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IGenreService _genreService;
         private readonly Mapper _mapper;
-        public UserService(UserManager<ApplicationUser> userManager)
+        public UserService(UserManager<ApplicationUser> userManager, IGenreService genreService)
         {
             _userManager = userManager;
+            _genreService = genreService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         public async Task<GenericResultDto<ApplicationUser>> UpdateBioAsync(string bio, string userId)
@@ -227,25 +229,121 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<List<UsernameAndId>> { Succeeded = true, Result = followingDto };
         }
-        //public async Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenreAsync(GenreDto genre, string userId)
-        //{
-        //    //var user = await _userManager.Users.Include(u=>u.FavouriteGenres).SingleOrDefaultAsync(u=>u.Id == userId);
-        //    //if (user == null)
-        //    //    return new GenericResultDto<List<GenreDto>> { Succeeded = false, ErrorMessage = "user not found" };
+        public async Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenreAsync(GenreDto genre, string userId)
+        {
+            var user = await _userManager.Users.Include(u => u.FavouriteGenres).SingleOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<GenreDto>> { Succeeded = false, ErrorMessage = "user not found" };
 
-        //    //user.FavouriteGenres.Add(new Genre { Name = genre.GenreName });
-        //    //var identityResult = await _userManager.UpdateAsync(user);
-        //    //if (identityResult.Succeeded == false)
-        //    //    return new GenericResultDto<List<GenreDto>>
-        //    //    {
-        //    //        Succeeded = false,
-        //    //        ErrorMessage = UserHelpers.GetErrors(identityResult)
-        //    //    };
-        //    //var favGenresDto = new List<GenreDto>();
-        //    //foreach (var item in user.FavouriteGenres)
-        //    //    favGenresDto.Add(new GenreDto { GenreName = item.Name });
+            user.FavouriteGenres.Add(new Genre { Id=genre.GenreId, Name = genre.GenreName });
+            var identityResult = await _userManager.UpdateAsync(user);
+            if (identityResult.Succeeded == false)
+                return new GenericResultDto<List<GenreDto>>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
+            var favGenresDto = new List<GenreDto>();
+            foreach (var item in user.FavouriteGenres)
+                favGenresDto.Add(new GenreDto {GenreId=item.Id, GenreName = item.Name });
+
+            return new GenericResultDto<List<GenreDto>> { Succeeded = true, Result = favGenresDto };
+        }
+        public async Task<GenericResultDto<List<GenreDto>>> GetFavouriteGenresAsync(string userId)
+        {
+            var user = await _userManager.Users.Include(x=>x.FavouriteGenres).SingleOrDefaultAsync(u=>u.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<GenreDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var result = new List<GenreDto>();
+            foreach (var item in user.FavouriteGenres)
+                result.Add(new GenreDto { GenreId = item.Id, GenreName = item.Name });
+            return new GenericResultDto<List<GenreDto>> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<List<GenreDto>>> GetAllGenresExceptUserGenresAsync(string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.FavouriteGenres).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<GenreDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var UserGenreIds = new HashSet<int>();
+
+            foreach (var item in user.FavouriteGenres)
+                UserGenreIds.Add(item.Id);
+
+            var genresExceptUser = new List<GenreDto>();
+            var genres = (await _genreService.GetAllAsync()).Result;
+
+            foreach (var item in genres)
+            {
+                if (UserGenreIds.Contains(item.GenreId) == false)
+                    genresExceptUser.Add(item);
+            }
+
+            return new GenericResultDto<List<GenreDto>> { Succeeded = true, Result = genresExceptUser.ToList() };
+        }
+        public async Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenresAsync(List<GenreIdDto> genres, string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.FavouriteGenres).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<GenreDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var UserGenreIds = new HashSet<int>();
+
+            foreach (var item in user.FavouriteGenres)
+                UserGenreIds.Add(item.Id);
+
+            foreach (var genre in genres)
+            {
+                if(UserGenreIds.Contains(genre.GenreId) == false)
+                {
+                    var dto = (await _genreService.GetByIdAsync(genre.GenreId)).Result;
+                    if (dto == null)
+                        continue;
+                    user.FavouriteGenres.Add(new Genre {Id= dto.GenreId, Name = dto.GenreName});
+                }
+            }
+
+            var identityResult = await _userManager.UpdateAsync(user);
+            if (identityResult.Succeeded == false)
+                return new GenericResultDto<List<GenreDto>>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
+
+            var result = new List<GenreDto>();
+            foreach (var original in user.FavouriteGenres)
+            {
+                result.Add(new GenreDto { GenreId=original.Id, GenreName=original.Name });
+            }
+
+            return new GenericResultDto<List<GenreDto>> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<List<GenreDto>>> DeleteFavouriteGenresAsync(GenreIdDto genre, string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.FavouriteGenres).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<GenreDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var genreToDelete = user.FavouriteGenres.SingleOrDefault(x => x.Id == genre.GenreId);
+            if (genreToDelete == null)
+                return new GenericResultDto<List<GenreDto>> { Succeeded = false, ErrorMessage = "genre not found" };
+
+            user.FavouriteGenres.Remove(genreToDelete);
+            var identityResult = await _userManager.UpdateAsync(user);
+            if (identityResult.Succeeded == false)
+                return new GenericResultDto<List<GenreDto>>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
             
-        //    //return new GenericResultDto<List<GenreDto>> { Succeeded = true, Result = favGenresDto};
-        //}
+            var result = new List<GenreDto>();
+            foreach (var item in user.FavouriteGenres)
+                result.Add(new GenreDto { GenreId=item.Id, GenreName=item.Name });
+
+            return new GenericResultDto<List<GenreDto>> { Succeeded = true, Result = result };
+        }
     }
 }
