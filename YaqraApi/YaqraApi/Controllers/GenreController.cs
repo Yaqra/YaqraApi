@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YaqraApi.DTOs.Genre;
+using YaqraApi.Helpers;
 using YaqraApi.Services.IServices;
 
 namespace YaqraApi.Controllers
@@ -10,10 +11,12 @@ namespace YaqraApi.Controllers
     public class GenreController : ControllerBase
     {
         private readonly IGenreService _genreService;
+        private readonly IUserService _userService;
 
-        public GenreController(IGenreService genreService)
+        public GenreController(IGenreService genreService, IUserService userService)
         {
             _genreService = genreService;
+            _userService = userService;
         }
         [HttpGet("genres")]
         public async Task<IActionResult> GetAllAsync()
@@ -23,6 +26,15 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        //[HttpGet("genresExcept")]
+        //public async Task<IActionResult> GetAllExceptUserGenresAsync()
+        //{
+        //    var x = await _userService.GetFavouriteGenresAsync(UserHelpers.GetUserId(User));
+        //    var result = await _genreService.GetAllExceptUserGenresAsync(x.Result);
+        //    if (result.Succeeded == false)
+        //        return BadRequest(result.ErrorMessage);
+        //    return Ok(result.Result);
+        //}
         [HttpGet("name")]
         public async Task<IActionResult> GetByNameAsync([FromQuery]string genreName)
         {

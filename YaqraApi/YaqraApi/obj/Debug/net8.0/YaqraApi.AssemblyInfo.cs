@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("YaqraApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9807124005e806bc6b714dfab343d64110c73995")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+19430034dce848efa36a71f4d567ca0383ee9531")]
 [assembly: System.Reflection.AssemblyProductAttribute("YaqraApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("YaqraApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

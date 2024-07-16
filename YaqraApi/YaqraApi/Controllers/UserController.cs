@@ -73,7 +73,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok($"{result.Result.Follower.UserName} followed {result.Result.Followed.UserName} successfully");
         }
-        [HttpGet("getuser")]
+        [HttpGet("user")]
         public async Task<IActionResult> GetUserAsync(UserIdDto dto)
         {
             var result = await _userService.GetUserAsync(dto.UserId);
@@ -99,14 +99,40 @@ namespace YaqraApi.Controllers
             else
                 return Ok(result.Result);
         }
-        //[HttpPost("addFavGenre")]
-        //public async Task<IActionResult> AddFavouriteGenre(GenreDto genre)
-        //{
-        //    var result = await _userService.AddFavouriteGenreAsync(genre, UserHelpers.GetUserId(User));
+        [HttpPost("addFavGenres")]
+        public async Task<IActionResult> AddFavouriteGenres(List<GenreIdDto> genres)
+         {
+            var result = await _userService.AddFavouriteGenresAsync(genres, UserHelpers.GetUserId(User));
 
-        //    if (result.Succeeded == false)
-        //        return BadRequest(result.ErrorMessage);
-        //    return Ok(result.Result);
-        //}
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("genresExcept")]
+        public async Task<IActionResult> GetAllExceptUserGenresAsync()
+        {
+            var result = await _userService.GetAllGenresExceptUserGenresAsync(UserHelpers.GetUserId(User));
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("favGenres")]
+        public async Task<IActionResult> GetFavouriteGenres()
+        {
+            var result = await _userService.GetFavouriteGenresAsync(UserHelpers.GetUserId(User));
+
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpDelete("favGenre")]
+        public async Task<IActionResult> DeleteFavouriteGenre(GenreIdDto genreId)
+        {
+            var result = await _userService.DeleteFavouriteGenresAsync(genreId, UserHelpers.GetUserId(User));
+
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
     }
 }

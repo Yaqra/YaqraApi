@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.Json;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Genre;
+using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Repositories.IRepositories;
 using YaqraApi.Services.IServices;
@@ -10,7 +11,6 @@ namespace YaqraApi.Services
     public class GenreService : IGenreService
     {
         private readonly IGenreRepository _genreRepository;
-
         public GenreService(IGenreRepository genreRepository)
         {
             _genreRepository = genreRepository;
@@ -27,7 +27,8 @@ namespace YaqraApi.Services
             var result = "";
             if (await _genreRepository.DeleteAsync(id) == false)
                 result = "something went wrong";
-            result = "genre deleted successfully";
+            else
+                result = "genre deleted successfully";
             return new GenericResultDto<string> { Succeeded = true, Result = result};
         }
         public async Task<GenericResultDto<List<GenreDto>>> GetAllAsync()
