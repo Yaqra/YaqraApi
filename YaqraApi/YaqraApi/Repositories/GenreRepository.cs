@@ -41,14 +41,10 @@ namespace YaqraApi.Repositories
             await SaveChangesAsync();
             return genre.Id == 0? null : genre;
         }
-        public async Task<bool> DeleteAsync(int id)
+        public void Delete(Genre genre)
         {
-            var genre = await GetByIdAsync(id);
-            if (genre == null)
-                return false;
             _context.Genres.Remove(genre);
-            await SaveChangesAsync();
-            return true;
+            SaveChanges();
         }
         public async Task<Genre> UpdateAsync(int currentGenreId, Genre editedGenre)
         {

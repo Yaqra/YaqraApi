@@ -26,15 +26,6 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
-        //[HttpGet("genresExcept")]
-        //public async Task<IActionResult> GetAllExceptUserGenresAsync()
-        //{
-        //    var x = await _userService.GetFavouriteGenresAsync(UserHelpers.GetUserId(User));
-        //    var result = await _genreService.GetAllExceptUserGenresAsync(x.Result);
-        //    if (result.Succeeded == false)
-        //        return BadRequest(result.ErrorMessage);
-        //    return Ok(result.Result);
-        //}
         [HttpGet("name")]
         public async Task<IActionResult> GetByNameAsync([FromQuery]string genreName)
         {
@@ -57,7 +48,7 @@ namespace YaqraApi.Controllers
             var result = await _genreService.AddAsync(genreName);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+            return Created((string?)null, result.Result);
         }
         [HttpPut]
         public async Task<IActionResult> UpdateAsync(UpdateGenreDto dto)

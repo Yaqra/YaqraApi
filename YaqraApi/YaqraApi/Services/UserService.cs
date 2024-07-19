@@ -202,32 +202,32 @@ namespace YaqraApi.Services
             };
             
         }
-        public GenericResultDto<List<UsernameAndId>> GetUserFollowersNames(string userId)
+        public GenericResultDto<List<UserNameAndId>> GetUserFollowersNames(string userId)
         {
             var followersList = from user in _userManager.Users
                                 where user.Id == userId
                                 from follower in user.Followers
                                 select new { follower.Id, follower.UserName }; 
 
-            var followersDto = new List<UsernameAndId>();
+            var followersDto = new List<UserNameAndId>();
             foreach (var follower in followersList)
-                followersDto.Add(new UsernameAndId { UserId = follower.Id, Username = follower.UserName });
+                followersDto.Add(new UserNameAndId { UserId = follower.Id, Username = follower.UserName });
 
-            return new GenericResultDto<List<UsernameAndId>> { Succeeded= true, Result = followersDto };
+            return new GenericResultDto<List<UserNameAndId>> { Succeeded= true, Result = followersDto };
         
         }
-        public GenericResultDto<List<UsernameAndId>> GetUserFollowingsNames(string userId)
+        public GenericResultDto<List<UserNameAndId>> GetUserFollowingsNames(string userId)
         {
             var followingsList = from user in _userManager.Users
                                 where user.Id == userId
                                 from following in user.Followings
                                 select new { following.Id, following.UserName };
 
-            var followingDto = new List<UsernameAndId>();
+            var followingDto = new List<UserNameAndId>();
             foreach (var following in followingsList)
-                followingDto.Add(new UsernameAndId { UserId = following.Id, Username = following.UserName });
+                followingDto.Add(new UserNameAndId { UserId = following.Id, Username = following.UserName });
 
-            return new GenericResultDto<List<UsernameAndId>> { Succeeded = true, Result = followingDto };
+            return new GenericResultDto<List<UserNameAndId>> { Succeeded = true, Result = followingDto };
         }
         public async Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenreAsync(GenreDto genre, string userId)
         {

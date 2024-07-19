@@ -47,5 +47,6 @@ namespace YaqraApi.Repositories.Context
             base.OnModelCreating(builder);
         }
         public DbSet<Genre> Genres { get; set; }
+        public DbSet<Author> Authors { get; set; }
     }
 }
