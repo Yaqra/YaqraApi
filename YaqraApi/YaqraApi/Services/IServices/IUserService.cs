@@ -15,8 +15,8 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<ApplicationUser>> UpdateProfileCoverAsync(IFormFile pic, string userId);
         Task<GenericResultDto<UserFollowerDto>> FollowUserAsync(UserIdDto dto, string userId);
         Task<GenericResultDto<UserDto>> GetUserAsync(string userId);
-        GenericResultDto<List<UsernameAndId>> GetUserFollowersNames(string userId);
-        GenericResultDto<List<UsernameAndId>> GetUserFollowingsNames(string userId);
+        GenericResultDto<List<UserNameAndId>> GetUserFollowersNames(string userId);
+        GenericResultDto<List<UserNameAndId>> GetUserFollowingsNames(string userId);
         Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenresAsync(List<GenreIdDto> genres, string userId);
         Task<GenericResultDto<List<GenreDto>>> GetFavouriteGenresAsync(string userId);
         Task<GenericResultDto<List<GenreDto>>> GetAllGenresExceptUserGenresAsync(string userId);

@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2024-07-08T12:29:53.521Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.4 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="XzkRfhX7zTZclSfeLvHY" version="24.6.4" type="device" pages="2">
+<mxfile host="Electron" modified="2024-07-16T13:26:28.324Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.4 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="fHswhTkQyUXHj4Cu4Pvj" version="24.6.4" type="device" pages="2">
   <diagram name="erd" id="DYQlRuMrFnFYqKwhEdKq">
-    <mxGraphModel dx="2085" dy="1840" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1900" dy="1729" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -858,7 +858,7 @@
         <mxCell id="mPmDRW_TB5vqi5qOGWoL-5" value="&lt;span style=&quot;font-size: 20px;&quot;&gt;name&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
           <mxGeometry x="400" y="700" width="160" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="mPmDRW_TB5vqi5qOGWoL-6" value="&lt;span style=&quot;font-size: 20px;&quot;&gt;image&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
+        <mxCell id="mPmDRW_TB5vqi5qOGWoL-6" value="&lt;span style=&quot;font-size: 20px;&quot;&gt;picture&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
           <mxGeometry x="400" y="730" width="160" height="30" as="geometry" />
         </mxCell>
         <mxCell id="mPmDRW_TB5vqi5qOGWoL-7" value="&lt;span style=&quot;font-size: 20px;&quot;&gt;bio&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">

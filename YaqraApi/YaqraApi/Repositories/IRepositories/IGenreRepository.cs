@@ -8,7 +8,7 @@ namespace YaqraApi.Repositories.IRepositories
         Task<Genre> GetByIdAsync(int id);
         Task<Genre> GetByNameAsync(string name);
         Task<Genre> AddAsync(Genre genre);
-        Task<bool> DeleteAsync(int id);
+        void Delete(Genre genre);
         Task<Genre> UpdateAsync(int currentGenreId, Genre editedGenre);
     }
 }

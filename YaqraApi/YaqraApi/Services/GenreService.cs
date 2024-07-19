@@ -3,6 +3,7 @@ using YaqraApi.DTOs;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
+using YaqraApi.Repositories;
 using YaqraApi.Repositories.IRepositories;
 using YaqraApi.Services.IServices;
 
@@ -24,12 +25,13 @@ namespace YaqraApi.Services
         }
         public async Task<GenericResultDto<string>> DeleteAsync(int id)
         {
-            var result = "";
-            if (await _genreRepository.DeleteAsync(id) == false)
-                result = "something went wrong";
-            else
-                result = "genre deleted successfully";
-            return new GenericResultDto<string> { Succeeded = true, Result = result};
+            var genre = await _genreRepository.GetByIdAsync(id);
+            if (genre == null)
+                return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "genre not found" };
+            
+            _genreRepository.Delete(genre);
+
+            return new GenericResultDto<string> { Succeeded = true, Result = "genre deleted successfully" };
         }
         public async Task<GenericResultDto<List<GenreDto>>> GetAllAsync()
         {
