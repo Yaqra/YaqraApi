@@ -318,6 +318,40 @@ namespace YaqraApi.Migrations
                     b.ToTable("Genres");
                 });
 
+            modelBuilder.Entity("YaqraApi.Models.ReadingGoal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DurationInDays")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfBooksToRead")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ReadingGoals");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("YaqraApi.Models.ApplicationRole", null)
@@ -449,6 +483,22 @@ namespace YaqraApi.Migrations
                         });
 
                     b.Navigation("RefreshTokens");
+                });
+
+            modelBuilder.Entity("YaqraApi.Models.ReadingGoal", b =>
+                {
+                    b.HasOne("YaqraApi.Models.ApplicationUser", "User")
+                        .WithMany("ReadingGoals")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("YaqraApi.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("ReadingGoals");
                 });
 #pragma warning restore 612, 618
         }

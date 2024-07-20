@@ -13,5 +13,6 @@ namespace YaqraApi.Models
         public ICollection<RefreshToken> RefreshTokens { get; set; }
         public ICollection<Genre> FavouriteGenres { get; set; }
         public ICollection<Author> FavouriteAuthors { get; set; }
+        public ICollection<ReadingGoal> ReadingGoals { get; set; }
     }
 }
