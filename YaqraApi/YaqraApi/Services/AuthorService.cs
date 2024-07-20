@@ -106,30 +106,20 @@ namespace YaqraApi.Services
             return new GenericResultDto<AuthorDto> { Succeeded = true, Result = _mapper.Map<AuthorDto>(author) };
         }
 
-        public async Task<GenericResultDto<AuthorDto>> UpdateAllAsync(IFormFile pic, AuthorWithoutPicDto dto)
+        public async Task<GenericResultDto<AuthorDto>> UpdateAllAsync(IFormFile? pic, AuthorWithoutPicDto dto)
         {
-            await UpdatePictureAsync(pic, dto.Id);
+            if(pic != null)
+                await UpdatePictureAsync(pic, dto.Id);
 
             var author = await _authorRepository.GetByIdAsync(dto.Id);
             if(author == null) 
                 return new GenericResultDto<AuthorDto> { Succeeded= false, ErrorMessage = "author not found" };
             
-            author.Name = dto.Name;
-            author.Bio = dto.Bio;
+            if(dto.Name != null)
+                author.Name = dto.Name;
 
-            _authorRepository.UpdateAll(author);
-
-            return new GenericResultDto<AuthorDto> { Succeeded = true, Result = _mapper.Map<AuthorDto>(author) };
-        }
-
-        public async Task<GenericResultDto<AuthorDto>> UpdateWithoutPicAsync(AuthorWithoutPicDto dto)
-        {
-            var author = await _authorRepository.GetByIdAsync(dto.Id);
-            if (author == null)
-                return new GenericResultDto<AuthorDto> { Succeeded = false, ErrorMessage = "author not found" };
-
-            author.Name = dto.Name;
-            author.Bio = dto.Bio;
+            if(dto.Bio != null)
+                author.Bio = dto.Bio;
 
             _authorRepository.UpdateAll(author);
 

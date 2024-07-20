@@ -22,10 +22,12 @@ namespace YaqraApi.Controllers
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         [HttpPost("addAuthor")]
-        public async Task<IActionResult> AddAsync(IFormFile? picture, [FromForm]string authorDetails)
+        public async Task<IActionResult> AddAsync(
+            IFormFile? picture,
+            [FromForm] string authorName, 
+            [FromForm] string? authorBio)
         {
-            var dto = JsonConvert.DeserializeObject<AddAuthorDto>(authorDetails);
-
+            var dto = new AddAuthorDto { Bio = authorBio, Name = authorName };
             var result = await _authorService.AddAsync(picture, _mapper.Map<AuthorDto>(dto));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
@@ -76,9 +78,13 @@ namespace YaqraApi.Controllers
             return Ok(result.Result);
         }
         [HttpPut("all")]
-        public async Task<IActionResult> UpdateAllAsync(IFormFile picture, [FromForm] string authorDetails)
+        public async Task<IActionResult> UpdateAllAsync(
+            IFormFile? picture,
+            [FromForm]int authorId,
+            [FromForm]string? authorName, 
+            [FromForm]string? authorBio)
         {
-            var dto = JsonConvert.DeserializeObject<AuthorWithoutPicDto>(authorDetails);
+            var dto = new AuthorWithoutPicDto { Id =  authorId, Name = authorName, Bio = authorBio }; 
             if (dto == null)
                 return BadRequest("something went wrong");
 
@@ -86,16 +92,6 @@ namespace YaqraApi.Controllers
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
-        }
-        [HttpPut("allWithoutPicture")]
-        public async Task<IActionResult> UpdateWithoutPicAsync(AuthorWithoutPicDto dto)
-        {
-            var result = await _authorService.UpdateWithoutPicAsync(dto);
-
-            if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
-
         }
         [HttpDelete]
         public async Task<IActionResult> Delete(AuthorIdDto dto)

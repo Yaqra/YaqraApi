@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Authors\\1e3e685d9-a373-498b-8e27-76bb5f8fbbdf.png",
+      "PackagePath": "staticwebassets\\Authors\\1e3e685d9-a373-498b-8e27-76bb5f8fbbdf.png"
+    },
+    {
       "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Authors\\artworks-000527446572-ypnrbm-t240x240203fbfdc-7ff4-4d8d-9dcd-e455b0000939.jpg",
       "PackagePath": "staticwebassets\\Authors\\artworks-000527446572-ypnrbm-t240x240203fbfdc-7ff4-4d8d-9dcd-e455b0000939.jpg"
     },
@@ -11,6 +15,10 @@
     {
       "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Authors\\artworks-000527446572-ypnrbm-t240x240d496d93c-60eb-48a5-987e-b153f6d1534a.jpg",
       "PackagePath": "staticwebassets\\Authors\\artworks-000527446572-ypnrbm-t240x240d496d93c-60eb-48a5-987e-b153f6d1534a.jpg"
+    },
+    {
+      "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Authors\\artworks-000527446572-ypnrbm-t240x240df014dc6-e1da-4bc9-b3a1-f04a7ca9a893.jpg",
+      "PackagePath": "staticwebassets\\Authors\\artworks-000527446572-ypnrbm-t240x240df014dc6-e1da-4bc9-b3a1-f04a7ca9a893.jpg"
     },
     {
       "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Authors\\thumb_267770_1200_1200_0_0_auto2b18e319-2244-4079-b388-1074a06d2008.jpg",

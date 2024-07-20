@@ -1,5 +1,21 @@
 ﻿<Project>
   <ItemGroup>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Authors\1e3e685d9-a373-498b-8e27-76bb5f8fbbdf.png))">
+      <SourceType>Package</SourceType>
+      <SourceId>YaqraApi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/YaqraApi</BasePath>
+      <RelativePath>Authors/1e3e685d9-a373-498b-8e27-76bb5f8fbbdf.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Authors\1e3e685d9-a373-498b-8e27-76bb5f8fbbdf.png))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Authors\artworks-000527446572-ypnrbm-t240x240203fbfdc-7ff4-4d8d-9dcd-e455b0000939.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>YaqraApi</SourceId>
@@ -47,6 +63,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Authors\artworks-000527446572-ypnrbm-t240x240d496d93c-60eb-48a5-987e-b153f6d1534a.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Authors\artworks-000527446572-ypnrbm-t240x240df014dc6-e1da-4bc9-b3a1-f04a7ca9a893.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>YaqraApi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/YaqraApi</BasePath>
+      <RelativePath>Authors/artworks-000527446572-ypnrbm-t240x240df014dc6-e1da-4bc9-b3a1-f04a7ca9a893.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Authors\artworks-000527446572-ypnrbm-t240x240df014dc6-e1da-4bc9-b3a1-f04a7ca9a893.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Authors\thumb_267770_1200_1200_0_0_auto2b18e319-2244-4079-b388-1074a06d2008.jpg))">
       <SourceType>Package</SourceType>

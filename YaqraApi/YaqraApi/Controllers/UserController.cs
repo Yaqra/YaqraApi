@@ -23,23 +23,19 @@ namespace YaqraApi.Controllers
             _userManager = userManager;
             _userService = userService;
         }
-        
-        [HttpPut("bio")]
-        public async Task<IActionResult> UpdateBio(BioDto dto)
-        {
-            var result = await _userService.UpdateBioAsync(dto.NewBio, UserHelpers.GetUserId(User));
-            if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok("bio updated successfully");
-        }
 
-        [HttpPut("username")]
-        public async Task<IActionResult> UpdateUsername(UsernameDto dto)
+        [HttpPut("all")]
+        public async Task<IActionResult> UpdateAllAsync(
+            IFormFile? pic,
+            IFormFile? cover,
+            [FromForm] string? userName,
+            [FromForm] string? userBio)
         {
-            var result = await _userService.UpdateUsernameAsync(dto.Username, UserHelpers.GetUserId(User));
+            var userDto = new UserDto { Bio = userBio, UserId = UserHelpers.GetUserId(User), Username=userName };
+            var result = await _userService.UpdateAllAsync(pic, cover, userDto);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Ok("username updated successfully");
+            return Ok("user updated successfully");
         }
         [HttpPut("pass")]
         public async Task<IActionResult> UpdatePassword(PasswordUpdateDto dto)
