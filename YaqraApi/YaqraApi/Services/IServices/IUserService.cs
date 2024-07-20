@@ -2,6 +2,7 @@
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Genre;
+using YaqraApi.DTOs.ReadingGoal;
 using YaqraApi.DTOs.User;
 using YaqraApi.Models;
 
@@ -25,5 +26,10 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<List<AuthorDto>>> GetFavouriteAuthorsAsync(string userId);
         Task<GenericResultDto<List<AuthorDto>>> GetAllAuthorsExceptUserAuthorsAsync(string userId);
         Task<GenericResultDto<List<AuthorDto>>> DeleteFavouriteAuthorAsync(AuthorIdDto author, string userId);
+        Task<GenericResultDto<List<ReadingGoalDto>>> AddReadingGoalAsync(ReadingGoalDto dto, string userId);
+        Task<GenericResultDto<List<ReadingGoalDto>>> GetAllReadingGoalsAsync(string userId);
+        Task<GenericResultDto<List<ReadingGoalDto>>> DeleteReadingGoalAsync(int goalId, string userId);
+        Task<GenericResultDto<List<ReadingGoalDto>>> UpdateReadingGoalAsync(UpdateReadingGoalDto dto, string userId);
+
     }
 }

@@ -47,6 +47,10 @@ namespace YaqraApi.Repositories.Context
                         .WithMany().HasForeignKey("UserId"),
                     j => j.HasKey("UserId", "AuthorId"));
 
+                u.HasMany(x => x.ReadingGoals)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+
                 builder.Entity<ApplicationUser>()
                 .OwnsMany(u => u.RefreshTokens);
 
@@ -58,5 +62,6 @@ namespace YaqraApi.Repositories.Context
         }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Author> Authors { get; set; }
+        public DbSet<ReadingGoal> ReadingGoals { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Genre;
+using YaqraApi.DTOs.ReadingGoal;
 using YaqraApi.DTOs.User;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
@@ -419,6 +420,102 @@ namespace YaqraApi.Services
                 result.Add(new AuthorDto { Id = item.Id, Bio = item.Bio, Name = item.Name, Picture = item.Picture});
 
             return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<List<ReadingGoalDto>>> AddReadingGoalAsync(ReadingGoalDto dto, string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.ReadingGoals).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            user.ReadingGoals.Add(_mapper.Map<ReadingGoal>(dto));
+            var identityResult = await _userManager.UpdateAsync(user);
+            if (identityResult.Succeeded == false)
+                return new GenericResultDto<List<ReadingGoalDto>>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
+
+            var result = new List<ReadingGoalDto>();
+            foreach (var item in user.ReadingGoals)
+                result.Add(_mapper.Map<ReadingGoalDto>(item));
+
+            return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<List<ReadingGoalDto>>> GetAllReadingGoalsAsync(string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.ReadingGoals).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var result = new List<ReadingGoalDto>();
+            foreach (var item in user.ReadingGoals)
+                result.Add(_mapper.Map<ReadingGoalDto>(item));
+
+            return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<List<ReadingGoalDto>>> DeleteReadingGoalAsync(int goalId, string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.ReadingGoals).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var goalToDelete = user.ReadingGoals.SingleOrDefault(u => u.Id == goalId);
+            if(goalToDelete == null)
+                return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = false, ErrorMessage = "reading goal not found" };
+            
+            user.ReadingGoals.Remove(goalToDelete);
+
+            var identityResult = await _userManager.UpdateAsync(user);
+            if (identityResult.Succeeded == false)
+                return new GenericResultDto<List<ReadingGoalDto>>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
+
+
+            var result = new List<ReadingGoalDto>();
+            foreach (var item in user.ReadingGoals)
+                result.Add(_mapper.Map<ReadingGoalDto>(item));
+
+            return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<List<ReadingGoalDto>>> UpdateReadingGoalAsync(UpdateReadingGoalDto dto, string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.ReadingGoals).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var goalToEdit = user.ReadingGoals.SingleOrDefault(u => u.Id == dto.Id);
+            if (goalToEdit == null)
+                return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = false, ErrorMessage = "reading goal not found" };
+
+            if(dto.StartDate != null)
+                goalToEdit.StartDate = dto.StartDate.Value;
+            if(dto.DurationInDays != null)
+                goalToEdit.DurationInDays = dto.DurationInDays.Value;
+            if(dto.NumberOfBooksToRead != null)
+                goalToEdit.NumberOfBooksToRead = dto.NumberOfBooksToRead.Value;
+            if(dto.Description != null)
+                goalToEdit.Description = dto.Description;
+            if(dto.Title != null)
+                goalToEdit.Title = dto.Title;
+
+            var identityResult = await _userManager.UpdateAsync(user);
+            if (identityResult.Succeeded == false)
+                return new GenericResultDto<List<ReadingGoalDto>>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
+
+
+            var result = new List<ReadingGoalDto>();
+            foreach (var item in user.ReadingGoals)
+                result.Add(_mapper.Map<ReadingGoalDto>(item));
+
+            return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = true, Result = result };
         }
     }
 }
