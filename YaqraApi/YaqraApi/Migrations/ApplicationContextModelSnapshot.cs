@@ -128,6 +128,21 @@ namespace YaqraApi.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("UserFavouriteAuthors", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "AuthorId");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("UserFavouriteAuthors");
+                });
+
             modelBuilder.Entity("UserFavouriteGenres", b =>
                 {
                     b.Property<string>("UserId")
@@ -347,6 +362,21 @@ namespace YaqraApi.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
+                    b.HasOne("YaqraApi.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UserFavouriteAuthors", b =>
+                {
+                    b.HasOne("YaqraApi.Models.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("YaqraApi.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")

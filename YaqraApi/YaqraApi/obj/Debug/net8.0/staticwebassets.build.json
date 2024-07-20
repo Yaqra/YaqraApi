@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "9yGyaBCbFqu5vsBoigMmo3ZcO2VPMYHmAsu0V4nyJtw=",
+  "Hash": "8xZmywsiFvIN5MEinSaUgzxrd38RtRfNyano8GVat2k=",
   "Source": "YaqraApi",
   "BasePath": "_content/YaqraApi",
   "Mode": "Default",
@@ -205,6 +205,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\ProfilePictures\\0cca08a1809076586c912020062f2d6c5d6ef264-6c67-4753-8193-05c27c14f525.gif"
+    },
+    {
+      "Identity": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\ProfilePictures\\horizon-sunset-skyline-night-building-city-19137-pxhere70eda8dd-03aa-4aaa-94a4-17e7f688c1b4.jpg",
+      "SourceId": "YaqraApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\",
+      "BasePath": "_content/YaqraApi",
+      "RelativePath": "ProfilePictures/horizon-sunset-skyline-night-building-city-19137-pxhere70eda8dd-03aa-4aaa-94a4-17e7f688c1b4.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\ProfilePictures\\horizon-sunset-skyline-night-building-city-19137-pxhere70eda8dd-03aa-4aaa-94a4-17e7f688c1b4.jpg"
     }
   ]
 }

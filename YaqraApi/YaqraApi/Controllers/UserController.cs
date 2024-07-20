@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.DTOs.User;
 using YaqraApi.Helpers;
@@ -124,7 +125,47 @@ namespace YaqraApi.Controllers
         [HttpDelete("favGenre")]
         public async Task<IActionResult> DeleteFavouriteGenre(GenreIdDto genreId)
         {
-            var result = await _userService.DeleteFavouriteGenresAsync(genreId, UserHelpers.GetUserId(User));
+            var result = await _userService.DeleteFavouriteGenreAsync(genreId, UserHelpers.GetUserId(User));
+
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        /// <summary>
+        /// ///
+        /// </summary>
+        /// <param name="genres"></param>
+        /// <returns></returns>
+        [HttpPost("addFavAuthors")]
+        public async Task<IActionResult> AddFavouriteAuthors(List<AuthorIdDto> authors)
+        {
+            var result = await _userService.AddFavouriteAuthorsAsync(authors, UserHelpers.GetUserId(User));
+
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("authorsExcept")]
+        public async Task<IActionResult> GetAllExceptUserAuthorsAsync()
+        {
+            var result = await _userService.GetAllAuthorsExceptUserAuthorsAsync(UserHelpers.GetUserId(User));
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("favAuthors")]
+        public async Task<IActionResult> GetFavouriteAuthors()
+        {
+            var result = await _userService.GetFavouriteAuthorsAsync(UserHelpers.GetUserId(User));
+
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpDelete("favAuthor")]
+        public async Task<IActionResult> DeleteFavouriteAuthor(AuthorIdDto authorId)
+        {
+            var result = await _userService.DeleteFavouriteAuthorAsync(authorId, UserHelpers.GetUserId(User));
 
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);

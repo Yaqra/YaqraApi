@@ -12,5 +12,6 @@ namespace YaqraApi.Models
         public ICollection<ApplicationUser> Followers { get; set; } // they follow me
         public ICollection<RefreshToken> RefreshTokens { get; set; }
         public ICollection<Genre> FavouriteGenres { get; set; }
+        public ICollection<Author> FavouriteAuthors { get; set; }
     }
 }

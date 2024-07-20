@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using YaqraApi.DTOs;
+using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.DTOs.User;
 using YaqraApi.Models;
@@ -19,7 +20,10 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenresAsync(List<GenreIdDto> genres, string userId);
         Task<GenericResultDto<List<GenreDto>>> GetFavouriteGenresAsync(string userId);
         Task<GenericResultDto<List<GenreDto>>> GetAllGenresExceptUserGenresAsync(string userId);
-        Task<GenericResultDto<List<GenreDto>>> DeleteFavouriteGenresAsync(GenreIdDto genre, string userId);
-
+        Task<GenericResultDto<List<GenreDto>>> DeleteFavouriteGenreAsync(GenreIdDto genre, string userId);
+        Task<GenericResultDto<List<AuthorDto>>> AddFavouriteAuthorsAsync(List<AuthorIdDto> authors, string userId);
+        Task<GenericResultDto<List<AuthorDto>>> GetFavouriteAuthorsAsync(string userId);
+        Task<GenericResultDto<List<AuthorDto>>> GetAllAuthorsExceptUserAuthorsAsync(string userId);
+        Task<GenericResultDto<List<AuthorDto>>> DeleteFavouriteAuthorAsync(AuthorIdDto author, string userId);
     }
 }
