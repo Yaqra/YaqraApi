@@ -41,6 +41,10 @@
       "PackagePath": "staticwebassets\\ProfilePictures\\0cca08a1809076586c912020062f2d6c5d6ef264-6c67-4753-8193-05c27c14f525.gif"
     },
     {
+      "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\ProfilePictures\\horizon-sunset-skyline-night-building-city-19137-pxhere70eda8dd-03aa-4aaa-94a4-17e7f688c1b4.jpg",
+      "PackagePath": "staticwebassets\\ProfilePictures\\horizon-sunset-skyline-night-building-city-19137-pxhere70eda8dd-03aa-4aaa-94a4-17e7f688c1b4.jpg"
+    },
+    {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.YaqraApi.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

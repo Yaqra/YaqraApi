@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
+using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.DTOs.User;
 using YaqraApi.Helpers;
@@ -19,45 +20,18 @@ namespace YaqraApi.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IGenreService _genreService;
+        private readonly IAuthorService _authorService;
         private readonly Mapper _mapper;
-        public UserService(UserManager<ApplicationUser> userManager, IGenreService genreService)
+        public UserService(
+            UserManager<ApplicationUser> userManager, 
+            IGenreService genreService,
+            IAuthorService authorService)
         {
             _userManager = userManager;
             _genreService = genreService;
+            _authorService = authorService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
-        //public async Task<GenericResultDto<ApplicationUser>> UpdateBioAsync(string bio, string userId)
-        //{
-        //    var user = await _userManager.FindByIdAsync(userId);
-        //    if(user == null)
-        //        return new GenericResultDto<ApplicationUser>() { Succeeded = false, ErrorMessage = "user not found" };
-
-        //    user.Bio = bio;
-        //    var identityResult = await _userManager.UpdateAsync(user);
-        //    if(identityResult.Succeeded == false)
-        //        return new GenericResultDto<ApplicationUser>
-        //        {
-        //            Succeeded = false,
-        //            ErrorMessage = UserHelpers.GetErrors(identityResult)
-        //        };
-        //    return new GenericResultDto<ApplicationUser> { Succeeded = true, Result=user };
-        //}
-        //public async Task<GenericResultDto<ApplicationUser>> UpdateUsernameAsync(string username, string userId)
-        //{
-        //    var user = await _userManager.FindByIdAsync(userId);
-        //    if(user == null) 
-        //        return new GenericResultDto<ApplicationUser>() {Succeeded = false, ErrorMessage = "user not found" };
-        //    var identityResult = await _userManager.SetUserNameAsync(user, username);
-        //    if (identityResult.Succeeded == false)
-        //        return new GenericResultDto<ApplicationUser> 
-        //        { 
-        //            Succeeded = false, 
-        //            ErrorMessage = UserHelpers.GetErrors(identityResult) 
-        //        };
-
-        //    return new GenericResultDto<ApplicationUser> { Succeeded = true, Result = user };
-        //}
-
         public async Task<GenericResultDto<ApplicationUser>> UpdatePasswordAsync(PasswordUpdateDto dto, string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -230,26 +204,6 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<List<UserNameAndId>> { Succeeded = true, Result = followingDto };
         }
-        public async Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenreAsync(GenreDto genre, string userId)
-        {
-            var user = await _userManager.Users.Include(u => u.FavouriteGenres).SingleOrDefaultAsync(u => u.Id == userId);
-            if (user == null)
-                return new GenericResultDto<List<GenreDto>> { Succeeded = false, ErrorMessage = "user not found" };
-
-            user.FavouriteGenres.Add(new Genre { Id=genre.GenreId, Name = genre.GenreName });
-            var identityResult = await _userManager.UpdateAsync(user);
-            if (identityResult.Succeeded == false)
-                return new GenericResultDto<List<GenreDto>>
-                {
-                    Succeeded = false,
-                    ErrorMessage = UserHelpers.GetErrors(identityResult)
-                };
-            var favGenresDto = new List<GenreDto>();
-            foreach (var item in user.FavouriteGenres)
-                favGenresDto.Add(new GenreDto {GenreId=item.Id, GenreName = item.Name });
-
-            return new GenericResultDto<List<GenreDto>> { Succeeded = true, Result = favGenresDto };
-        }
         public async Task<GenericResultDto<List<GenreDto>>> GetFavouriteGenresAsync(string userId)
         {
             var user = await _userManager.Users.Include(x=>x.FavouriteGenres).SingleOrDefaultAsync(u=>u.Id == userId);
@@ -321,7 +275,7 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<List<GenreDto>> { Succeeded = true, Result = result };
         }
-        public async Task<GenericResultDto<List<GenreDto>>> DeleteFavouriteGenresAsync(GenreIdDto genre, string userId)
+        public async Task<GenericResultDto<List<GenreDto>>> DeleteFavouriteGenreAsync(GenreIdDto genre, string userId)
         {
             var user = await _userManager.Users.Include(x => x.FavouriteGenres).SingleOrDefaultAsync(x => x.Id == userId);
             if (user == null)
@@ -371,6 +325,100 @@ namespace YaqraApi.Services
                 };
 
             return new GenericResultDto<ApplicationUser> { Succeeded = true, Result = user };
+        }
+        public async Task<GenericResultDto<List<AuthorDto>>> AddFavouriteAuthorsAsync(List<AuthorIdDto> authors, string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.FavouriteAuthors).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<AuthorDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var UserAuthorIds = new HashSet<int>();
+
+            foreach (var item in user.FavouriteAuthors)
+                UserAuthorIds.Add(item.Id);
+
+            foreach (var author in authors)
+            {
+                if (UserAuthorIds.Contains(author.AuthorId) == false)
+                {
+                    var dto = (await _authorService.GetByIdAsync(author.AuthorId)).Result;
+                    if (dto == null)
+                        continue;
+                    user.FavouriteAuthors.Add(new Author { Id = dto.Id, Name = dto.Name, Bio = dto.Bio, Picture = dto.Picture });
+                }
+            }
+
+            var identityResult = await _userManager.UpdateAsync(user);
+            if (identityResult.Succeeded == false)
+                return new GenericResultDto<List<AuthorDto>>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
+
+            var result = new List<AuthorDto>();
+            foreach (var original in user.FavouriteAuthors)
+                result.Add(new AuthorDto { Id = original.Id, Name = original.Name, Bio = original.Bio, Picture = original.Picture });
+
+            return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<List<AuthorDto>>> GetFavouriteAuthorsAsync(string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.FavouriteAuthors).SingleOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<AuthorDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var result = new List<AuthorDto>();
+            foreach (var item in user.FavouriteAuthors)
+                result.Add(new AuthorDto { Id = item.Id, Name = item.Name, Bio = item.Bio, Picture = item.Picture });
+            return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<List<AuthorDto>>> GetAllAuthorsExceptUserAuthorsAsync(string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.FavouriteAuthors).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<AuthorDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var UserAuthorsIds = new HashSet<int>();
+
+            foreach (var item in user.FavouriteAuthors)
+                UserAuthorsIds.Add(item.Id);
+
+            var authorsExceptUser = new List<AuthorDto>();
+            var authors = (await _authorService.GetAll()).Result;
+
+            foreach (var item in authors)
+            {
+                if (UserAuthorsIds.Contains(item.Id) == false)
+                    authorsExceptUser.Add(item);
+            }
+
+            return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result = authorsExceptUser.ToList() };
+        }
+        public async Task<GenericResultDto<List<AuthorDto>>> DeleteFavouriteAuthorAsync(AuthorIdDto author, string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.FavouriteAuthors).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<AuthorDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var authorToDelete = user.FavouriteAuthors.SingleOrDefault(x => x.Id == author.AuthorId);
+            if (authorToDelete == null)
+                return new GenericResultDto<List<AuthorDto>> { Succeeded = false, ErrorMessage = "genre not found" };
+
+            user.FavouriteAuthors.Remove(authorToDelete);
+            var identityResult = await _userManager.UpdateAsync(user);
+            if (identityResult.Succeeded == false)
+                return new GenericResultDto<List<AuthorDto>>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
+
+            var result = new List<AuthorDto>();
+            foreach (var item in user.FavouriteAuthors)
+                result.Add(new AuthorDto { Id = item.Id, Bio = item.Bio, Name = item.Name, Picture = item.Picture});
+
+            return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result = result };
         }
     }
 }

@@ -37,6 +37,16 @@ namespace YaqraApi.Repositories.Context
                     .WithMany().HasForeignKey("UserId"),
                 j => j.HasKey("UserId", "GenreId"));
 
+
+                u.HasMany(x => x.FavouriteAuthors)
+                    .WithMany(a => a.Users)
+                    .UsingEntity("UserFavouriteAuthors",
+                    l => l.HasOne(typeof(Author))
+                        .WithMany().HasForeignKey("AuthorId"),
+                    r => r.HasOne(typeof(ApplicationUser))
+                        .WithMany().HasForeignKey("UserId"),
+                    j => j.HasKey("UserId", "AuthorId"));
+
                 builder.Entity<ApplicationUser>()
                 .OwnsMany(u => u.RefreshTokens);
 
