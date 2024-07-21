@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using System;
 using YaqraApi.Models;
+using YaqraApi.Models.Enums;
 
 namespace YaqraApi.Repositories.Context
 {
@@ -51,10 +53,13 @@ namespace YaqraApi.Repositories.Context
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);
 
+
                 builder.Entity<ApplicationUser>()
                 .OwnsMany(u => u.RefreshTokens);
 
             });
+
+            builder.Entity<UserBookWithStatus>().HasKey(ub => new { ub.UserId, ub.BookId });
 
             builder.Entity<Genre>().HasIndex(x => x.Name).IsUnique();
 
@@ -63,5 +68,6 @@ namespace YaqraApi.Repositories.Context
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<ReadingGoal> ReadingGoals { get; set; }
+        public DbSet<Book> Books { get; set; }
     }
 }

@@ -298,6 +298,35 @@ namespace YaqraApi.Migrations
                     b.ToTable("Authors");
                 });
 
+            modelBuilder.Entity("YaqraApi.Models.Book", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NumberOfPages")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Books");
+                });
+
             modelBuilder.Entity("YaqraApi.Models.Genre", b =>
                 {
                     b.Property<int>("Id")
@@ -350,6 +379,27 @@ namespace YaqraApi.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ReadingGoals");
+                });
+
+            modelBuilder.Entity("YaqraApi.Models.UserBookWithStatus", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "BookId");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("UserBookWithStatus");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -496,9 +546,35 @@ namespace YaqraApi.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("YaqraApi.Models.UserBookWithStatus", b =>
+                {
+                    b.HasOne("YaqraApi.Models.Book", "Book")
+                        .WithMany("UserBooks")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YaqraApi.Models.ApplicationUser", "User")
+                        .WithMany("UserBooks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("YaqraApi.Models.ApplicationUser", b =>
                 {
                     b.Navigation("ReadingGoals");
+
+                    b.Navigation("UserBooks");
+                });
+
+            modelBuilder.Entity("YaqraApi.Models.Book", b =>
+                {
+                    b.Navigation("UserBooks");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using YaqraApi.DTOs.Auth;
 using YaqraApi.DTOs.Author;
+using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.ReadingGoal;
 using YaqraApi.DTOs.User;
 using YaqraApi.Models;
@@ -62,6 +63,25 @@ namespace YaqraApi.AutoMapperConfigurations
                     .ForMember(dest => dest.DurationInDays, act => act.MapFrom(src => src.DurationInDays))
                     .ForMember(dest => dest.Description, act => act.MapFrom(src => src.Description))
                     .ForMember(dest => dest.Title, act => act.MapFrom(src => src.Title))
+                    .ReverseMap();
+
+                //book bookDto
+                cfg.CreateMap<BookDto, Book>()
+                    .ForMember(dest => dest.Id, act => act.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.Title, act => act.MapFrom(src => src.Title))
+                    .ForMember(dest => dest.Description, act => act.MapFrom(src => src.Description))
+                    .ForMember(dest => dest.Image, act => act.MapFrom(src => src.Image))
+                    .ForMember(dest => dest.AddedDate, act => act.MapFrom(src => src.AddedDate))
+                    .ForMember(dest => dest.NumberOfPages, act => act.MapFrom(src => src.NumberOfPages))
+                    .ReverseMap();
+
+                //bookDto bookWithoutImageDto
+                cfg.CreateMap<BookDto, BookWithoutImageDto>()
+                    .ForMember(dest => dest.Id, act => act.MapFrom(src => src.Id))
+                    .ForMember(dest => dest.Title, act => act.MapFrom(src => src.Title))
+                    .ForMember(dest => dest.Description, act => act.MapFrom(src => src.Description))
+                    .ForMember(dest => dest.AddedDate, act => act.MapFrom(src => src.AddedDate))
+                    .ForMember(dest => dest.NumberOfPages, act => act.MapFrom(src => src.NumberOfPages))
                     .ReverseMap();
             });
 
