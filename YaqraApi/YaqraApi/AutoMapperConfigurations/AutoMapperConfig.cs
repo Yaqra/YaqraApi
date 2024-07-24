@@ -4,6 +4,7 @@ using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.ReadingGoal;
 using YaqraApi.DTOs.User;
+using YaqraApi.DTOs.UserBookWithStatus;
 using YaqraApi.Models;
 
 namespace YaqraApi.AutoMapperConfigurations
@@ -82,6 +83,14 @@ namespace YaqraApi.AutoMapperConfigurations
                     .ForMember(dest => dest.Description, act => act.MapFrom(src => src.Description))
                     .ForMember(dest => dest.AddedDate, act => act.MapFrom(src => src.AddedDate))
                     .ForMember(dest => dest.NumberOfPages, act => act.MapFrom(src => src.NumberOfPages))
+                    .ReverseMap();
+
+                //userBook userBookDto 
+                cfg.CreateMap<UserBookWithStatus, UserBookWithStatusDto>()
+                    .ForMember(dest => dest.UserId, act => act.MapFrom(src => src.UserId))
+                    .ForMember(dest => dest.Status, act => act.MapFrom(src => src.Status))
+                    .ForMember(dest => dest.BookId, act => act.MapFrom(src => src.BookId))
+                    .ForMember(dest => dest.AddedDate, act => act.MapFrom(src => src.AddedDate))
                     .ReverseMap();
             });
 

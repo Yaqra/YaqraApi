@@ -140,7 +140,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("UserFavouriteAuthors");
+                    b.ToTable("UserFavouriteAuthors", (string)null);
                 });
 
             modelBuilder.Entity("UserFavouriteGenres", b =>
@@ -155,7 +155,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("UserFavouriteGenres");
+                    b.ToTable("UserFavouriteGenres", (string)null);
                 });
 
             modelBuilder.Entity("UsersFollowers", b =>
@@ -170,7 +170,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("FollowedId");
 
-                    b.ToTable("UsersFollowers");
+                    b.ToTable("UsersFollowers", (string)null);
                 });
 
             modelBuilder.Entity("YaqraApi.Models.ApplicationRole", b =>
@@ -295,7 +295,7 @@ namespace YaqraApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
                 });
 
             modelBuilder.Entity("YaqraApi.Models.Book", b =>
@@ -324,7 +324,7 @@ namespace YaqraApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("YaqraApi.Models.Genre", b =>
@@ -344,7 +344,7 @@ namespace YaqraApi.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Genres");
+                    b.ToTable("Genres", (string)null);
                 });
 
             modelBuilder.Entity("YaqraApi.Models.ReadingGoal", b =>
@@ -378,7 +378,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReadingGoals");
+                    b.ToTable("ReadingGoals", (string)null);
                 });
 
             modelBuilder.Entity("YaqraApi.Models.UserBookWithStatus", b =>
@@ -399,7 +399,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("UserBookWithStatus");
+                    b.ToTable("UserBookWithStatus", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -500,7 +500,7 @@ namespace YaqraApi.Migrations
 
             modelBuilder.Entity("YaqraApi.Models.ApplicationUser", b =>
                 {
-                    b.OwnsMany("YaqraApi.Models.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("YaqraApi.Models.ApplicationUser.RefreshTokens#YaqraApi.Models.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<string>("ApplicationUserId")
                                 .HasColumnType("nvarchar(450)");
@@ -526,7 +526,7 @@ namespace YaqraApi.Migrations
 
                             b1.HasKey("ApplicationUserId", "Id");
 
-                            b1.ToTable("RefreshToken");
+                            b1.ToTable("RefreshToken", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationUserId");

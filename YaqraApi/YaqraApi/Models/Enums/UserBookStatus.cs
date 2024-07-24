@@ -1,5 +1,9 @@
-﻿namespace YaqraApi.Models.Enums
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace YaqraApi.Models.Enums
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum UserBookStatus
     {
         TO_READ,
