@@ -8,11 +8,14 @@ using System.Text;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Author;
+using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.DTOs.ReadingGoal;
 using YaqraApi.DTOs.User;
+using YaqraApi.DTOs.UserBookWithStatus;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
+using YaqraApi.Models.Enums;
 using YaqraApi.Services.IServices;
 
 namespace YaqraApi.Services
@@ -516,6 +519,151 @@ namespace YaqraApi.Services
                 result.Add(_mapper.Map<ReadingGoalDto>(item));
 
             return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<List<BookDto>>> AddBookToCollectionAsync(UserBookWithStatusDto dto, string userId)
+        {
+            var user = await _userManager
+                .Users
+                .Include(x=>x.UserBooks)
+                .SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<BookDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            if(user.UserBooks.Any(ub => ub.BookId == dto.BookId) == true)
+                return new GenericResultDto<List<BookDto>> { Succeeded = false, ErrorMessage = "u already have this book in one of ur collections [to read, currently reading, already read]" };
+   
+            user.UserBooks.Add(_mapper.Map<UserBookWithStatus>(dto));
+            var identityResult = await _userManager.UpdateAsync(user);
+
+            if (identityResult.Succeeded == false)
+                return new GenericResultDto<List<BookDto>>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
+
+            user = await _userManager
+                .Users
+                .Include(x => x.UserBooks.Where(b => b.Status == dto.Status))
+                .ThenInclude(x=>x.Book)
+                .SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<BookDto>> { Succeeded = false, ErrorMessage = "u added the book successfully but something went wrong while fecthig ur list of books" };
+            
+
+            var userBooksWithStatus = user.UserBooks.Where(ub=>ub.Status == dto.Status);
+            var result = new List<BookDto>();
+            foreach (var bookWithStatus in userBooksWithStatus)
+                result.Add(_mapper.Map<BookDto>(bookWithStatus.Book));
+
+            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<List<BookDto>>> GetBooksAsync(int? status, string userId)
+        {
+            var bookStatus = IntToUserBookStatus(status);
+            var user = await _userManager
+                .Users
+                .Include(x => x.UserBooks.Where(b => b.Status == bookStatus))
+                .ThenInclude(x => x.Book)
+                .SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<BookDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var userBooksWithStatus = user.UserBooks;
+            var result = new List<BookDto>();
+            foreach (var bookWithStatus in userBooksWithStatus)
+                result.Add(_mapper.Map<BookDto>(bookWithStatus.Book));
+
+            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = result };
+        }
+        private UserBookStatus IntToUserBookStatus(int? status)
+        {
+            var bookStatus = UserBookStatus.CURRENTLY_READING;
+            switch (status)
+            {
+                case 0:
+                    bookStatus = UserBookStatus.TO_READ;
+                    break;
+                case 1:
+                case null:
+                    bookStatus = UserBookStatus.CURRENTLY_READING;
+                    break;
+                case 2:
+                    bookStatus = UserBookStatus.ALREADY_READ;
+                    break;
+                default:
+                    bookStatus = UserBookStatus.CURRENTLY_READING;
+                    break;
+            }
+            return bookStatus;
+        }
+        public async Task<GenericResultDto<List<BookDto>>> UpdateBookStatusAsync(int bookId, int? status, string userId)
+        {
+            var bookStatus = IntToUserBookStatus(status);
+            var user = await _userManager
+                .Users
+                .Include(x => x.UserBooks)
+                .SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<List<BookDto>> { Succeeded = false, ErrorMessage = "user not found" };
+
+
+            var book = user.UserBooks.SingleOrDefault(b => b.BookId == bookId);
+            if(book == null)
+                return new GenericResultDto<List<BookDto>> { Succeeded = false, ErrorMessage = "book not found" };
+
+            book.Status = bookStatus;
+            book.AddedDate = DateTime.UtcNow;
+
+            var identityResult = await _userManager.UpdateAsync(user);
+
+            if (identityResult.Succeeded == false)
+                return new GenericResultDto<List<BookDto>>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
+
+            user = await _userManager
+                .Users
+                .Include(x => x.UserBooks.Where(b=>b.Status==bookStatus))
+                .ThenInclude(x => x.Book)
+                .SingleOrDefaultAsync(x => x.Id == userId);
+
+            if (user == null)
+                return new GenericResultDto<List<BookDto>> { Succeeded = false, ErrorMessage = "u updated the the book status successfully but something went wrong while fecthig ur list of books" };
+
+
+            var userBooksWithStatus = user.UserBooks;
+            var result = new List<BookDto>();
+            foreach (var bookWithStatus in userBooksWithStatus)
+                result.Add(_mapper.Map<BookDto>(bookWithStatus.Book));
+
+            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<string>> DeleteBookAsync(int bookId, string userId)
+        {
+            var user = await _userManager
+                .Users
+                .Include(x => x.UserBooks.Where(b=>b.BookId == bookId))
+                .SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var bookToDelete = user.UserBooks.SingleOrDefault(b => b.BookId == bookId);
+            if (bookToDelete == null)
+                return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "book not found" };
+
+            user.UserBooks.Remove(bookToDelete);
+
+            var identityResult = await _userManager.UpdateAsync(user);
+            if (identityResult.Succeeded == false)
+                return new GenericResultDto<string>
+                {
+                    Succeeded = false,
+                    ErrorMessage = UserHelpers.GetErrors(identityResult)
+                };
+            return new GenericResultDto<string> { Succeeded = true, Result = "book deleted successfully" };
         }
     }
 }

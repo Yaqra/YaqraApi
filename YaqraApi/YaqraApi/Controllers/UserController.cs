@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -9,8 +10,10 @@ using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.DTOs.ReadingGoal;
 using YaqraApi.DTOs.User;
+using YaqraApi.DTOs.UserBookWithStatus;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
+using YaqraApi.Models.Enums;
 using YaqraApi.Services.IServices;
 
 namespace YaqraApi.Controllers
@@ -203,6 +206,47 @@ namespace YaqraApi.Controllers
         public async Task<IActionResult> UpdateReadingGoalAsync(UpdateReadingGoalDto dto)
         {
             var result = await _userService.UpdateReadingGoalAsync(dto, UserHelpers.GetUserId(User));
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpPost("addBook")]
+        public async Task<IActionResult> AddBookToCollectionAsync(AddUserBookWithStatusDto dto)
+        {
+            var userBookDto = new UserBookWithStatusDto
+            {
+                UserId = UserHelpers.GetUserId(User),
+                Status = dto.Status,
+                BookId = dto.BookId,
+                AddedDate = dto.AddedDate
+            };
+
+            var result = await _userService.AddBookToCollectionAsync(userBookDto, userBookDto.UserId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("getBooks")]
+        public async Task<IActionResult> GetBooksAsync([FromQuery] int? status)
+        {
+            var result = await _userService.GetBooksAsync(status, UserHelpers.GetUserId(User));
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+
+        [HttpPut("updateBook")]
+        public async Task<IActionResult> UpdateBookStatusAsync([FromQuery] int? status, [FromQuery] int bookId)
+        {
+            var result = await _userService.UpdateBookStatusAsync(bookId, status, UserHelpers.GetUserId(User));
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpDelete("deleteBook")]
+        public async Task<IActionResult> DeleteBookAsync([FromQuery] int bookId)
+        {
+            var result = await _userService.DeleteBookAsync(bookId, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);

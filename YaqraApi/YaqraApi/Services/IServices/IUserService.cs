@@ -1,10 +1,13 @@
 ﻿using System.Security.Claims;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Author;
+using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.DTOs.ReadingGoal;
 using YaqraApi.DTOs.User;
+using YaqraApi.DTOs.UserBookWithStatus;
 using YaqraApi.Models;
+using YaqraApi.Models.Enums;
 
 namespace YaqraApi.Services.IServices
 {
@@ -30,6 +33,10 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<List<ReadingGoalDto>>> GetAllReadingGoalsAsync(string userId);
         Task<GenericResultDto<List<ReadingGoalDto>>> DeleteReadingGoalAsync(int goalId, string userId);
         Task<GenericResultDto<List<ReadingGoalDto>>> UpdateReadingGoalAsync(UpdateReadingGoalDto dto, string userId);
+        Task<GenericResultDto<List<BookDto>>> AddBookToCollectionAsync(UserBookWithStatusDto dto, string userId);
+        Task<GenericResultDto<List<BookDto>>> GetBooksAsync(int? status, string userId);
+        Task<GenericResultDto<List<BookDto>>> UpdateBookStatusAsync(int bookId, int? status, string userId);
+        Task<GenericResultDto<string>> DeleteBookAsync(int bookId, string userId);
 
     }
 }
