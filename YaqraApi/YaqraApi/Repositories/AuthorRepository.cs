@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Author;
+using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Repositories.Context;
 using YaqraApi.Repositories.IRepositories;
@@ -26,27 +27,36 @@ namespace YaqraApi.Repositories
             return newAuthor.Id==0? null : newAuthor;
         }
 
-        public async Task<IQueryable<Author>> GetAll()
+        public async Task<IQueryable<Author>> GetAll(int page)
         {
-            return _context.Authors.AsNoTracking();
+            return _context.Authors
+                .Skip((page - 1) * Pagination.Authors).Take(Pagination.Authors)
+                .AsNoTracking();
 
         }
 
-        public async Task<IQueryable<AuthorNameAndIdDto>> GetAllNamesAndIds()
+        public async Task<IQueryable<AuthorNameAndIdDto>> GetAllNamesAndIds(int page)
         {
-            var authors = _context.Authors.Select(a => new AuthorNameAndIdDto{AuthorId = a.Id,AuthorName = a.Name }).AsNoTracking();
+            var authors = _context.Authors
+                .Select(a => new AuthorNameAndIdDto{AuthorId = a.Id,AuthorName = a.Name })
+                .Skip((page - 1)*Pagination.AuthorNamesAndIds).Take(Pagination.AuthorNamesAndIds)
+                .AsNoTracking();
             return authors;
         }
 
         public async Task<Author?> GetByIdAsync(int authorId)
         {
-            var author = await _context.Authors.AsNoTracking().SingleOrDefaultAsync(a => a.Id == authorId);
+            var author = await _context.Authors
+                .AsNoTracking()
+                .SingleOrDefaultAsync(a => a.Id == authorId);
             return author;
         }
 
-        public async Task<IQueryable<Author>> GetByName(string authorName)
+        public async Task<IQueryable<Author>> GetByName(string authorName, int page)
         {
-            var authors = _context.Authors.Where(a => a.Name.Contains(authorName));
+            var authors = _context.Authors
+                .Where(a => a.Name.Contains(authorName))
+                .Skip((page - 1) * Pagination.Authors).Take(Pagination.Authors);
             return authors;
         }
         private async Task SaveChangesAsync()

@@ -6,7 +6,7 @@ namespace YaqraApi.Services.IServices
 {
     public interface IGenreService
     {
-        Task<GenericResultDto<List<GenreDto>>> GetAllAsync();
+        Task<GenericResultDto<List<GenreDto>>> GetAllAsync(int page);
         Task<GenericResultDto<GenreDto>> GetByIdAsync(int id);
         Task<GenericResultDto<GenreDto>> GetByNameAsync(string name);
         Task<GenericResultDto<GenreDto>> AddAsync(string genreName);

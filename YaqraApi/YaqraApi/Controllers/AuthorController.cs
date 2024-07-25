@@ -35,9 +35,9 @@ namespace YaqraApi.Controllers
             return Created((string?)null, result.Result);
         }
         [HttpGet("authors")]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromQuery]int page)
         {
-            var result = await _authorService.GetAll();
+            var result = await _authorService.GetAll(page);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
@@ -51,17 +51,17 @@ namespace YaqraApi.Controllers
             return Ok(result.Result);
         }
         [HttpGet("name")]
-        public async Task<IActionResult> GetByNameAsync(string authorName)
+        public async Task<IActionResult> GetByNameAsync([FromQuery] string authorName, [FromQuery] int page)
         {
-            var result = await _authorService.GetByName(authorName);
+            var result = await _authorService.GetByName(authorName, page);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
         [HttpGet("nameAndId")]
-        public async Task<IActionResult> GetAllNamesAndIdsAsync()
+        public async Task<IActionResult> GetAllNamesAndIdsAsync([FromQuery] int page)
         {
-            var result = await _authorService.GetAllNamesAndIds();
+            var result = await _authorService.GetAllNamesAndIds(page);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);

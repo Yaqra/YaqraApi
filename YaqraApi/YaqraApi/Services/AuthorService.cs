@@ -33,18 +33,20 @@ namespace YaqraApi.Services
             return new GenericResultDto<AuthorDto?> { Succeeded = true, Result= _mapper.Map<AuthorDto>(result) };
         }
 
-        public async Task<GenericResultDto<List<AuthorDto>>> GetAll()
+        public async Task<GenericResultDto<List<AuthorDto>>> GetAll(int page)
         {
-            var authors = await _authorRepository.GetAll();
+            page = page == 0 ? 1 : page;
+            var authors = await _authorRepository.GetAll(page);
             var result = new List<AuthorDto>();
             foreach (var author in authors)
                 result.Add(_mapper.Map<AuthorDto>(author));
             return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result=result};
         }
 
-        public async Task<GenericResultDto<List<AuthorNameAndIdDto>>> GetAllNamesAndIds()
+        public async Task<GenericResultDto<List<AuthorNameAndIdDto>>> GetAllNamesAndIds(int page)
         {
-            var authorNamesAndIdsDto = (await _authorRepository.GetAllNamesAndIds()).ToList();
+            page = page == 0 ? 1 : page;
+            var authorNamesAndIdsDto = (await _authorRepository.GetAllNamesAndIds(page)).ToList();
             return new GenericResultDto<List<AuthorNameAndIdDto>> { Succeeded = true,Result =authorNamesAndIdsDto};
         }
 
@@ -56,9 +58,10 @@ namespace YaqraApi.Services
             return new GenericResultDto<AuthorDto> { Succeeded = true, Result = _mapper.Map<AuthorDto>(author) };
         }
 
-        public async Task<GenericResultDto<List<AuthorDto>>> GetByName(string authorName)
+        public async Task<GenericResultDto<List<AuthorDto>>> GetByName(string authorName, int page)
         {
-            var authors = await _authorRepository.GetByName(authorName);
+            page = page == 0 ? 1 : page;
+            var authors = await _authorRepository.GetByName(authorName, page);
             if (authors == null)
                 return new GenericResultDto<List<AuthorDto>> { Succeeded = false, ErrorMessage = "no authors with that name were found" };
             

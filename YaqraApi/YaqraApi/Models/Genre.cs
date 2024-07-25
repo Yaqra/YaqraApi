@@ -8,5 +8,6 @@ namespace YaqraApi.Models
         [Required]
         public string Name { get; set; }
         public ICollection<ApplicationUser> Users { get; set; }
+        public ICollection<Book> Books { get; set; }
     }
 }

@@ -59,6 +59,28 @@ namespace YaqraApi.Repositories.Context
 
             });
 
+            builder.Entity<Book>(u =>
+            {
+                u.HasMany(x => x.Genres)
+                .WithMany(g => g.Books)
+                .UsingEntity("BooksGenres",
+                l => l.HasOne(typeof(Genre))
+                    .WithMany().HasForeignKey("GenreId"),
+                r => r.HasOne(typeof(Book))
+                    .WithMany().HasForeignKey("BookId"),
+                j => j.HasKey("BookId", "GenreId"));
+
+                u.HasMany(x => x.Authors)
+                .WithMany(g => g.Books)
+                .UsingEntity("BooksAuthors",
+                l => l.HasOne(typeof(Author))
+                    .WithMany().HasForeignKey("AuthorId"),
+                r => r.HasOne(typeof(Book))
+                    .WithMany().HasForeignKey("BookId"),
+                j => j.HasKey("BookId", "AuthorId"));
+
+            });
+
             builder.Entity<UserBookWithStatus>().HasKey(ub => new { ub.UserId, ub.BookId });
 
             builder.Entity<Genre>().HasIndex(x => x.Name).IsUnique();

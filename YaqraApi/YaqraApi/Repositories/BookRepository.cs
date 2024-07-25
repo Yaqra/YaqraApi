@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
+using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Repositories.Context;
 using YaqraApi.Repositories.IRepositories;
@@ -34,14 +35,19 @@ namespace YaqraApi.Repositories
             SaveChanges();
         }
 
-        public async Task<IQueryable<Book>> GetAll()
+        public async Task<IQueryable<Book>> GetAll(int page)
         {
-            return _context.Books.AsNoTracking();
+            return _context.Books
+                .Skip((page-1)*Pagination.BookTitlesAndIds).Take(Pagination.BookTitlesAndIds)
+                .AsNoTracking();
         }
 
-        public async Task<IQueryable<BookTitleAndIdDto>> GetAllTitlesAndIds()
+        public async Task<IQueryable<BookTitleAndIdDto>> GetAllTitlesAndIds(int page)
         {
-            var books = _context.Books.Select(a => new BookTitleAndIdDto { Id = a.Id, Title = a.Title }).AsNoTracking();
+            var books = _context.Books
+                .Select(a => new BookTitleAndIdDto { Id = a.Id, Title = a.Title })
+                .Skip((page-1)*Pagination.Books).Take(Pagination.Books)
+                .AsNoTracking();
             return books;
         }
 
@@ -51,9 +57,11 @@ namespace YaqraApi.Repositories
             return books;
         }
 
-        public async Task<IQueryable<Book>> GetByTitle(string bookName)
+        public async Task<IQueryable<Book>> GetByTitle(string bookName, int page)
         {
-            var books = _context.Books.Where(a => a.Title.Contains(bookName));
+            var books = _context.Books
+                .Where(a => a.Title.Contains(bookName))
+                .Skip((page-1)*Pagination.Books).Take(Pagination.Books);
             return books;
         }
 
