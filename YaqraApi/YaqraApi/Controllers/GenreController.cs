@@ -19,9 +19,9 @@ namespace YaqraApi.Controllers
             _userService = userService;
         }
         [HttpGet("genres")]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromQuery] int page)
         {
-            var result = await _genreService.GetAllAsync();
+            var result = await _genreService.GetAllAsync(page);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);

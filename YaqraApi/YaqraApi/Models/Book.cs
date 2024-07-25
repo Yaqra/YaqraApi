@@ -10,6 +10,9 @@
         //public double Rate { get; set; }
         public DateTime AddedDate { get; set; } = DateTime.UtcNow;
         public ICollection<UserBookWithStatus> UserBooks { get; set; }
+        public ICollection<Genre> Genres { get; set; }
+        public ICollection<Author> Authors { get; set; }
+
 
     }
 }

@@ -9,5 +9,7 @@
         public ICollection<ApplicationUser> Users { get; set; }
 
         //public double Rate { get; set; } => calculated
+        public ICollection<Book> Books { get; set; }
+
     }
 }

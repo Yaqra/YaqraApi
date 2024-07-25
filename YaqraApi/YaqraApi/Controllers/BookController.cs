@@ -41,9 +41,9 @@ namespace YaqraApi.Controllers
         }
         
         [HttpGet("books")]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromQuery] int page)
         {
-            var result = await _bookService.GetAll();
+            var result = await _bookService.GetAll(page);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
@@ -57,17 +57,17 @@ namespace YaqraApi.Controllers
             return Ok(result.Result);
         }
         [HttpGet("title")]
-        public async Task<IActionResult> GetByTitleAsync(string bookTitle)
+        public async Task<IActionResult> GetByTitleAsync(string bookTitle, [FromQuery] int page)
         {
-            var result = await _bookService.GetByTitle(bookTitle);
+            var result = await _bookService.GetByTitle(bookTitle, page);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
         [HttpGet("titleAndId")]
-        public async Task<IActionResult> GetAllNamesAndIdsAsync()
+        public async Task<IActionResult> GetAllTitlesAndIdsAsync([FromQuery] int page)
         {
-            var result = await _bookService.GetAllTitlesAndIds();
+            var result = await _bookService.GetAllTitlesAndIds(page);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);

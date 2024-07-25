@@ -87,18 +87,18 @@ namespace YaqraApi.Controllers
             return Ok(result.Result);
         }
         [HttpGet("followrs")]
-        public async Task<IActionResult> GetFollowrsListAsync(UserIdDto dto)
+        public async Task<IActionResult> GetFollowrsListAsync(UserIdDto dto, [FromQuery]int page)
         {
-            var result = _userService.GetUserFollowersNames(dto.UserId);
+            var result = _userService.GetUserFollowersNames(dto.UserId, page);
             if(result.Succeeded==false)
                 return BadRequest(result.ErrorMessage);
             else 
                 return Ok(result.Result);
         }
         [HttpGet("followings")]
-        public async Task<IActionResult> GetFollowingsListAsync(UserIdDto dto)
+        public async Task<IActionResult> GetFollowingsListAsync(UserIdDto dto, [FromQuery] int page)
         {
-            var result = _userService.GetUserFollowingsNames(dto.UserId);
+            var result = _userService.GetUserFollowingsNames(dto.UserId, page);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             else
@@ -114,9 +114,9 @@ namespace YaqraApi.Controllers
             return Ok(result.Result);
         }
         [HttpGet("genresExcept")]
-        public async Task<IActionResult> GetAllExceptUserGenresAsync()
+        public async Task<IActionResult> GetAllExceptUserGenresAsync([FromQuery] int page)
         {
-            var result = await _userService.GetAllGenresExceptUserGenresAsync(UserHelpers.GetUserId(User));
+            var result = await _userService.GetAllGenresExceptUserGenresAsync(UserHelpers.GetUserId(User), page);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
@@ -141,26 +141,26 @@ namespace YaqraApi.Controllers
         }
 
         [HttpPost("addFavAuthors")]
-        public async Task<IActionResult> AddFavouriteAuthorsAsync(List<AuthorIdDto> authors)
+        public async Task<IActionResult> AddFavouriteAuthorsAsync(List<AuthorIdDto> authors,[FromQuery] int page)
         {
-            var result = await _userService.AddFavouriteAuthorsAsync(authors, UserHelpers.GetUserId(User));
+            var result = await _userService.AddFavouriteAuthorsAsync(authors, UserHelpers.GetUserId(User), page);
 
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
         [HttpGet("authorsExcept")]
-        public async Task<IActionResult> GetAllExceptUserAuthorsAsync()
+        public async Task<IActionResult> GetAllExceptUserAuthorsAsync([FromQuery] int page)
         {
-            var result = await _userService.GetAllAuthorsExceptUserAuthorsAsync(UserHelpers.GetUserId(User));
+            var result = await _userService.GetAllAuthorsExceptUserAuthorsAsync(UserHelpers.GetUserId(User), page);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
         [HttpGet("favAuthors")]
-        public async Task<IActionResult> GetFavouriteAuthors()
+        public async Task<IActionResult> GetFavouriteAuthors([FromQuery] int page)
         {
-            var result = await _userService.GetFavouriteAuthorsAsync(UserHelpers.GetUserId(User));
+            var result = await _userService.GetFavouriteAuthorsAsync(UserHelpers.GetUserId(User),page);
 
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
@@ -187,9 +187,9 @@ namespace YaqraApi.Controllers
             return Ok(result.Result);
         }
         [HttpGet("allGoals")]
-        public async Task<IActionResult> GetAllReadingGoalsAsync()
+        public async Task<IActionResult> GetAllReadingGoalsAsync([FromQuery] int page)
         {
-            var result = await _userService.GetAllReadingGoalsAsync(UserHelpers.GetUserId(User));
+            var result = await _userService.GetAllReadingGoalsAsync(UserHelpers.GetUserId(User), page);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
@@ -227,9 +227,9 @@ namespace YaqraApi.Controllers
             return Ok(result.Result);
         }
         [HttpGet("getBooks")]
-        public async Task<IActionResult> GetBooksAsync([FromQuery] int? status)
+        public async Task<IActionResult> GetBooksAsync([FromQuery] int? status, [FromQuery] int page)
         {
-            var result = await _userService.GetBooksAsync(status, UserHelpers.GetUserId(User));
+            var result = await _userService.GetBooksAsync(status, UserHelpers.GetUserId(User), page);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);

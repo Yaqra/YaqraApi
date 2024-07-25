@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Repositories.Context;
 using YaqraApi.Repositories.IRepositories;
@@ -12,9 +13,12 @@ namespace YaqraApi.Repositories
         {
             _context = context;
         }
-        public async Task<List<Genre>> GetAllAsync()
+        public async Task<List<Genre>> GetAllAsync(int page)
         {
-            var genres = await _context.Genres.AsNoTracking().ToListAsync();
+            var genres = await _context.Genres
+                .Skip((page - 1)*Pagination.Genres).Take(Pagination.Genres)
+                .AsNoTracking()
+                .ToListAsync();
             return genres;
         }
         private async Task SaveChangesAsync()

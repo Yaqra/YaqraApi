@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("YaqraApiWorker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+eb56916c21298427c4b9598ba1dab1e14dcb38e1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aef7efdc9282c28882c9cfdecbc2b7870c838cfd")]
 [assembly: System.Reflection.AssemblyProductAttribute("YaqraApiWorker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("YaqraApiWorker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

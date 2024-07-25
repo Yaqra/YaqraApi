@@ -40,18 +40,20 @@ namespace YaqraApi.Services
             return new GenericResultDto<string> { Succeeded = true, Result = "book deleted successfully" };
         }
 
-        public async Task<GenericResultDto<List<BookDto>>> GetAll()
+        public async Task<GenericResultDto<List<BookDto>>> GetAll(int page)
         {
-            var books = await _bookRepository.GetAll();
+            page = page == 0 ? 1 : page;
+            var books = await _bookRepository.GetAll(page);
             var result = new List<BookDto>();
             foreach (var book in books)
                 result.Add(_mapper.Map<BookDto>(book));
             return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = result };
         }
 
-        public async Task<GenericResultDto<List<BookTitleAndIdDto>>> GetAllTitlesAndIds()
+        public async Task<GenericResultDto<List<BookTitleAndIdDto>>> GetAllTitlesAndIds(int page)
         {
-            var bookTitlesAndIdsDto = (await _bookRepository.GetAllTitlesAndIds()).ToList();
+            page = page==0? 1 : page;
+            var bookTitlesAndIdsDto = (await _bookRepository.GetAllTitlesAndIds(page)).ToList();
             return new GenericResultDto<List<BookTitleAndIdDto>> { Succeeded = true, Result = bookTitlesAndIdsDto };
         }
 
@@ -63,9 +65,10 @@ namespace YaqraApi.Services
             return new GenericResultDto<BookDto> { Succeeded = true, Result = _mapper.Map<BookDto>(book) };
         }
 
-        public async Task<GenericResultDto<List<BookDto>>> GetByTitle(string BookName)
+        public async Task<GenericResultDto<List<BookDto>>> GetByTitle(string BookName, int page)
         {
-            var books = await _bookRepository.GetByTitle(BookName);
+            page = page == 0 ? 1 : page;
+            var books = await _bookRepository.GetByTitle(BookName, page);
             if (books == null)
                 return new GenericResultDto<List<BookDto>> { Succeeded = false, ErrorMessage = "no books with that title were found" };
 
