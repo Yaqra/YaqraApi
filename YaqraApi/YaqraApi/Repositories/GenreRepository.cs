@@ -60,5 +60,10 @@ namespace YaqraApi.Repositories
             SaveChanges();
             return editedGenre;
         }
+
+        public int GetCount()
+        {
+            return _context.Genres.Count();
+        }
     }
 }

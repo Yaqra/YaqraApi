@@ -8,6 +8,7 @@ namespace YaqraApi.Repositories.IRepositories
     {
         public Task<IQueryable<BookTitleAndIdDto>> GetAllTitlesAndIds(int page);
         public Task<IQueryable<Book>> GetAll(int page);
+        public int GetCount();
         public Task<Book> GetByIdAsync(int bookId);
         public Task<IQueryable<Book>> GetByTitle(string bookName, int page);
         public Task<Book?> AddAsync(Book newBook);

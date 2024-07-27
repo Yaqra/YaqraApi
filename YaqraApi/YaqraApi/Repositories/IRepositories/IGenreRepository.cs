@@ -5,6 +5,7 @@ namespace YaqraApi.Repositories.IRepositories
     public interface IGenreRepository
     {
         Task<List<Genre>> GetAllAsync(int page);
+        int GetCount();
         Task<Genre> GetByIdAsync(int id);
         Task<Genre> GetByNameAsync(string name);
         Task<Genre> AddAsync(Genre genre);

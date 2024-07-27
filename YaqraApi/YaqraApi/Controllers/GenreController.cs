@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.Helpers;
+using YaqraApi.Services;
 using YaqraApi.Services.IServices;
 
 namespace YaqraApi.Controllers
@@ -62,6 +63,14 @@ namespace YaqraApi.Controllers
         public async Task<IActionResult> DeleteAsync(GenreIdDto dto)
         {
             var result = await _genreService.DeleteAsync(dto.GenreId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("genrePages")]
+        public async Task<IActionResult> GetBooksPagesCount()
+        {
+            var result = await _genreService.GetPagesCount();
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);

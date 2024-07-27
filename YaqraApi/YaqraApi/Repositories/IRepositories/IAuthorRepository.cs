@@ -13,5 +13,6 @@ namespace YaqraApi.Repositories.IRepositories
         public Task<Author?> AddAsync(Author newAuthor);
         public void UpdateAll(Author editedAuthor);//all author details
         public void Delete(Author author);
+        public int GetCount();
     }
 }

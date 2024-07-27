@@ -16,6 +16,7 @@ using YaqraApi.DTOs.UserBookWithStatus;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Models.Enums;
+using YaqraApi.Repositories.IRepositories;
 using YaqraApi.Services.IServices;
 
 namespace YaqraApi.Services
@@ -26,17 +27,23 @@ namespace YaqraApi.Services
         private readonly IGenreService _genreService;
         private readonly IAuthorService _authorService;
         private readonly IBookService _bookService;
+        private readonly IGenreRepository _genreRepository;
+        private readonly IAuthorRepository _authorRepository;
         private readonly Mapper _mapper;
         public UserService(
             UserManager<ApplicationUser> userManager, 
             IGenreService genreService,
             IAuthorService authorService,
-            IBookService bookService)
+            IBookService bookService,
+            IGenreRepository genreRepository,
+            IAuthorRepository authorRepository)
         {
             _userManager = userManager;
             _genreService = genreService;
             _authorService = authorService;
             _bookService = bookService;
+            _genreRepository = genreRepository;
+            _authorRepository = authorRepository;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         public async Task<GenericResultDto<ApplicationUser>> UpdatePasswordAsync(PasswordUpdateDto dto, string userId)
@@ -646,6 +653,88 @@ namespace YaqraApi.Services
                     ErrorMessage = UserHelpers.GetErrors(identityResult)
                 };
             return new GenericResultDto<string> { Succeeded = true, Result = "book deleted successfully" };
+        }
+        public GenericResultDto<int> GetUserFollowersPagesCount(string userId)
+        {
+            var followersCount = (from user in _userManager.Users
+                                 where user.Id == userId
+                                 select user.Followers.Count).FirstOrDefault();
+
+            var pagesCount = (int)Math.Ceiling((double)followersCount / Pagination.UserFollowersNames);
+            return new GenericResultDto<int> { Succeeded = true, Result = pagesCount};
+        }
+        public GenericResultDto<int> GetUserFollowingsPagesCount(string userId)
+        {
+            var followingsCount = (from user in _userManager.Users
+                                  where user.Id == userId
+                                  select user.Followings.Count).FirstOrDefault();
+
+            var pagesCount = (int)Math.Ceiling((double)followingsCount / Pagination.UserFollowingsNames);
+            return new GenericResultDto<int> { Succeeded = true, Result = pagesCount };
+        }
+        public async Task<GenericResultDto<int>> GetGenresExceptUserGenresPagesCountAsync(string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.FavouriteGenres).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<int> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var userGenresCount = user.FavouriteGenres.Count;
+            var genresCount = _genreRepository.GetCount();
+            var genresExceptUserGenresCount = genresCount - userGenresCount;
+            var result = (int)Math.Ceiling((double)genresExceptUserGenresCount / Pagination.Genres);
+
+            return new GenericResultDto<int> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<int>> GetFavouriteAuthorsPagesCountAsync(string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.FavouriteAuthors).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<int> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var userFavouriteAuthors = user.FavouriteAuthors.Count;
+            var result = (int)Math.Ceiling((double)userFavouriteAuthors / Pagination.Authors);
+
+            return new GenericResultDto<int> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<int>> GetFavouriteAuthorsExceptUserPagesCountAsync(string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.FavouriteAuthors).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<int> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var userAuthorsCount = user.FavouriteAuthors.Count;
+            var AuthorsCount = _authorRepository.GetCount();
+            var authorsExceptUserCount = AuthorsCount - userAuthorsCount;
+            var result = (int)Math.Ceiling((double) authorsExceptUserCount/ Pagination.Authors);
+            return new GenericResultDto<int> { Succeeded = true, Result = result};
+        }
+        public async Task<GenericResultDto<int>> GetReadingGoalsPagesCountAsync(string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.ReadingGoals).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<int> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var readingGoalsCount = user.ReadingGoals.Count;
+            var result = (int)Math.Ceiling((double) readingGoalsCount/ Pagination.ReadingGoals);
+            return new GenericResultDto<int> { Succeeded = true, Result = result };
+        }
+        public async Task<GenericResultDto<BookCollectionPages>> GetBooksPagesCountAsync(string userId)
+        {
+            var user = await _userManager.Users.Include(x => x.UserBooks).SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<BookCollectionPages> { Succeeded = false, ErrorMessage = "user not found" };
+
+            var alreadyReadBooksCount = user.UserBooks.Where(b => b.Status == UserBookStatus.ALREADY_READ).Count(); 
+            var currentlyReadingBooksCount = user.UserBooks.Where(b => b.Status == UserBookStatus.CURRENTLY_READING).Count(); 
+            var toReadBooksCount = user.UserBooks.Where(b => b.Status == UserBookStatus.TO_READ).Count();
+
+            var result = new BookCollectionPages
+            {
+                AlreadyReadBooksPages = (int)Math.Ceiling((double)alreadyReadBooksCount / Pagination.BookTitlesAndIds),
+                CurrentlyReadingBooksPages = (int)Math.Ceiling((double)currentlyReadingBooksCount / Pagination.BookTitlesAndIds),
+                ToReadBooksPages = (int)Math.Ceiling((double)toReadBooksCount / Pagination.BookTitlesAndIds),
+            };
+            return new GenericResultDto<BookCollectionPages> { Succeeded = true, Result = result };
         }
     }
 }

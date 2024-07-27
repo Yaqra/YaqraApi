@@ -56,6 +56,13 @@ namespace YaqraApi.Services
                 return new GenericResultDto<GenreDto> { Succeeded = false, ErrorMessage = "genre not found" };
             return new GenericResultDto<GenreDto> { Succeeded = true, Result = new GenreDto { GenreId = genre.Id, GenreName = genre.Name } };
         }
+
+        public async Task<GenericResultDto<int>> GetPagesCount()
+        {
+            var result = (int)Math.Ceiling((double)_genreRepository.GetCount() / Pagination.Genres);
+            return new GenericResultDto<int> {Succeeded = true, Result = result};
+        }
+
         public async Task<GenericResultDto<GenreDto>> UpdateAsync(int currentGenreId, string newGenreName)
         {
             var genre = await _genreRepository.UpdateAsync(currentGenreId, new Genre { Name = newGenreName});

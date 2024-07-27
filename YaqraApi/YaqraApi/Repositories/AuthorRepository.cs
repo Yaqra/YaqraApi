@@ -82,5 +82,10 @@ namespace YaqraApi.Repositories
             _context.Authors.Remove(author);
             SaveChanges();
         }
+
+        public int GetCount()
+        {
+            return _context.Authors.Count();
+        }
     }
 }

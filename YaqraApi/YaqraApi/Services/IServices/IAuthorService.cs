@@ -8,6 +8,7 @@ namespace YaqraApi.Services.IServices
     public interface IAuthorService
     {
         public Task<GenericResultDto<List<AuthorNameAndIdDto>>> GetAllNamesAndIds(int page);
+        public Task<GenericResultDto<AuthorPagesCount>> GetAuthorsPagesCount();
         public Task<GenericResultDto<List<AuthorDto>>> GetAll(int page);
         public Task<GenericResultDto<AuthorDto>> GetByIdAsync(int authorId);
         public Task<GenericResultDto<List<AuthorDto>>> GetByName(string authorName, int page);

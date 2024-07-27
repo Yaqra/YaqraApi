@@ -14,6 +14,7 @@ using YaqraApi.DTOs.UserBookWithStatus;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Models.Enums;
+using YaqraApi.Services;
 using YaqraApi.Services.IServices;
 
 namespace YaqraApi.Controllers
@@ -251,6 +252,61 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
-
+        [HttpGet("userFollowersPages")]
+        public async Task<IActionResult> GetUserFollowersPagesCount(UserIdDto dto)
+        {
+            var result = _userService.GetUserFollowersPagesCount(dto.UserId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("userFollowingsPages")]
+        public async Task<IActionResult> GetUserFollowingsPagesCount(UserIdDto dto)
+        {
+            var result = _userService.GetUserFollowingsPagesCount(dto.UserId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("genresExceptUserGenresPages")]
+        public async Task<IActionResult> GetGenresExceptUserGenresPagesCount(UserIdDto dto)
+        {
+            var result = await _userService.GetGenresExceptUserGenresPagesCountAsync(dto.UserId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("favouriteAuthorsPages")]
+        public async Task<IActionResult> GetFavouriteAuthorsPagesCount(UserIdDto dto)
+        {
+            var result = await _userService.GetFavouriteAuthorsPagesCountAsync(dto.UserId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("authorsExceptfavouriteAuthorsPages")]
+        public async Task<IActionResult> GetAuthorsExceptfavouriteAuthorsPagesCount(UserIdDto dto)
+        {
+            var result = await _userService.GetFavouriteAuthorsExceptUserPagesCountAsync(dto.UserId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("readingGoalPages")]
+        public async Task<IActionResult> GetReadingGoalPagesCount(UserIdDto dto)
+        {
+            var result = await _userService.GetReadingGoalsPagesCountAsync(dto.UserId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("bookCollectionPages")]
+        public async Task<IActionResult> GetBookCollectionPagesCount(UserIdDto dto)
+        {
+            var result = await _userService.GetBooksPagesCountAsync(dto.UserId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
     }
 }

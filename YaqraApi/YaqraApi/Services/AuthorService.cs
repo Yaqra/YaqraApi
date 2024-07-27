@@ -137,5 +137,16 @@ namespace YaqraApi.Services
             _authorRepository.Delete(author);
             return new GenericResultDto<string> { Succeeded = true, Result = "author deleted successfully" };
         }
+
+        public async Task<GenericResultDto<AuthorPagesCount>> GetAuthorsPagesCount()
+        {
+            var count = _authorRepository.GetCount();
+            var result = new AuthorPagesCount
+            {
+                AuthorsPagesCount = (int)Math.Ceiling((double)count / Pagination.Authors),
+                AuthorsNamesAndIdsPagesCount = (int)Math.Ceiling((double)count / Pagination.AuthorNamesAndIds)
+            };
+            return new GenericResultDto<AuthorPagesCount> { Succeeded = true, Result = result };
+        }
     }
 }
