@@ -42,6 +42,14 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [HttpGet("authorPages")]
+        public async Task<IActionResult> GetAuthorsPagesCount()
+        {
+            var result = await _authorService.GetAuthorsPagesCount();
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
         [HttpGet("id")]
         public async Task<IActionResult> GetByIdAsync(AuthorIdDto idDto)
         {

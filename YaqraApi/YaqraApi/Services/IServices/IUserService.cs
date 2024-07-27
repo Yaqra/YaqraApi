@@ -20,21 +20,28 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<UserFollowerDto>> FollowUserAsync(UserIdDto dto, string userId);
         Task<GenericResultDto<UserDto>> GetUserAsync(string userId);
         GenericResultDto<List<UserNameAndId>> GetUserFollowersNames(string userId, int page);
+        GenericResultDto<int> GetUserFollowersPagesCount(string userId);
         GenericResultDto<List<UserNameAndId>> GetUserFollowingsNames(string userId, int page);
+        GenericResultDto<int> GetUserFollowingsPagesCount(string userId);
         Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenresAsync(List<GenreIdDto> genres, string userId);
         Task<GenericResultDto<List<GenreDto>>> GetFavouriteGenresAsync(string userId);
         Task<GenericResultDto<List<GenreDto>>> GetAllGenresExceptUserGenresAsync(string userId, int page);
+        Task<GenericResultDto<int>> GetGenresExceptUserGenresPagesCountAsync(string userId);
         Task<GenericResultDto<string>> DeleteFavouriteGenreAsync(GenreIdDto genre, string userId);
         Task<GenericResultDto<List<AuthorDto>>> AddFavouriteAuthorsAsync(List<AuthorIdDto> authors, string userId, int page);
+        Task<GenericResultDto<int>> GetFavouriteAuthorsPagesCountAsync(string userId);
         Task<GenericResultDto<List<AuthorDto>>> GetFavouriteAuthorsAsync(string userId, int page);
+        Task<GenericResultDto<int>> GetFavouriteAuthorsExceptUserPagesCountAsync(string userId);
         Task<GenericResultDto<List<AuthorDto>>> GetAllAuthorsExceptUserAuthorsAsync(string userId, int page);
         Task<GenericResultDto<string>> DeleteFavouriteAuthorAsync(AuthorIdDto author, string userId);
         Task<GenericResultDto<ReadingGoalDto>> AddReadingGoalAsync(ReadingGoalDto dto, string userId);
         Task<GenericResultDto<List<ReadingGoalDto>>> GetAllReadingGoalsAsync(string userId, int page);
+        Task<GenericResultDto<int>> GetReadingGoalsPagesCountAsync(string userId);
         Task<GenericResultDto<string>> DeleteReadingGoalAsync(int goalId, string userId);
         Task<GenericResultDto<ReadingGoalDto>> UpdateReadingGoalAsync(UpdateReadingGoalDto dto, string userId);
         Task<GenericResultDto<BookDto>> AddBookToCollectionAsync(UserBookWithStatusDto dto, string userId);
         Task<GenericResultDto<List<BookDto>>> GetBooksAsync(int? status, string userId, int page);
+        Task<GenericResultDto<BookCollectionPages>> GetBooksPagesCountAsync(string userId);
         Task<GenericResultDto<BookDto>> UpdateBookStatusAsync(int bookId, int? status, string userId);
         Task<GenericResultDto<string>> DeleteBookAsync(int bookId, string userId);
 

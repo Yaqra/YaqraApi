@@ -79,5 +79,10 @@ namespace YaqraApi.Repositories
         {
             _context.SaveChanges();
         }
+
+        public int GetCount()
+        {
+            return _context.Books.Count();
+        }
     }
 }

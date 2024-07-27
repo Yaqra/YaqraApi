@@ -2,6 +2,7 @@
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Book;
+using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Repositories;
 using YaqraApi.Repositories.IRepositories;
@@ -57,6 +58,16 @@ namespace YaqraApi.Services
             return new GenericResultDto<List<BookTitleAndIdDto>> { Succeeded = true, Result = bookTitlesAndIdsDto };
         }
 
+        public async Task<GenericResultDto<BookPagesCount>> GetBooksPagesCount()
+        {
+            var count = _bookRepository.GetCount();
+            var result = new BookPagesCount
+            {
+                BooksPagesCount = (int)Math.Ceiling((double)count / Pagination.Books),
+                BooksTitlesAndIdsPagesCount = (int)Math.Ceiling((double)count / Pagination.BookTitlesAndIds)
+            };
+            return new GenericResultDto<BookPagesCount> {Succeeded= true, Result= result };
+        }     
         public async Task<GenericResultDto<BookDto>> GetByIdAsync(int bookId)
         {
             var book = await _bookRepository.GetByIdAsync(bookId);

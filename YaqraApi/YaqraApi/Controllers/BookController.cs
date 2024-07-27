@@ -113,5 +113,13 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [HttpGet("bookPages")]
+        public async Task<IActionResult> GetBooksPagesCount()
+        {
+            var result = await _bookService.GetBooksPagesCount();
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
     }
 }
