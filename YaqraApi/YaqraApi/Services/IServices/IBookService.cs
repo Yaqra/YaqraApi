@@ -10,7 +10,7 @@ namespace YaqraApi.Services.IServices
         public Task<GenericResultDto<BookPagesCount>> GetBooksPagesCount();
         public Task<GenericResultDto<BookDto>> GetByIdAsync(int bookId);
         public Task<GenericResultDto<List<BookDto>>> GetByTitle(string bookName, int page);
-        public Task<GenericResultDto<BookDto?>> AddAsync(IFormFile img, BookDto newBook);
+        public Task<GenericResultDto<BookDto?>> AddAsync(AddBookDto dto);
         Task<GenericResultDto<BookDto>> UpdateImageAsync(IFormFile img, int bookId);
         Task<GenericResultDto<BookDto>> UpdateAllAsync(IFormFile? img, BookWithoutImageDto dto);
         Task<GenericResultDto<string>> Delete(int bookId);

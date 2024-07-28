@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
@@ -22,18 +23,9 @@ namespace YaqraApi.Controllers
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         [HttpPost("addBook")]
-        public async Task<IActionResult> AddAsync(
-            IFormFile? image,
-            [FromForm] string bookTitle,
-            [FromForm] string? bookDescription,
-            [FromForm] int? numberOfPages)
+        public async Task<IActionResult> AddAsync(AddBookDto dto)
         {
-            var dto = new BookDto { 
-                Description = bookDescription, 
-                NumberOfPages = numberOfPages, 
-                Title = bookTitle};
-
-            var result = await _bookService.AddAsync(image, dto);
+            var result = await _bookService.AddAsync(dto);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
 

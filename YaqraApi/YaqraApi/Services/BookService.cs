@@ -2,6 +2,7 @@
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Book;
+using YaqraApi.DTOs.Genre;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Repositories;
@@ -13,22 +14,66 @@ namespace YaqraApi.Services
     public class BookService : IBookService
     {
         private readonly IBookRepository _bookRepository;
+        private readonly IGenreService _genreService;
+        private readonly IAuthorService _authorService;
+        private readonly IWebHostEnvironment _environment;
         private readonly Mapper _mapper;
 
-        public BookService(IBookRepository bookRepository)
+        public BookService(
+            IBookRepository bookRepository, 
+            IGenreService genreService,
+            IAuthorService authorService, IWebHostEnvironment environment)
         {
             _bookRepository = bookRepository;
+            _genreService = genreService;
+            _authorService = authorService;
+            _environment = environment;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
-        public async Task<GenericResultDto<BookDto?>> AddAsync(IFormFile img, BookDto newBook)
+        public async Task<GenericResultDto<BookDto?>> AddAsync(AddBookDto dto)
         {
-            var book = _mapper.Map<Book>(newBook);
+            var book = new Book
+            {
+                AddedDate = DateTime.UtcNow,
+                Description = dto.Description,
+                NumberOfPages = dto.NumberOfPages,
+                Title = dto.Title,
+            };
+            
             var result = await _bookRepository.AddAsync(book);
             if (result == null)
                 return new GenericResultDto<BookDto?> { Succeeded = false, ErrorMessage = "something went wrong while adding book" };
-            var updateImgResult = await UpdateImageAsync(img, result.Id);
-            if (updateImgResult.Succeeded == true)
-                result.Image = updateImgResult.Result.Image;
+
+            if (dto.GenresIds != null)
+            {
+                book.Genres = new List<Genre>();
+                foreach (var id in dto.GenresIds)
+                {
+                    var genre = (await _genreService.GetByIdAsync(id)).Result;
+                    if (genre == null)
+                        continue;
+                    book.Genres.Add(new Genre { Id = genre.GenreId, Name = genre.GenreName });
+                }
+            }
+
+            book.Authors = new List<Author>();
+            foreach (var id in dto.AuthorsIds)
+            {
+                var author = (await _authorService.GetByIdAsync(id)).Result;
+                if (author == null)
+                    continue;
+                book.Authors.Add(_mapper.Map<Author>(author));
+            }
+
+            _bookRepository.UpdateAll(book);
+
+            if(dto.Image != null) 
+            { 
+                var updateImgResult = await UpdateImageAsync(dto.Image, result.Id);
+                if (updateImgResult.Succeeded == true)
+                    result.Image = updateImgResult.Result.Image;
+            }
+
             return new GenericResultDto<BookDto?> { Succeeded = true, Result = _mapper.Map<BookDto>(result) };
         }
 
@@ -124,18 +169,20 @@ namespace YaqraApi.Services
 
             var oldImgPath = book.Image;
 
+            var imgName = Path.GetFileName(img.FileName);
+            var imgExtension = Path.GetExtension(imgName);
+            var imgWithGuid = $"{imgName.TrimEnd(imgExtension.ToArray())}{Guid.NewGuid().ToString()}{imgExtension}";
+            var dir = Path.Combine(_environment.WebRootPath, "Books");
+            if (Directory.Exists(dir) == false)
+                Directory.CreateDirectory(dir);
+            var imgPath = Path.Combine(dir, imgWithGuid);
+
             var createImg = Task.Run(async () =>
             {
-                var imgName = Path.GetFileName(img.FileName);
-                var imgExtension = Path.GetExtension(imgName);
-                var imgWithGuid = $"{imgName.TrimEnd(imgExtension.ToArray())}{Guid.NewGuid().ToString()}{imgExtension}";
-
-                var imgPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Books", imgWithGuid);
-
                 using (var stream = new FileStream(imgPath, FileMode.Create, FileAccess.Write))
                 {
                     await img.CopyToAsync(stream);
-                    book.Image = imgPath;
+                    book.Image = $"/Books/{imgWithGuid}";
                 }
             });
             var deleteOldImg = Task.Run(() =>
