@@ -1,6 +1,14 @@
 {
   "Files": [
     {
+      "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Authors\\0d026b2f9d2e56a90b98cc157ec327923ab2ead4-bb89-422f-9bc5-149eb32759d1.jpg",
+      "PackagePath": "staticwebassets\\Authors\\0d026b2f9d2e56a90b98cc157ec327923ab2ead4-bb89-422f-9bc5-149eb32759d1.jpg"
+    },
+    {
+      "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Authors\\0d026b2f9d2e56a90b98cc157ec3279269fefe9d-1c80-498e-94fa-ab40858e70ae.jpg",
+      "PackagePath": "staticwebassets\\Authors\\0d026b2f9d2e56a90b98cc157ec3279269fefe9d-1c80-498e-94fa-ab40858e70ae.jpg"
+    },
+    {
       "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Authors\\1e3e685d9-a373-498b-8e27-76bb5f8fbbdf.png",
       "PackagePath": "staticwebassets\\Authors\\1e3e685d9-a373-498b-8e27-76bb5f8fbbdf.png"
     },
@@ -27,6 +35,10 @@
     {
       "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Authors\\أحمد_يوسف_السيد02fc99d8-ebc3-4045-a175-bd007a1d81a0.jpg",
       "PackagePath": "staticwebassets\\Authors\\أحمد_يوسف_السيد02fc99d8-ebc3-4045-a175-bd007a1d81a0.jpg"
+    },
+    {
+      "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Books\\52ccefe5e7c249c171d1cebd68a99ddc150f800b-758c-4648-975c-d5b9eefbe29c.png",
+      "PackagePath": "staticwebassets\\Books\\52ccefe5e7c249c171d1cebd68a99ddc150f800b-758c-4648-975c-d5b9eefbe29c.png"
     },
     {
       "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Books\\IMG-0049_1200x1200_crop_centerf7bcdcd9-6e73-4968-b1c4-eb441f053210.webp",

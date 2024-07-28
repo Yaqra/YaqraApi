@@ -29,6 +29,7 @@ namespace YaqraApi.Services
         private readonly IBookService _bookService;
         private readonly IGenreRepository _genreRepository;
         private readonly IAuthorRepository _authorRepository;
+        private readonly IWebHostEnvironment _environment;
         private readonly Mapper _mapper;
         public UserService(
             UserManager<ApplicationUser> userManager, 
@@ -36,7 +37,8 @@ namespace YaqraApi.Services
             IAuthorService authorService,
             IBookService bookService,
             IGenreRepository genreRepository,
-            IAuthorRepository authorRepository)
+            IAuthorRepository authorRepository,
+            IWebHostEnvironment environment)
         {
             _userManager = userManager;
             _genreService = genreService;
@@ -44,6 +46,7 @@ namespace YaqraApi.Services
             _bookService = bookService;
             _genreRepository = genreRepository;
             _authorRepository = authorRepository;
+            _environment = environment;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         public async Task<GenericResultDto<ApplicationUser>> UpdatePasswordAsync(PasswordUpdateDto dto, string userId)
@@ -70,18 +73,20 @@ namespace YaqraApi.Services
            
             var oldPicPath = user.ProfilePicture;
 
+            var picName = Path.GetFileName(pic.FileName);
+            var picExtension = Path.GetExtension(picName);
+            var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
+            var dir = Path.Combine(_environment.WebRootPath, "ProfilePictures");
+            if (Directory.Exists(dir) == false)
+                Directory.CreateDirectory(dir);
+            var picPath = Path.Combine(dir, picWithGuid);
+
             var createPic = Task.Run(async () =>
             {
-                var picName = Path.GetFileName(pic.FileName);
-                var picExtension = Path.GetExtension(picName);
-                var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
-
-                var picPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/ProfilePictures", picWithGuid);
-
                 using(var stream = new FileStream(picPath, FileMode.Create, FileAccess.Write))
                 {
                     await pic.CopyToAsync(stream);
-                    user.ProfilePicture = picPath;
+                    user.ProfilePicture = $"/ProfilePictures/{picWithGuid}";
                 }
             });
             var deleteOldPic = Task.Run(() =>
@@ -108,18 +113,20 @@ namespace YaqraApi.Services
            
             var oldPicPath = user.ProfileCover;
 
+            var picName = Path.GetFileName(pic.FileName);
+            var picExtension = Path.GetExtension(picName);
+            var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
+            var dir = Path.Combine(_environment.WebRootPath, "ProfileCovers");
+            if (Directory.Exists(dir) == false)
+                Directory.CreateDirectory(dir);
+            var picPath = Path.Combine(dir, picWithGuid);
+
             var createPic = Task.Run(async () =>
             {
-                var picName = Path.GetFileName(pic.FileName);
-                var picExtension = Path.GetExtension(picName);
-                var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
-
-                var picPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/ProfileCovers", picWithGuid);
-
                 using(var stream = new FileStream(picPath, FileMode.Create, FileAccess.Write))
                 {
                     await pic.CopyToAsync(stream);
-                    user.ProfileCover = picPath;
+                    user.ProfileCover = $"/ProfileCovers/{picWithGuid}"; ;
                 }
             });
             var deleteOldPic = Task.Run(() =>

@@ -74,6 +74,7 @@ namespace YaqraApi
 
             var app = builder.Build();
 
+
             // Configure the HTTP request pipeline.
             app.UseSwagger();
             if (app.Environment.IsDevelopment())
@@ -86,6 +87,8 @@ namespace YaqraApi
                 });
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 

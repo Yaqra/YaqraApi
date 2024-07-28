@@ -13,11 +13,13 @@ namespace YaqraApi.Services
     public class AuthorService : IAuthorService
     {
         private readonly IAuthorRepository _authorRepository;
+        private readonly IWebHostEnvironment _environment;
         private readonly Mapper _mapper;
 
-        public AuthorService(IAuthorRepository authorRepository)
+        public AuthorService(IAuthorRepository authorRepository, IWebHostEnvironment environment)
         {
             _authorRepository = authorRepository;
+            _environment = environment;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
 
@@ -83,19 +85,22 @@ namespace YaqraApi.Services
 
             var oldPicPath = author.Picture;
 
+            var picName = Path.GetFileName(pic.FileName);
+            var picExtension = Path.GetExtension(picName);
+            var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
+            var dir= Path.Combine(_environment.WebRootPath, "Authors");
+            if (Directory.Exists(dir)==false)
+                Directory.CreateDirectory(dir);
+            var picPath = Path.Combine(dir, picWithGuid);
+
             var createPic = Task.Run(async () =>
             {
-                var picName = Path.GetFileName(pic.FileName);
-                var picExtension = Path.GetExtension(picName);
-                var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
-
-                var picPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Authors", picWithGuid);
-
                 using (var stream = new FileStream(picPath, FileMode.Create, FileAccess.Write))
                 {
                     await pic.CopyToAsync(stream);
-                    author.Picture = picPath;
+                    author.Picture = $"/Authors/{picWithGuid}";
                 }
+
             });
             var deleteOldPic = Task.Run(() =>
             {
