@@ -87,5 +87,19 @@ namespace YaqraApi.Repositories
         {
             return _context.Authors.Count();
         }
+
+        public async Task<List<Book>> GetAuthorBooks(int authorId, int page)
+        {
+            var author = _context.Authors
+                .Include(a=>a.Books)
+                    .ThenInclude(b=>b.Genres)
+                .Include(b=>b.Books)
+                    .ThenInclude(b=>b.Authors)
+                .SingleOrDefault(a => a.Id == authorId);
+            
+            var books = author.Books;
+
+            return books == null ? new List<Book>() : books.ToList();
+        }
     }
 }

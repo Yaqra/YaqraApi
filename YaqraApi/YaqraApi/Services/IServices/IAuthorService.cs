@@ -1,5 +1,6 @@
 ﻿using YaqraApi.DTOs;
 using YaqraApi.DTOs.Author;
+using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.User;
 using YaqraApi.Models;
 
@@ -10,6 +11,7 @@ namespace YaqraApi.Services.IServices
         public Task<GenericResultDto<List<AuthorNameAndIdDto>>> GetAllNamesAndIds(int page);
         public Task<GenericResultDto<AuthorPagesCount>> GetAuthorsPagesCount();
         public Task<GenericResultDto<List<AuthorDto>>> GetAll(int page);
+        public Task<GenericResultDto<List<BookDto>>> GetAuthorBooks(int authorId, int page);
         public Task<GenericResultDto<AuthorDto>> GetByIdAsync(int authorId);
         public Task<GenericResultDto<List<AuthorDto>>> GetByName(string authorName, int page);
         public Task<GenericResultDto<AuthorDto?>> AddAsync(IFormFile pic, AuthorDto newAuthor);
