@@ -14,5 +14,6 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<BookDto>> UpdateImageAsync(IFormFile img, int bookId);
         Task<GenericResultDto<BookDto>> UpdateAllAsync(IFormFile? img, BookWithoutImageDto dto);
         Task<GenericResultDto<string>> Delete(int bookId);
+        public Task<GenericResultDto<List<BookDto>>> GetRecent(int page);
     }
 }

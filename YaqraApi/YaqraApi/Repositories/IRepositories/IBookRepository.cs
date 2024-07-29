@@ -14,5 +14,7 @@ namespace YaqraApi.Repositories.IRepositories
         public Task<Book?> AddAsync(Book newBook);
         public void UpdateAll(Book editedBook);//all Book details
         public void Delete(Book Book);
+        public Task<IQueryable<Book>> GetRecent(int page);
+
     }
 }

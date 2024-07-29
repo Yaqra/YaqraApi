@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
 using YaqraApi.Helpers;
@@ -53,7 +54,11 @@ namespace YaqraApi.Repositories
 
         public async Task<Book> GetByIdAsync(int bookId)
         {
-            var books = await _context.Books.AsNoTracking().SingleOrDefaultAsync(a => a.Id == bookId);
+            var books = await _context.Books
+                .AsNoTracking()
+                .Include(b=>b.Authors)
+                .Include(b=>b.Genres)
+                .SingleOrDefaultAsync(a => a.Id == bookId);
             return books;
         }
 
@@ -83,6 +88,16 @@ namespace YaqraApi.Repositories
         public int GetCount()
         {
             return _context.Books.Count();
+        }
+
+        public async Task<IQueryable<Book>> GetRecent(int page)
+        {
+            var books = _context.Books
+                .Where(b=>b.AddedDate>= DateTime.UtcNow.AddDays(-7))
+                .Include(b=>b.Genres)
+                .Include(b=>b.Authors)
+                .Skip((page-1)*Pagination.Books).Take(Pagination.Books);
+            return books;
         }
     }
 }

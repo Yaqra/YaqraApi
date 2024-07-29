@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
+using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.Helpers;
@@ -8,6 +9,7 @@ using YaqraApi.Models;
 using YaqraApi.Repositories;
 using YaqraApi.Repositories.IRepositories;
 using YaqraApi.Services.IServices;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace YaqraApi.Services
 {
@@ -32,49 +34,25 @@ namespace YaqraApi.Services
         }
         public async Task<GenericResultDto<BookDto?>> AddAsync(AddBookDto dto)
         {
-            var book = new Book
-            {
-                AddedDate = DateTime.UtcNow,
-                Description = dto.Description,
-                NumberOfPages = dto.NumberOfPages,
-                Title = dto.Title,
-            };
-            
-            var result = await _bookRepository.AddAsync(book);
-            if (result == null)
+            var book = await CreateBook(dto);
+            if (book == null)
                 return new GenericResultDto<BookDto?> { Succeeded = false, ErrorMessage = "something went wrong while adding book" };
 
             if (dto.GenresIds != null)
-            {
-                book.Genres = new List<Genre>();
-                foreach (var id in dto.GenresIds)
-                {
-                    var genre = (await _genreService.GetByIdAsync(id)).Result;
-                    if (genre == null)
-                        continue;
-                    book.Genres.Add(new Genre { Id = genre.GenreId, Name = genre.GenreName });
-                }
-            }
+                book = await AddGenresToBook(dto.GenresIds, book);
 
-            book.Authors = new List<Author>();
-            foreach (var id in dto.AuthorsIds)
-            {
-                var author = (await _authorService.GetByIdAsync(id)).Result;
-                if (author == null)
-                    continue;
-                book.Authors.Add(_mapper.Map<Author>(author));
-            }
+            book = await AddAuthorsToBook(dto.AuthorsIds, book);
 
             _bookRepository.UpdateAll(book);
 
             if(dto.Image != null) 
             { 
-                var updateImgResult = await UpdateImageAsync(dto.Image, result.Id);
+                var updateImgResult = await UpdateImageAsync(dto.Image, book.Id);
                 if (updateImgResult.Succeeded == true)
-                    result.Image = updateImgResult.Result.Image;
+                    book.Image = updateImgResult.Result.Image;
             }
 
-            return new GenericResultDto<BookDto?> { Succeeded = true, Result = _mapper.Map<BookDto>(result) };
+            return new GenericResultDto<BookDto?> { Succeeded = true, Result = _mapper.Map<BookDto>(book) };
         }
 
         public async Task<GenericResultDto<string>> Delete(int bookId)
@@ -118,7 +96,16 @@ namespace YaqraApi.Services
             var book = await _bookRepository.GetByIdAsync(bookId);
             if (book == null)
                 return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "book not found" };
-            return new GenericResultDto<BookDto> { Succeeded = true, Result = _mapper.Map<BookDto>(book) };
+
+            var result = _mapper.Map<BookDto>(book);
+
+            foreach (var author in book.Authors)
+                result.AuthorsDto.Add(_mapper.Map<AuthorDto>(author));
+
+            foreach (var genre in book.Genres)
+                result.GenresDto.Add(new GenreDto { GenreId = genre.Id, GenreName = genre.Name });
+
+            return new GenericResultDto<BookDto> { Succeeded = true, Result = result };
         }
 
         public async Task<GenericResultDto<List<BookDto>>> GetByTitle(string BookName, int page)
@@ -167,34 +154,56 @@ namespace YaqraApi.Services
             if (book == null)
                 return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "book not found" };
 
-            var oldImgPath = book.Image;
-
-            var imgName = Path.GetFileName(img.FileName);
-            var imgExtension = Path.GetExtension(imgName);
-            var imgWithGuid = $"{imgName.TrimEnd(imgExtension.ToArray())}{Guid.NewGuid().ToString()}{imgExtension}";
-            var dir = Path.Combine(_environment.WebRootPath, "Books");
-            if (Directory.Exists(dir) == false)
-                Directory.CreateDirectory(dir);
-            var imgPath = Path.Combine(dir, imgWithGuid);
-
-            var createImg = Task.Run(async () =>
-            {
-                using (var stream = new FileStream(imgPath, FileMode.Create, FileAccess.Write))
-                {
-                    await img.CopyToAsync(stream);
-                    book.Image = $"/Books/{imgWithGuid}";
-                }
-            });
-            var deleteOldImg = Task.Run(() =>
-            {
-                if (string.IsNullOrEmpty(oldImgPath) == false && File.Exists(oldImgPath))
-                    File.Delete(oldImgPath);
-            });
-            Task.WaitAll(createImg, deleteOldImg);
+            book.Image= ImageHelpers.UploadImage(ImageHelpers.BooksDir, book.Image, img, _environment);
 
             _bookRepository.UpdateAll(book);
 
             return new GenericResultDto<BookDto> { Succeeded = true, Result = _mapper.Map<BookDto>(book) };
+        }
+        private async Task<Book?> CreateBook(AddBookDto dto)
+        {
+            var book = new Book
+            {
+                AddedDate = DateTime.UtcNow,
+                Description = dto.Description,
+                NumberOfPages = dto.NumberOfPages,
+                Title = dto.Title,
+            };
+
+            return await _bookRepository.AddAsync(book);
+        }
+        private async Task<Book> AddGenresToBook(List<int> genresIds, Book book)
+        {
+            book.Genres = new List<Genre>();
+            foreach (var id in genresIds)
+            {
+                var genre = (await _genreService.GetByIdAsync(id)).Result;
+                if (genre == null)
+                    continue;
+                book.Genres.Add(new Genre { Id = genre.GenreId, Name = genre.GenreName });
+            }
+            return book;
+        }
+        private async Task<Book> AddAuthorsToBook(List<int> AuthorsIds, Book book)
+        {
+            book.Authors = new List<Author>();
+            foreach (var id in AuthorsIds)
+            {
+                var author = (await _authorService.GetByIdAsync(id)).Result;
+                if (author == null)
+                    continue;
+                book.Authors.Add(_mapper.Map<Author>(author));
+            }
+            return book;
+        }
+
+        public async Task<GenericResultDto<List<BookDto>>> GetRecent(int page)
+        {
+            var books = await _bookRepository.GetRecent(page);
+
+            var result = BookHelpers.ConvertBooksToBookDtos(books.ToList());
+
+            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = result.ToList()};
         }
     }
 }

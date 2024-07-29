@@ -74,6 +74,14 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [HttpGet("books")]
+        public async Task<IActionResult> GetAuthorBooksAsync([FromQuery] int authorId, [FromQuery] int page)
+        {
+            var result = await _authorService.GetAuthorBooks(authorId, page);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
         [HttpPut("picture")]
         public async Task<IActionResult> UpdatePictureAsync(IFormFile picture, [FromForm]int authorId)
         {

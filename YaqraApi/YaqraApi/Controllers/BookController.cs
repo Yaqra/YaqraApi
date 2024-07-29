@@ -64,6 +64,14 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [HttpGet("recent")]
+        public async Task<IActionResult> GetRecentAsync([FromQuery] int page)
+        {
+            var result = await _bookService.GetRecent(page);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
         [HttpPut("image")]
         public async Task<IActionResult> UpdatePictureAsync(IFormFile image, [FromForm] int bookId)
         {

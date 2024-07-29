@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Author;
+using YaqraApi.DTOs.Book;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Repositories.IRepositories;
@@ -83,31 +84,33 @@ namespace YaqraApi.Services
             if (author == null)
                 return new GenericResultDto<AuthorDto> { Succeeded = false, ErrorMessage = "author not found" };
 
-            var oldPicPath = author.Picture;
+            //var oldPicPath = author.Picture;
 
-            var picName = Path.GetFileName(pic.FileName);
-            var picExtension = Path.GetExtension(picName);
-            var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
-            var dir= Path.Combine(_environment.WebRootPath, "Authors");
-            if (Directory.Exists(dir)==false)
-                Directory.CreateDirectory(dir);
-            var picPath = Path.Combine(dir, picWithGuid);
+            //var picName = Path.GetFileName(pic.FileName);
+            //var picExtension = Path.GetExtension(picName);
+            //var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
+            //var dir= Path.Combine(_environment.WebRootPath, "Authors");
+            //if (Directory.Exists(dir)==false)
+            //    Directory.CreateDirectory(dir);
+            //var picPath = Path.Combine(dir, picWithGuid);
 
-            var createPic = Task.Run(async () =>
-            {
-                using (var stream = new FileStream(picPath, FileMode.Create, FileAccess.Write))
-                {
-                    await pic.CopyToAsync(stream);
-                    author.Picture = $"/Authors/{picWithGuid}";
-                }
+            //var createPic = Task.Run(async () =>
+            //{
+            //    using (var stream = new FileStream(picPath, FileMode.Create, FileAccess.Write))
+            //    {
+            //        await pic.CopyToAsync(stream);
+            //        author.Picture = $"/Authors/{picWithGuid}";
+            //    }
 
-            });
-            var deleteOldPic = Task.Run(() =>
-            {
-                if (string.IsNullOrEmpty(oldPicPath) == false && File.Exists(oldPicPath))
-                    File.Delete(oldPicPath);
-            });
-            Task.WaitAll(createPic, deleteOldPic);
+            //});
+            //var deleteOldPic = Task.Run(() =>
+            //{
+            //    if (string.IsNullOrEmpty(oldPicPath) == false && File.Exists(oldPicPath))
+            //        File.Delete(oldPicPath);
+            //});
+            //Task.WaitAll(createPic, deleteOldPic);
+
+            author.Picture = ImageHelpers.UploadImage(ImageHelpers.AuthorsDir,author.Picture, pic,_environment);
 
             _authorRepository.UpdateAll(author);
 
@@ -152,6 +155,17 @@ namespace YaqraApi.Services
                 AuthorsNamesAndIdsPagesCount = (int)Math.Ceiling((double)count / Pagination.AuthorNamesAndIds)
             };
             return new GenericResultDto<AuthorPagesCount> { Succeeded = true, Result = result };
+        }
+
+        public async Task<GenericResultDto<List<BookDto>>> GetAuthorBooks(int authorId, int page)
+        {
+            var books = await _authorRepository.GetAuthorBooks(authorId, page);
+            var result = BookHelpers.ConvertBooksToBookDtos(books);
+            return new GenericResultDto<List<BookDto>>
+            {
+                Succeeded = true,
+                Result = result.ToList()
+            };
         }
     }
 }

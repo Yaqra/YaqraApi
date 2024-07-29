@@ -70,31 +70,33 @@ namespace YaqraApi.Services
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
                 return new GenericResultDto<ApplicationUser> { Succeeded = false, ErrorMessage = "user not found" };
-           
-            var oldPicPath = user.ProfilePicture;
 
-            var picName = Path.GetFileName(pic.FileName);
-            var picExtension = Path.GetExtension(picName);
-            var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
-            var dir = Path.Combine(_environment.WebRootPath, "ProfilePictures");
-            if (Directory.Exists(dir) == false)
-                Directory.CreateDirectory(dir);
-            var picPath = Path.Combine(dir, picWithGuid);
+            //var oldPicPath = user.ProfilePicture;
 
-            var createPic = Task.Run(async () =>
-            {
-                using(var stream = new FileStream(picPath, FileMode.Create, FileAccess.Write))
-                {
-                    await pic.CopyToAsync(stream);
-                    user.ProfilePicture = $"/ProfilePictures/{picWithGuid}";
-                }
-            });
-            var deleteOldPic = Task.Run(() =>
-            {
-                if(string.IsNullOrEmpty(oldPicPath) == false && File.Exists(oldPicPath))
-                    File.Delete(oldPicPath);
-            });
-            Task.WaitAll(createPic, deleteOldPic);
+            //var picName = Path.GetFileName(pic.FileName);
+            //var picExtension = Path.GetExtension(picName);
+            //var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
+            //var dir = Path.Combine(_environment.WebRootPath, "ProfilePictures");
+            //if (Directory.Exists(dir) == false)
+            //    Directory.CreateDirectory(dir);
+            //var picPath = Path.Combine(dir, picWithGuid);
+
+            //var createPic = Task.Run(async () =>
+            //{
+            //    using(var stream = new FileStream(picPath, FileMode.Create, FileAccess.Write))
+            //    {
+            //        await pic.CopyToAsync(stream);
+            //        user.ProfilePicture = $"/ProfilePictures/{picWithGuid}";
+            //    }
+            //});
+            //var deleteOldPic = Task.Run(() =>
+            //{
+            //    if(string.IsNullOrEmpty(oldPicPath) == false && File.Exists(oldPicPath))
+            //        File.Delete(oldPicPath);
+            //});
+            //Task.WaitAll(createPic, deleteOldPic);
+
+            user.ProfilePicture = ImageHelpers.UploadImage(ImageHelpers.ProfilePicturesDir, user.ProfilePicture, pic, _environment);
 
             var identityResult = await _userManager.UpdateAsync(user);
             if (identityResult.Succeeded == false)
@@ -110,31 +112,8 @@ namespace YaqraApi.Services
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
                 return new GenericResultDto<ApplicationUser> { Succeeded = false, ErrorMessage = "user not found" };
-           
-            var oldPicPath = user.ProfileCover;
 
-            var picName = Path.GetFileName(pic.FileName);
-            var picExtension = Path.GetExtension(picName);
-            var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
-            var dir = Path.Combine(_environment.WebRootPath, "ProfileCovers");
-            if (Directory.Exists(dir) == false)
-                Directory.CreateDirectory(dir);
-            var picPath = Path.Combine(dir, picWithGuid);
-
-            var createPic = Task.Run(async () =>
-            {
-                using(var stream = new FileStream(picPath, FileMode.Create, FileAccess.Write))
-                {
-                    await pic.CopyToAsync(stream);
-                    user.ProfileCover = $"/ProfileCovers/{picWithGuid}"; ;
-                }
-            });
-            var deleteOldPic = Task.Run(() =>
-            {
-                if(string.IsNullOrEmpty(oldPicPath) == false && File.Exists(oldPicPath))
-                    File.Delete(oldPicPath);
-            });
-            Task.WaitAll(createPic, deleteOldPic);
+            user.ProfileCover = ImageHelpers.UploadImage(ImageHelpers.ProfileCoversDir, user.ProfileCover, pic, _environment);
 
             var identityResult = await _userManager.UpdateAsync(user);
             if (identityResult.Succeeded == false)
