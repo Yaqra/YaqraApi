@@ -13,5 +13,6 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<GenreDto>> AddAsync(string genreName);
         Task<GenericResultDto<GenreDto>> UpdateAsync(int currentGenreId, string newGenreName);
         Task<GenericResultDto<string>> DeleteAsync(int id);
+        void Attach(IEnumerable<Genre> genres);
     }
 }

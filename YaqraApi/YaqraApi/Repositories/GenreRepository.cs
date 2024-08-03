@@ -65,5 +65,11 @@ namespace YaqraApi.Repositories
         {
             return _context.Genres.Count();
         }
+
+        public void Attach(IEnumerable<Genre> genres)
+        {
+            foreach (var genre in genres)
+                _context.Genres.Attach(genre);
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace YaqraApi.Repositories.IRepositories
         Task<Genre> AddAsync(Genre genre);
         void Delete(Genre genre);
         Task<Genre> UpdateAsync(int currentGenreId, Genre editedGenre);
+        void Attach(IEnumerable<Genre> genres);
     }
 }

@@ -23,6 +23,12 @@ namespace YaqraApi.Services
                 return new GenericResultDto<GenreDto> { Succeeded = false, ErrorMessage = "something went wrong while adding your new genre" };
             return new GenericResultDto<GenreDto> { Succeeded = true, Result = new GenreDto {GenreId=result.Id, GenreName = result.Name } };
         }
+
+        public void Attach(IEnumerable<Genre> genres)
+        {
+            _genreRepository.Attach(genres);
+        }
+
         public async Task<GenericResultDto<string>> DeleteAsync(int id)
         {
             var genre = await _genreRepository.GetByIdAsync(id);

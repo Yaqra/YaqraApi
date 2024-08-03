@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
+using YaqraApi.Repositories;
+using YaqraApi.Repositories.Context;
 using YaqraApi.Repositories.IRepositories;
 using YaqraApi.Services.IServices;
 
@@ -17,13 +21,17 @@ namespace YaqraApi.Services
         private readonly IWebHostEnvironment _environment;
         private readonly Mapper _mapper;
 
-        public AuthorService(IAuthorRepository authorRepository, IWebHostEnvironment environment)
+        public AuthorService(IAuthorRepository authorRepository, 
+            IWebHostEnvironment environment)
         {
             _authorRepository = authorRepository;
             _environment = environment;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
-
+        public void Attach(IEnumerable<Author> authors)
+        {
+            _authorRepository.Attach(authors);
+        }
         public async Task<GenericResultDto<AuthorDto?>> AddAsync(IFormFile pic, AuthorDto newAuthor)
         {
             var author = _mapper.Map<Author>(newAuthor);
@@ -39,10 +47,14 @@ namespace YaqraApi.Services
         public async Task<GenericResultDto<List<AuthorDto>>> GetAll(int page)
         {
             page = page == 0 ? 1 : page;
-            var authors = await _authorRepository.GetAll(page);
+            var authors = (await _authorRepository.GetAll(page)).ToList();
             var result = new List<AuthorDto>();
             foreach (var author in authors)
-                result.Add(_mapper.Map<AuthorDto>(author));
+            {
+                var dto = _mapper.Map<AuthorDto>(author);
+                dto.Rate = await CalculateAuthorRate(author.Id);
+                result.Add(dto);
+            }
             return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result=result};
         }
 
@@ -58,20 +70,29 @@ namespace YaqraApi.Services
             var author = await _authorRepository.GetByIdAsync(authorId);
             if(author == null)
                 return new GenericResultDto<AuthorDto> {Succeeded = false, ErrorMessage = "author not found" };
-            return new GenericResultDto<AuthorDto> { Succeeded = true, Result = _mapper.Map<AuthorDto>(author) };
+
+            var dto = _mapper.Map<AuthorDto>(author);
+
+            dto.Rate = await CalculateAuthorRate(dto.Id);//there is a problem here attaching author entity to efcore
+
+            return new GenericResultDto<AuthorDto> { Succeeded = true, Result = dto };
         }
 
         public async Task<GenericResultDto<List<AuthorDto>>> GetByName(string authorName, int page)
         {
             page = page == 0 ? 1 : page;
-            var authors = await _authorRepository.GetByName(authorName, page);
+            var authors =( await _authorRepository.GetByName(authorName, page)).ToList();
             if (authors == null)
                 return new GenericResultDto<List<AuthorDto>> { Succeeded = false, ErrorMessage = "no authors with that name were found" };
             
             var authorsDto = new List<AuthorDto>();
             foreach(var author in authors)
-                authorsDto.Add(_mapper.Map<AuthorDto>(author));
-            
+            {
+                var dto = _mapper.Map<AuthorDto>(author);
+                dto.Rate = await CalculateAuthorRate(author.Id);
+                authorsDto.Add(dto);
+            }
+
             return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result = authorsDto};
         }
 
@@ -166,6 +187,24 @@ namespace YaqraApi.Services
                 Succeeded = true,
                 Result = result.ToList()
             };
+        }
+        private async Task<GenericResultDto<List<int>>> GetAuthorBooksIds(int authorId)
+        {
+            var booksIds = await _authorRepository.GetAuthorBooksIds(authorId);
+            if (booksIds == null)
+                return new GenericResultDto<List<int>> { Succeeded = false, ErrorMessage = "author not found" };
+
+            return new GenericResultDto<List<int>> { Succeeded = true, Result = booksIds };
+        }
+        private async Task<string?> CalculateAuthorRate(int authorId)
+        {
+            var booksIdsResult = await GetAuthorBooksIds(authorId);//there is a problem here attaching author entity to efcore
+            if (booksIdsResult.Succeeded == false)
+                return null;
+
+            var booksRates = await _authorRepository.GetAuthorBooksRates(booksIdsResult.Result);
+
+            return BookHelpers.CalcualteRate(booksRates);
         }
     }
 }

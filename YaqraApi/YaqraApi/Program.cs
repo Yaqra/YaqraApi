@@ -32,6 +32,7 @@ namespace YaqraApi
             {
                 var connectionString = builder.Configuration.GetConnectionString("default");
                 options.UseSqlServer(connectionString);
+                options.EnableSensitiveDataLogging();
             });
             builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                     .AddEntityFrameworkStores<ApplicationContext>();
@@ -71,6 +72,9 @@ namespace YaqraApi
             builder.Services.AddScoped<IAuthorService, AuthorService>();
             builder.Services.AddScoped<IBookRepository, BookRepository>();
             builder.Services.AddScoped<IBookService, BookService>();
+            builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
+            builder.Services.AddScoped<ICommunityService, CommunityService>();
+
 
             var app = builder.Build();
 

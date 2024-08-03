@@ -95,7 +95,8 @@ namespace YaqraApi.Controllers
                 Id = bookId,
                 Title = bookTitle,
                 NumberOfPages = numberOfPages,
-                Description = bookDescription};
+                Description = bookDescription,
+            };
             if (dto == null)
                 return BadRequest("something went wrong");
 
@@ -117,6 +118,39 @@ namespace YaqraApi.Controllers
         public async Task<IActionResult> GetBooksPagesCount()
         {
             var result = await _bookService.GetBooksPagesCount();
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+
+        [HttpPut("addGenres")]
+        public async Task<IActionResult> AddGenresToBook([FromForm] int bookId, [FromForm] List<int> genreIds)
+        {
+            var result = await _bookService.AddGenresToBook(genreIds, bookId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpPut("removeGenres")]
+        public async Task<IActionResult> RemoveGenresToBook([FromForm] int bookId, [FromForm] List<int> genreIds)
+        {
+            var result = await _bookService.RemoveGenresFromBook(genreIds, bookId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpPut("addAuthors")]
+        public async Task<IActionResult> AddAuthorsToBook([FromForm] int bookId, [FromForm] List<int> authorIds)
+        {
+            var result = await _bookService.AddAuthorsToBook(authorIds, bookId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpPut("removeAuthors")]
+        public async Task<IActionResult> RemoveAuthorsToBook([FromForm] int bookId, [FromForm] List<int> authorIds)
+        {
+            var result = await _bookService.RemoveAuthorsFromBook(authorIds, bookId);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);

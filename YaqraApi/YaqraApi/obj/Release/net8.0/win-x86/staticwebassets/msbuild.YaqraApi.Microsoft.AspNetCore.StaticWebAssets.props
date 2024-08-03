@@ -176,6 +176,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Books\52ccefe5e7c249c171d1cebd68a99ddc150f800b-758c-4648-975c-d5b9eefbe29c.png))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Books\73cfaeec1236054f05e6bfd2eab0fed891af6646-da64-4a8b-9600-78702009ad47.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>YaqraApi</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/YaqraApi</BasePath>
+      <RelativePath>Books/73cfaeec1236054f05e6bfd2eab0fed891af6646-da64-4a8b-9600-78702009ad47.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Books\73cfaeec1236054f05e6bfd2eab0fed891af6646-da64-4a8b-9600-78702009ad47.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Books\cart_default15036d94-7de2-4389-8f99-2adf119886c9.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>YaqraApi</SourceId>

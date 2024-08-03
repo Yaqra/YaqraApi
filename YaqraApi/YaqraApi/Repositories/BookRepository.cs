@@ -36,11 +36,13 @@ namespace YaqraApi.Repositories
             SaveChanges();
         }
 
-        public async Task<IQueryable<Book>> GetAll(int page)
+        public async Task<List<Book>> GetAll(int page)
         {
             return _context.Books
+                .Include(b=>b.Authors)
+                .Include(b=>b.Genres)
                 .Skip((page-1)*Pagination.BookTitlesAndIds).Take(Pagination.BookTitlesAndIds)
-                .AsNoTracking();
+                .AsNoTracking().ToList();
         }
 
         public async Task<IQueryable<BookTitleAndIdDto>> GetAllTitlesAndIds(int page)
@@ -98,6 +100,11 @@ namespace YaqraApi.Repositories
                 .Include(b=>b.Authors)
                 .Skip((page-1)*Pagination.Books).Take(Pagination.Books);
             return books;
+        }
+
+        public async Task<List<decimal>> GetBookRates(int bookId)
+        {
+            return _context.Reviews.Where(r => r.BookId == bookId).Select(r => r.Rate).ToList();
         }
     }
 }
