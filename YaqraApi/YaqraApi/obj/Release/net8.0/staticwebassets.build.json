@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "DUygoyEl90rEbBicZMPRQkYFr2QzBf12ZwL7uqe/Tik=",
+  "Hash": "qInM03IPYoqTETurQM4HlyOPcbt8vdhO0VOrPTBfkRo=",
   "Source": "YaqraApi",
   "BasePath": "_content/YaqraApi",
   "Mode": "Default",
@@ -224,6 +224,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Books\\52ccefe5e7c249c171d1cebd68a99ddc150f800b-758c-4648-975c-d5b9eefbe29c.png"
+    },
+    {
+      "Identity": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Books\\73cfaeec1236054f05e6bfd2eab0fed891af6646-da64-4a8b-9600-78702009ad47.jpg",
+      "SourceId": "YaqraApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\",
+      "BasePath": "_content/YaqraApi",
+      "RelativePath": "Books/73cfaeec1236054f05e6bfd2eab0fed891af6646-da64-4a8b-9600-78702009ad47.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Books\\73cfaeec1236054f05e6bfd2eab0fed891af6646-da64-4a8b-9600-78702009ad47.jpg"
     },
     {
       "Identity": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Books\\cart_default15036d94-7de2-4389-8f99-2adf119886c9.jpg",

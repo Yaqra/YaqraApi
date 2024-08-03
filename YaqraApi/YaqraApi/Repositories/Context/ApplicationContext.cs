@@ -79,11 +79,31 @@ namespace YaqraApi.Repositories.Context
                     .WithMany().HasForeignKey("BookId"),
                 j => j.HasKey("BookId", "AuthorId"));
 
+                u.HasMany(x => x.Playlists)
+                .WithMany(g => g.Books)
+                .UsingEntity("PlaylistBooks",
+                l => l.HasOne(typeof(Playlist))
+                    .WithMany().HasForeignKey("PlaylistId"),
+                r => r.HasOne(typeof(Book))
+                    .WithMany().HasForeignKey("BookId"),
+                j => j.HasKey("BookId", "PlaylistId"));
+
+                u.HasMany(x => x.DiscussionArticleNews)
+                .WithMany(g => g.Books)
+                .UsingEntity("DiscussionArticleNewsBooks",
+                l => l.HasOne(typeof(DiscussionArticleNews))
+                    .WithMany().HasForeignKey("DiscussionArticleNewsId"),
+                r => r.HasOne(typeof(Book))
+                    .WithMany().HasForeignKey("BookId"),
+                j => j.HasKey("BookId", "DiscussionArticleNewsId"));
+
             });
 
             builder.Entity<UserBookWithStatus>().HasKey(ub => new { ub.UserId, ub.BookId });
 
             builder.Entity<Genre>().HasIndex(x => x.Name).IsUnique();
+
+            builder.Entity<Post>().UseTptMappingStrategy();
 
             base.OnModelCreating(builder);
         }
@@ -91,5 +111,9 @@ namespace YaqraApi.Repositories.Context
         public DbSet<Author> Authors { get; set; }
         public DbSet<ReadingGoal> ReadingGoals { get; set; }
         public DbSet<Book> Books { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Playlist> Playlists { get; set; }
+        public DbSet<DiscussionArticleNews> DiscussionArticleNews { get; set; }
     }
 }

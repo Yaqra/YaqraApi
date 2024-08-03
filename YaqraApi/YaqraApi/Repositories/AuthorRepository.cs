@@ -101,5 +101,27 @@ namespace YaqraApi.Repositories
 
             return books == null ? new List<Book>() : books.ToList();
         }
+
+        public void Attach(IEnumerable<Author> authors)
+        {
+            foreach (var author in authors)
+                _context.Authors.Attach(author);
+        }
+
+        public async Task<List<int>?> GetAuthorBooksIds(int authorId)
+        {
+            var author = await _context.Authors
+                .AsNoTracking()
+                .Include(a => a.Books)
+                .SingleOrDefaultAsync(a => a.Id == authorId);
+            if (author == null)
+                return null;
+            return author.Books.Select(b => b.Id).ToList();
+        }
+
+        public async Task<List<decimal>?> GetAuthorBooksRates(List<int> booksIds)
+        {
+            return _context.Reviews.Where(r => booksIds.Contains(r.BookId)).Select(r => r.Rate).ToList();
+        }
     }
 }

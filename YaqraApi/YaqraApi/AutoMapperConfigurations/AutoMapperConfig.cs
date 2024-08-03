@@ -2,6 +2,7 @@
 using YaqraApi.DTOs.Auth;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
+using YaqraApi.DTOs.Community;
 using YaqraApi.DTOs.ReadingGoal;
 using YaqraApi.DTOs.User;
 using YaqraApi.DTOs.UserBookWithStatus;
@@ -92,6 +93,33 @@ namespace YaqraApi.AutoMapperConfigurations
                     .ForMember(dest => dest.BookId, act => act.MapFrom(src => src.BookId))
                     .ForMember(dest => dest.AddedDate, act => act.MapFrom(src => src.AddedDate))
                     .ReverseMap();
+
+                //community
+                cfg.CreateMap<Post, PostDto>()
+                   .Include<Review, ReviewDto>()
+                   .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                   .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+                   .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                   .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+                   .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.LikeCount))
+                   .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                   .ReverseMap();
+
+                cfg.CreateMap<Review, ReviewDto>()
+                   .IncludeBase<Post, PostDto>()
+                   .ForMember(dest => dest.Rate, opt => opt.MapFrom(src => src.Rate))
+                   .ForMember(dest => dest.BookId, opt => opt.MapFrom(src => src.BookId))
+                   .ReverseMap();
+
+                //addreviewdto  reviewdto
+                cfg.CreateMap<ReviewDto, AddReviewDto>()
+                   .ForMember(dest => dest.Rate, opt => opt.MapFrom(src => src.Rate))
+                   .ForMember(dest => dest.BookId, opt => opt.MapFrom(src => src.BookId))
+                   .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+                   .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+                   .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                   .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                   .ReverseMap();
             });
 
             return new Mapper(config);

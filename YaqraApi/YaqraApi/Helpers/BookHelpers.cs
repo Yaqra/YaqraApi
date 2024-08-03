@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
@@ -33,6 +34,13 @@ namespace YaqraApi.Helpers
             foreach (var genre in genres)
                 dto.GenresDto.Add(new GenreDto { GenreId = genre.Id, GenreName = genre.Name});
             return dto;
+        }
+        public static string? CalcualteRate(List<decimal>? rates)
+        {
+            if (rates.IsNullOrEmpty())
+                return null;
+            var sum = rates.Sum();
+            return $"{((sum / (rates.Count * 10)) * 10).ToString("0.00")}";
         }
     }
 }
