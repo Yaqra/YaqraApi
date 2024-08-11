@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
+using YaqraApi.Models.Enums;
 using YaqraApi.Services;
 using YaqraApi.Services.IServices;
 
@@ -151,6 +152,14 @@ namespace YaqraApi.Controllers
         public async Task<IActionResult> RemoveAuthorsToBook([FromForm] int bookId, [FromForm] List<int> authorIds)
         {
             var result = await _bookService.RemoveAuthorsFromBook(authorIds, bookId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("reviews")]
+        public async Task<IActionResult> GetReviews([FromForm] int bookId, [FromForm] int page, [FromForm] SortType sortType, [FromForm] ReviewsSortField sortField)
+        {
+            var result = await _bookService.GetReviews(bookId, page, sortType, sortField);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);

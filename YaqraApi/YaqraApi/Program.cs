@@ -34,6 +34,7 @@ namespace YaqraApi
                 options.UseSqlServer(connectionString);
                 options.EnableSensitiveDataLogging();
             });
+
             builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                     .AddEntityFrameworkStores<ApplicationContext>();
             
@@ -75,9 +76,7 @@ namespace YaqraApi
             builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
             builder.Services.AddScoped<ICommunityService, CommunityService>();
 
-
             var app = builder.Build();
-
 
             // Configure the HTTP request pipeline.
             app.UseSwagger();

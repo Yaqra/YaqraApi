@@ -1,6 +1,7 @@
 ﻿using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.Book;
 using YaqraApi.Models;
+using YaqraApi.Models.Enums;
 
 namespace YaqraApi.Repositories.IRepositories
 {
@@ -16,6 +17,8 @@ namespace YaqraApi.Repositories.IRepositories
         void Delete(Book Book);
         Task<IQueryable<Book>> GetRecent(int page);
         Task<List<decimal>> GetBookRates(int bookId);
+        void Attach(IEnumerable<Book> books);
+        Task<List<Review>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field);
 
     }
 }

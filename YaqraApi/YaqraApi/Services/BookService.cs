@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -7,9 +8,11 @@ using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
+using YaqraApi.DTOs.Community;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
+using YaqraApi.Models.Enums;
 using YaqraApi.Repositories;
 using YaqraApi.Repositories.Context;
 using YaqraApi.Repositories.IRepositories;
@@ -37,6 +40,10 @@ namespace YaqraApi.Services
             _authorService = authorService;
             _environment = environment;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
+        }
+        public void Attach(IEnumerable<Book> books)
+        {
+            _bookRepository.Attach(books);
         }
         public async Task<GenericResultDto<BookDto?>> AddAsync(AddBookDto dto)
         {
@@ -283,6 +290,18 @@ namespace YaqraApi.Services
             _bookRepository.UpdateAll(book);
             var result = await GetByIdAsync(bookId);
             return result;
+        }
+
+        public async Task<GenericResultDto<List<ReviewDto>>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field)
+        {
+            page = page == 0 ? 1 : page;
+            var reviews = await _bookRepository.GetReviews(bookId, page, type, field);
+            var reviewsDto = new List<ReviewDto>();
+            foreach (var review in reviews)
+                reviewsDto.Add(_mapper.Map<ReviewDto>(review));
+
+            return new GenericResultDto<List<ReviewDto>> { Succeeded = true, Result = reviewsDto };
+    
         }
     }
 }
