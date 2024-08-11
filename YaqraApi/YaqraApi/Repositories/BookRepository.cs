@@ -4,6 +4,7 @@ using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
+using YaqraApi.Models.Enums;
 using YaqraApi.Repositories.Context;
 using YaqraApi.Repositories.IRepositories;
 
@@ -17,7 +18,11 @@ namespace YaqraApi.Repositories
         {
             _context = context;
         }
-
+        public void Attach(IEnumerable<Book> books)
+        {
+            foreach (var book in books)
+                _context.Books.Attach(book);
+        }
         public async Task<Book?> AddAsync(Book newBook)
         {
             await _context.Books.AddAsync(newBook);
@@ -105,6 +110,68 @@ namespace YaqraApi.Repositories
         public async Task<List<decimal>> GetBookRates(int bookId)
         {
             return _context.Reviews.Where(r => r.BookId == bookId).Select(r => r.Rate).ToList();
+        }
+        public async Task<List<Review>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field)
+        {
+
+            switch (field)
+            {
+                case ReviewsSortField.LikeCount:
+                    return type == SortType.Ascending ?
+                        _context.Reviews
+                        .AsNoTracking()
+                        .Where(r => r.BookId == bookId)
+                        .Include(r => r.User)
+                        .OrderBy(r => r.LikeCount)
+                        .Skip((page - 1) * Pagination.Posts).Take(Pagination.Posts)
+                        .ToList() : _context.Reviews
+                        .AsNoTracking()
+                        .Where(r => r.BookId == bookId)
+                        .Include(r => r.User)
+                        .OrderByDescending(r => r.LikeCount)
+                        .Skip((page - 1) * Pagination.Posts).Take(Pagination.Posts)
+                        .ToList();
+                case ReviewsSortField.CreatedDate:
+                    return type == SortType.Ascending ?
+                        _context.Reviews
+                        .AsNoTracking()
+                        .Where(r => r.BookId == bookId)
+                        .Include(r => r.User)
+                        .OrderBy(r => r.CreatedDate)
+                        .Skip((page - 1) * Pagination.Posts).Take(Pagination.Posts)
+                        .ToList() : _context.Reviews
+                        .AsNoTracking()
+                        .Where(r => r.BookId == bookId)
+                        .Include(r => r.User)
+                        .OrderByDescending(r => r.CreatedDate)
+                        .Skip((page - 1) * Pagination.Posts).Take(Pagination.Posts)
+                        .ToList();
+                case ReviewsSortField.Rate:
+                    return type == SortType.Ascending ?
+                        _context.Reviews
+                        .AsNoTracking()
+                        .Where(r => r.BookId == bookId)
+                        .Include(r => r.User)
+                        .OrderBy(r => r.Rate)
+                        .Skip((page - 1) * Pagination.Posts).Take(Pagination.Posts)
+                        .ToList() : _context.Reviews
+                        .AsNoTracking()
+                        .Where(r => r.BookId == bookId)
+                        .Include(r => r.User)
+                        .OrderByDescending(r => r.Rate)
+                        .Skip((page - 1) * Pagination.Posts).Take(Pagination.Posts)
+                        .ToList();
+                default:
+                    return _context.Reviews
+                   .AsNoTracking()
+                   .Where(r => r.BookId == bookId)
+                   .Include(r => r.User)
+                   .OrderBy(r => r.Rate)
+                   .Skip((page - 1) * Pagination.Posts).Take(Pagination.Posts)
+                   .ToList();
+            }
+
+
         }
     }
 }

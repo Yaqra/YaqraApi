@@ -97,28 +97,78 @@ namespace YaqraApi.AutoMapperConfigurations
                 //community
                 cfg.CreateMap<Post, PostDto>()
                    .Include<Review, ReviewDto>()
+                   .Include<Playlist, PlaylistDto>()
+                   .Include<DiscussionArticleNews, DiscussionArticlesNewsDto>()
                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                    .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
-                   .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
                    .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
                    .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.LikeCount))
                    .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                   .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.UserName))
+                   .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id))
                    .ReverseMap();
 
                 cfg.CreateMap<Review, ReviewDto>()
                    .IncludeBase<Post, PostDto>()
                    .ForMember(dest => dest.Rate, opt => opt.MapFrom(src => src.Rate))
-                   .ForMember(dest => dest.BookId, opt => opt.MapFrom(src => src.BookId))
                    .ReverseMap();
 
-                //addreviewdto  reviewdto
-                cfg.CreateMap<ReviewDto, AddReviewDto>()
+                cfg.CreateMap<Playlist, PlaylistDto>()
+                   .IncludeBase<Post, PostDto>()
+                   .ReverseMap();
+
+                cfg.CreateMap<DiscussionArticleNews, DiscussionArticlesNewsDto>()
+                   .IncludeBase<Post, PostDto>()
+                   .ReverseMap();
+
+                //addreviewdto  review
+                cfg.CreateMap<Review, AddReviewDto>()
                    .ForMember(dest => dest.Rate, opt => opt.MapFrom(src => src.Rate))
-                   .ForMember(dest => dest.BookId, opt => opt.MapFrom(src => src.BookId))
                    .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
                    .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
                    .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
-                   .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                   .ReverseMap();
+
+                //addplaylistdto  playlistdto
+                cfg.CreateMap<Playlist, AddPlaylistDto>()
+                   .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+                   .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+                   .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                   .ReverseMap();
+
+                //adddiscussiondto  discussiondto
+                cfg.CreateMap<DiscussionArticleNews, AddDiscussionArticleNewsDto>()
+                   .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+                   .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+                   .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                   .ForMember(dest => dest.Tag, opt => opt.MapFrom(src => src.Tag.ToString()))
+                   .ReverseMap();
+
+                //updatereviewdto review
+                cfg.CreateMap<Review, UpdateReviewDto>()
+                   .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                   .ForMember(dest => dest.Rate, opt => opt.MapFrom(src => src.Rate))
+                   .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+                   .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                   .ForMember(dest => dest.BookId, opt => opt.MapFrom(src => src.BookId))
+                   .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.LikeCount))
+                   .ReverseMap();
+
+                //updateplaylistdto playlist
+                cfg.CreateMap<Playlist, UpdatePlaylistDto>()
+                   .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                   .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+                   .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                   .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.LikeCount))
+                   .ReverseMap();
+
+                //updatedisscussiondto discussion
+                cfg.CreateMap<DiscussionArticleNews, UpdateDiscussionArticleNewsDto>()
+                   .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                   .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+                   .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+                   .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.LikeCount))
+                   .ForMember(dest => dest.Tag, opt => opt.MapFrom(src => src.Tag))
                    .ReverseMap();
             });
 

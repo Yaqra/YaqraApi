@@ -1,6 +1,9 @@
 ﻿using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs;
 using YaqraApi.Models;
+using YaqraApi.DTOs.Community;
+using Microsoft.AspNetCore.Mvc;
+using YaqraApi.Models.Enums;
 
 namespace YaqraApi.Services.IServices
 {
@@ -20,5 +23,8 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<BookDto>> RemoveGenresFromBook(List<int> genresIds, int bookId);
         Task<GenericResultDto<BookDto>> AddAuthorsToBook(List<int> AuthorsIds, int bookId);
         Task<GenericResultDto<BookDto>> RemoveAuthorsFromBook(List<int> authorIds, int bookId);
+        void Attach(IEnumerable<Book> books);
+        Task<GenericResultDto<List<ReviewDto>>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field);
+
     }
 }
