@@ -28,5 +28,6 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<List<ReviewDto>>> GetUserReviews(string userId, int page);
         Task<GenericResultDto<List<PlaylistDto>>> GetUserPlaylists(string userId, int page);
         Task<GenericResultDto<List<DiscussionArticlesNewsDto>>> GetUserDiscussions(string userId, int page);
+        Task<GenericResultDto<CommentDto>> AddCommentAsync(CommentDto dto);
     }
 }

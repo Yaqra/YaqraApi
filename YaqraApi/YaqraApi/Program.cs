@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +11,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using YaqraApi.Repositories.IRepositories;
 using YaqraApi.Repositories;
-
 namespace YaqraApi
 {
     public class Program

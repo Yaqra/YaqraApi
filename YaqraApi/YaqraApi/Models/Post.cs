@@ -14,6 +14,7 @@ namespace YaqraApi.Models
         public string Content { get; set; }
         public int LikeCount { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public ICollection<Comment> Comments { get; set; }
     }
     public class Review : Post
     {
