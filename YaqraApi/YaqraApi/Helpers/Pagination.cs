@@ -11,6 +11,7 @@
         public static int Books = 9; 
         public static int ReadingGoals = 9; 
         public static int Posts = 9; 
+        public static int Comments = 18; 
 
     }
 }

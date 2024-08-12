@@ -202,5 +202,56 @@ namespace YaqraApi.Repositories
 
             return comment.Id == 0 ? null : comment;
         }
+
+        public void DeleteComment(Comment comment)
+        {
+            foreach (var reply in comment.Replies)
+                DeleteComment(reply);
+
+            _context.Comments.Remove(comment);
+            _context.SaveChanges();
+        }
+
+        private void LoadReplies(Comment comment)
+        {
+            _context.Entry(comment).Collection(c => c.Replies).Load();
+
+            foreach (var reply in comment.Replies)
+                LoadReplies(reply);
+        }
+
+        public async Task<Comment?> GetCommentAsync(int commentId)
+        {
+            var comment = await _context.Comments.SingleOrDefaultAsync(c => c.Id == commentId);
+            if (comment == null)
+                return null;
+            LoadReplies(comment);
+            return comment;
+        }
+
+        public async Task<List<Comment>> GetPostCommentsAsync(int postId, int page)
+        {
+           var post = (await _context.Posts
+                .Include(p=>
+                    p.Comments
+                    .Skip((page - 1) * Pagination.Comments).Take(Pagination.Comments)
+                    .OrderBy(c=>c.CreatedDate)
+                )
+                .SingleOrDefaultAsync(p=>p.Id == postId));
+            if (post == null)
+                return null;
+            var comments = post.Comments;
+            foreach (var comment in comments)
+            {
+                LoadReplies(comment);
+            }
+            return comments.ToList();
+        }
+        public Comment UpdateComment(Comment comment)
+        {
+            _context.Comments.Update(comment);
+            SaveChanges();
+            return comment;
+        }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.Storage.Json;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Net;
 using System.Security.Cryptography.Xml;
 using YaqraApi.AutoMapperConfigurations;
@@ -338,6 +340,60 @@ namespace YaqraApi.Services
             comment = await _communityRepository.AddCommentAsync(comment);
             if (comment == null)
                 return new GenericResultDto<CommentDto> { Succeeded = false, ErrorMessage = "something went wrong while posting ur comment" };
+            return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
+        }
+
+        public async Task<GenericResultDto<CommentDto>> GetCommentAsync(int commentId)
+        {
+            var comment = await _communityRepository.GetCommentAsync(commentId);
+            if (comment == null)
+                return new GenericResultDto<CommentDto> { Succeeded = false, ErrorMessage = "comment not found" };
+
+            return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
+        }
+
+        public async Task<GenericResultDto<string>> DeleteCommentAsync(int commentId)
+        {
+            var comment = await _communityRepository.GetCommentAsync(commentId);
+            if (comment == null)
+                return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "comment not found" };
+            _communityRepository.DeleteComment(comment);
+            return new GenericResultDto<string> { Succeeded = true, Result = "comment deleted successfully" };
+        }
+
+        public async Task<GenericResultDto<List<CommentDto>>> GetPostCommentsAsync(int postId, int page)
+        {
+            page = page == 0 ? 1 : page;
+            var comments = await _communityRepository.GetPostCommentsAsync(postId, page);
+            if (comments == null)
+                return new GenericResultDto<List<CommentDto>> { Succeeded = false, ErrorMessage = "post not found" };
+            List<CommentDto> result = new List<CommentDto>();
+            foreach (var comment in comments)
+                result.Add(_mapper.Map<CommentDto>(comment));
+
+            return new GenericResultDto<List<CommentDto>> { Succeeded = true, Result = result };
+        }
+
+        public async Task<GenericResultDto<CommentDto>> LikeCommentsAsync(int commentId)
+        {
+            var comment = await _communityRepository.GetCommentAsync(commentId);
+
+            if (comment == null)
+                return new GenericResultDto<CommentDto> { Succeeded = false, ErrorMessage = "comment not found" };
+
+            comment.LikeCount++;
+            _communityRepository.UpdateComment(comment);
+            return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
+
+        }
+
+        public async Task<GenericResultDto<CommentDto>> UpdateCommentAsync(int commentId, string content)
+        {
+            var comment = await _communityRepository.GetCommentAsync(commentId);
+            if (comment == null)
+                return new GenericResultDto<CommentDto> { Succeeded = false, ErrorMessage = "comment not found" };
+            comment.Content = content;
+            comment = _communityRepository.UpdateComment(comment);
             return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
         }
     }
