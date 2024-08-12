@@ -26,5 +26,9 @@ namespace YaqraApi.Repositories.IRepositories
         Task<List<Playlist>?> GetUserPlaylists(string userId, int page);
         Task<List<DiscussionArticleNews>?> GetUserDiscussions(string userId, int page);
         Task<Comment?> AddCommentAsync(Comment comment);
+        void DeleteComment(Comment comment);
+        Task<Comment?> GetCommentAsync(int commentId);
+        Task<List<Comment>> GetPostCommentsAsync(int postId, int page);
+        Comment UpdateComment(Comment comment);
     }
 }

@@ -200,5 +200,47 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Created((string?)null, result.Result);
         }
+        [HttpGet("comment")]
+        public async Task<IActionResult> GetCommentAsync([FromQuery] int commentId)
+        {
+            var result = await _communityService.GetCommentAsync(commentId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Created((string?)null, result.Result);
+        }
+        [HttpDelete("comment")]
+        public async Task<IActionResult> DeleteCommentAsync([FromQuery] int commentId)
+        {
+            var result = await _communityService.DeleteCommentAsync(commentId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Created((string?)null, result.Result);
+        }
+        [HttpGet("postComments")]
+        public async Task<IActionResult> GetPostCommentsAsync([FromQuery] int postId, [FromQuery] int page)
+        {
+            var result = await _communityService.GetPostCommentsAsync(postId, page);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Created((string?)null, result.Result);
+        }
+
+        [HttpPut("likeComment")]
+        public async Task<IActionResult> LikeCommentsAsync([FromQuery] int commentId)
+        {
+            var result = await _communityService.LikeCommentsAsync(commentId);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Created((string?)null, result.Result);
+        }
+        [HttpPut("comment")]
+        public async Task<IActionResult> UpdateCommentsAsync([FromForm] int commentId, [FromForm] string content)
+        {
+            var result = await _communityService.UpdateCommentAsync(commentId, content);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Created((string?)null, result.Result);
+        }
+
     }
 }

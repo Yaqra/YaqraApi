@@ -29,5 +29,10 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<List<PlaylistDto>>> GetUserPlaylists(string userId, int page);
         Task<GenericResultDto<List<DiscussionArticlesNewsDto>>> GetUserDiscussions(string userId, int page);
         Task<GenericResultDto<CommentDto>> AddCommentAsync(CommentDto dto);
+        Task<GenericResultDto<string>> DeleteCommentAsync(int commentId);
+        Task<GenericResultDto<CommentDto>> GetCommentAsync(int commentId);
+        Task<GenericResultDto<List<CommentDto>>> GetPostCommentsAsync(int postId, int page);
+        Task<GenericResultDto<CommentDto>> LikeCommentsAsync(int commentId);
+        Task<GenericResultDto<CommentDto>> UpdateCommentAsync(int commentId, string content);
     }
 }
