@@ -34,7 +34,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("BooksAuthors", (string)null);
+                    b.ToTable("BooksAuthors");
                 });
 
             modelBuilder.Entity("BooksGenres", b =>
@@ -49,7 +49,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("BooksGenres", (string)null);
+                    b.ToTable("BooksGenres");
                 });
 
             modelBuilder.Entity("DiscussionArticleNewsBooks", b =>
@@ -64,7 +64,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("DiscussionArticleNewsId");
 
-                    b.ToTable("DiscussionArticleNewsBooks", (string)null);
+                    b.ToTable("DiscussionArticleNewsBooks");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -185,7 +185,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("PlaylistId");
 
-                    b.ToTable("PlaylistBooks", (string)null);
+                    b.ToTable("PlaylistBooks");
                 });
 
             modelBuilder.Entity("UserFavouriteAuthors", b =>
@@ -200,7 +200,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("UserFavouriteAuthors", (string)null);
+                    b.ToTable("UserFavouriteAuthors");
                 });
 
             modelBuilder.Entity("UserFavouriteGenres", b =>
@@ -215,7 +215,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.ToTable("UserFavouriteGenres", (string)null);
+                    b.ToTable("UserFavouriteGenres");
                 });
 
             modelBuilder.Entity("UsersFollowers", b =>
@@ -230,7 +230,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("FollowedId");
 
-                    b.ToTable("UsersFollowers", (string)null);
+                    b.ToTable("UsersFollowers");
                 });
 
             modelBuilder.Entity("YaqraApi.Models.ApplicationRole", b =>
@@ -355,7 +355,7 @@ namespace YaqraApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors", (string)null);
+                    b.ToTable("Authors");
                 });
 
             modelBuilder.Entity("YaqraApi.Models.Book", b =>
@@ -384,7 +384,46 @@ namespace YaqraApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Books", (string)null);
+                    b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("YaqraApi.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LikeCount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ParentCommentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentCommentId");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("YaqraApi.Models.Genre", b =>
@@ -404,7 +443,7 @@ namespace YaqraApi.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Genres", (string)null);
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("YaqraApi.Models.Post", b =>
@@ -436,7 +475,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
 
                     b.UseTptMappingStrategy();
                 });
@@ -472,7 +511,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ReadingGoals", (string)null);
+                    b.ToTable("ReadingGoals");
                 });
 
             modelBuilder.Entity("YaqraApi.Models.UserBookWithStatus", b =>
@@ -493,7 +532,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("UserBookWithStatus", (string)null);
+                    b.ToTable("UserBookWithStatus");
                 });
 
             modelBuilder.Entity("YaqraApi.Models.DiscussionArticleNews", b =>
@@ -503,14 +542,14 @@ namespace YaqraApi.Migrations
                     b.Property<int>("Tag")
                         .HasColumnType("int");
 
-                    b.ToTable("DiscussionArticleNews", (string)null);
+                    b.ToTable("DiscussionArticleNews");
                 });
 
             modelBuilder.Entity("YaqraApi.Models.Playlist", b =>
                 {
                     b.HasBaseType("YaqraApi.Models.Post");
 
-                    b.ToTable("Playlists", (string)null);
+                    b.ToTable("Playlists");
                 });
 
             modelBuilder.Entity("YaqraApi.Models.Review", b =>
@@ -526,7 +565,7 @@ namespace YaqraApi.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("BooksAuthors", b =>
@@ -687,7 +726,7 @@ namespace YaqraApi.Migrations
 
             modelBuilder.Entity("YaqraApi.Models.ApplicationUser", b =>
                 {
-                    b.OwnsMany("YaqraApi.Models.ApplicationUser.RefreshTokens#YaqraApi.Models.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("YaqraApi.Models.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<string>("ApplicationUserId")
                                 .HasColumnType("nvarchar(450)");
@@ -713,13 +752,38 @@ namespace YaqraApi.Migrations
 
                             b1.HasKey("ApplicationUserId", "Id");
 
-                            b1.ToTable("RefreshToken", (string)null);
+                            b1.ToTable("RefreshToken");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationUserId");
                         });
 
                     b.Navigation("RefreshTokens");
+                });
+
+            modelBuilder.Entity("YaqraApi.Models.Comment", b =>
+                {
+                    b.HasOne("YaqraApi.Models.Comment", "ParentComment")
+                        .WithMany("Replies")
+                        .HasForeignKey("ParentCommentId");
+
+                    b.HasOne("YaqraApi.Models.Post", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YaqraApi.Models.ApplicationUser", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ParentComment");
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("YaqraApi.Models.Post", b =>
@@ -784,7 +848,7 @@ namespace YaqraApi.Migrations
             modelBuilder.Entity("YaqraApi.Models.Review", b =>
                 {
                     b.HasOne("YaqraApi.Models.Book", "Book")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -800,6 +864,8 @@ namespace YaqraApi.Migrations
 
             modelBuilder.Entity("YaqraApi.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("ReadingGoals");
 
                     b.Navigation("UserBooks");
@@ -807,7 +873,19 @@ namespace YaqraApi.Migrations
 
             modelBuilder.Entity("YaqraApi.Models.Book", b =>
                 {
+                    b.Navigation("Reviews");
+
                     b.Navigation("UserBooks");
+                });
+
+            modelBuilder.Entity("YaqraApi.Models.Comment", b =>
+                {
+                    b.Navigation("Replies");
+                });
+
+            modelBuilder.Entity("YaqraApi.Models.Post", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

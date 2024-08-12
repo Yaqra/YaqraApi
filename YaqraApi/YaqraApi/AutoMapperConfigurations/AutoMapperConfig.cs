@@ -170,6 +170,17 @@ namespace YaqraApi.AutoMapperConfigurations
                    .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.LikeCount))
                    .ForMember(dest => dest.Tag, opt => opt.MapFrom(src => src.Tag))
                    .ReverseMap();
+
+                //commentDto comment
+                cfg.CreateMap<Comment, CommentDto>()
+                   .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                   .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+                   .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId))
+                   .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                   .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
+                   .ForMember(dest => dest.ParentCommentId, opt => opt.MapFrom(src => src.ParentCommentId))
+                   .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.LikeCount))
+                   .ReverseMap();
             });
 
             return new Mapper(config);

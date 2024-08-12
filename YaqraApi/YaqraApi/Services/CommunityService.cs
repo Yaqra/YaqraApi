@@ -331,5 +331,14 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<List<DiscussionArticlesNewsDto>> { Succeeded = true, Result = discussionsDto };
         }
+
+        public async Task<GenericResultDto<CommentDto>> AddCommentAsync(CommentDto dto)
+        {
+            var comment = _mapper.Map<Comment>(dto);
+            comment = await _communityRepository.AddCommentAsync(comment);
+            if (comment == null)
+                return new GenericResultDto<CommentDto> { Succeeded = false, ErrorMessage = "something went wrong while posting ur comment" };
+            return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
+        }
     }
 }

@@ -192,5 +192,15 @@ namespace YaqraApi.Repositories
                 .OrderByDescending(r => r.CreatedDate)
                 .ToListAsync();
         }
+
+        public async Task<Comment?> AddCommentAsync(Comment comment)
+        {
+            await _context.Comments.AddAsync(comment);
+            await SaveChangesAsync();
+
+            _context.Entry(comment).State = EntityState.Detached;
+
+            return comment.Id == 0 ? null : comment;
+        }
     }
 }

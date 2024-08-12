@@ -192,5 +192,13 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [HttpPost("comment")]
+        public async Task<IActionResult> AddCommentAsync(CommentDto dto)
+        {
+            var result = await _communityService.AddCommentAsync(dto);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Created((string?)null, result.Result);
+        }
     }
 }

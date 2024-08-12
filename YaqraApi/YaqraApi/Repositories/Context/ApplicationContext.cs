@@ -99,6 +99,12 @@ namespace YaqraApi.Repositories.Context
 
             });
 
+            builder.Entity<Comment>(u =>
+            {
+                u.HasMany(u => u.Replies)
+                .WithOne(u => u.ParentComment)
+                .HasForeignKey(u => u.ParentCommentId);
+            });
             builder.Entity<UserBookWithStatus>().HasKey(ub => new { ub.UserId, ub.BookId });
 
             builder.Entity<Genre>().HasIndex(x => x.Name).IsUnique();
@@ -115,5 +121,7 @@ namespace YaqraApi.Repositories.Context
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Playlist> Playlists { get; set; }
         public DbSet<DiscussionArticleNews> DiscussionArticleNews { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+
     }
 }
