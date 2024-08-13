@@ -25,6 +25,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<BookDto>> RemoveAuthorsFromBook(List<int> authorIds, int bookId);
         void Attach(IEnumerable<Book> books);
         Task<GenericResultDto<List<ReviewDto>>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field);
+        Task<GenericResultDto<List<BookDto>>> FindBooks(BookFinderDto dto);
 
     }
 }

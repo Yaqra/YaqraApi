@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualBasic;
+using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
 using YaqraApi.Helpers;
@@ -13,16 +16,19 @@ namespace YaqraApi.Repositories
     public class BookRepository : IBookRepository
     {
         private readonly ApplicationContext _context;
+        private readonly Mapper _mapper;
 
         public BookRepository(ApplicationContext context)
         {
             _context = context;
+            _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         public void Attach(IEnumerable<Book> books)
         {
             foreach (var book in books)
                 _context.Books.Attach(book);
         }
+
         public async Task<Book?> AddAsync(Book newBook)
         {
             await _context.Books.AddAsync(newBook);
@@ -172,6 +178,79 @@ namespace YaqraApi.Repositories
             }
 
 
+        }
+
+        public async Task<List<BookDto>> FindBooks(BookFinderDto dto)
+        {
+            List<BookDto> books = new List<BookDto>();
+
+            if(dto.MinimumRate != null)
+            {
+                var booksIds = await _context.Books.Select(b => b.Id).ToListAsync();
+                foreach (var id in booksIds)
+                {
+                    var rates = await GetBookRates(id);
+                    if (rates.Count == 0)
+                        continue;
+                    var sum = rates.Sum();
+                    
+                    var bookRate = ((sum / (rates.Count * 10)) * 10);
+                    if (bookRate >= dto.MinimumRate)
+                    {
+                        var book = await GetByIdAsync(id);
+                        var bookDto = _mapper.Map<BookDto>(book);
+                        bookDto.Rate = bookRate.ToString("0.00");
+                        books.Add(bookDto);
+                    }
+                }
+            }
+            if(dto.AuthorIds.IsNullOrEmpty() == false)
+            {
+                HashSet<int> set = new(dto.AuthorIds);
+
+                foreach (var book in books)
+                {
+                    bool authorExists = false;
+                    foreach (var author in book.AuthorsDto)
+                    {
+                        if (set.Contains(author.Id))
+                            authorExists = true;
+                    }
+                    if (authorExists == false)
+                        books.Remove(book);
+                }
+            }
+            if(dto.GenreIds.IsNullOrEmpty() == false)
+            {
+                HashSet<int> set = new(dto.GenreIds);
+                foreach (var book in books)
+                {
+                    bool genreExists = false;
+                    foreach (var genre in book.GenresDto)
+                    {
+                        if (set.Contains(genre.GenreId))
+                            genreExists = true;
+                    }
+                    if (genreExists == false)
+                        books.Remove(book);
+                }
+            }
+
+            if (dto.MinimumRate == null && dto.AuthorIds == null && dto.GenreIds == null)
+            {
+                var booksDto = _mapper.Map<List<BookDto>>(await GetAll(dto.Page));
+                foreach (var book in booksDto)
+                {
+                    var rates = await GetBookRates(book.Id);
+                    book.Rate = BookHelpers.CalcualteRate(rates);
+                }
+                return booksDto;
+            }
+                
+
+            return books
+                .Skip((dto.Page - 1) * Pagination.BookTitlesAndIds).Take(Pagination.BookTitlesAndIds)
+                .ToList();
         }
     }
 }
