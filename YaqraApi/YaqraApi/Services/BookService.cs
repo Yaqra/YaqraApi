@@ -45,6 +45,7 @@ namespace YaqraApi.Services
         {
             _bookRepository.Attach(books);
         }
+
         public async Task<GenericResultDto<BookDto?>> AddAsync(AddBookDto dto)
         {
             var book = await CreateBook(dto);
@@ -302,6 +303,13 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<List<ReviewDto>> { Succeeded = true, Result = reviewsDto };
     
+        }
+
+        public async Task<GenericResultDto<List<BookDto>>> FindBooks(BookFinderDto dto)
+        {
+            dto.Page = dto.Page == 0 ? 1 : dto.Page;   
+
+            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = await _bookRepository.FindBooks(dto) };
         }
     }
 }

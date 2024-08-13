@@ -1,4 +1,5 @@
-﻿using YaqraApi.DTOs.Book;
+﻿using YaqraApi.DTOs;
+using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.Book;
 using YaqraApi.Models;
 using YaqraApi.Models.Enums;
@@ -19,6 +20,7 @@ namespace YaqraApi.Repositories.IRepositories
         Task<List<decimal>> GetBookRates(int bookId);
         void Attach(IEnumerable<Book> books);
         Task<List<Review>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field);
+        Task<List<BookDto>> FindBooks(BookFinderDto dto);
 
     }
 }

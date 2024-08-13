@@ -164,5 +164,13 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [HttpGet("find")]
+        public async Task<IActionResult> FindBooks(BookFinderDto dto)
+        {
+            var result = await _bookService.FindBooks(dto);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
     }
 }
