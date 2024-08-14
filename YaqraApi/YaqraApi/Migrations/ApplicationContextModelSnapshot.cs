@@ -514,6 +514,24 @@ namespace YaqraApi.Migrations
                     b.ToTable("ReadingGoals");
                 });
 
+            modelBuilder.Entity("YaqraApi.Models.RecommendationStatistics", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Points")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "GenreId");
+
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("RecommendationStatistics");
+                });
+
             modelBuilder.Entity("YaqraApi.Models.UserBookWithStatus", b =>
                 {
                     b.Property<string>("UserId")
@@ -808,6 +826,25 @@ namespace YaqraApi.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("YaqraApi.Models.RecommendationStatistics", b =>
+                {
+                    b.HasOne("YaqraApi.Models.Genre", "Genre")
+                        .WithMany("RecommendationStatistics")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YaqraApi.Models.ApplicationUser", "User")
+                        .WithMany("RecommendationStatistics")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genre");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("YaqraApi.Models.UserBookWithStatus", b =>
                 {
                     b.HasOne("YaqraApi.Models.Book", "Book")
@@ -868,6 +905,8 @@ namespace YaqraApi.Migrations
 
                     b.Navigation("ReadingGoals");
 
+                    b.Navigation("RecommendationStatistics");
+
                     b.Navigation("UserBooks");
                 });
 
@@ -881,6 +920,11 @@ namespace YaqraApi.Migrations
             modelBuilder.Entity("YaqraApi.Models.Comment", b =>
                 {
                     b.Navigation("Replies");
+                });
+
+            modelBuilder.Entity("YaqraApi.Models.Genre", b =>
+                {
+                    b.Navigation("RecommendationStatistics");
                 });
 
             modelBuilder.Entity("YaqraApi.Models.Post", b =>

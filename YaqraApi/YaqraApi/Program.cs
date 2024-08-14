@@ -73,6 +73,8 @@ namespace YaqraApi
             builder.Services.AddScoped<IBookService, BookService>();
             builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
             builder.Services.AddScoped<ICommunityService, CommunityService>();
+            builder.Services.AddScoped<IRecommendationRepository, RecommendationRepository>();
+            builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 
             var app = builder.Build();
 

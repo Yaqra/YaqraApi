@@ -16,5 +16,6 @@ namespace YaqraApi.Models
         public ICollection<ReadingGoal> ReadingGoals { get; set; }
         public ICollection<UserBookWithStatus> UserBooks { get; set; }
         public ICollection<Comment> Comments{ get; set; }
+        public ICollection<RecommendationStatistics> RecommendationStatistics { get; set; }
     }
 }

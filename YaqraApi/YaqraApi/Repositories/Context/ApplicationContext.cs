@@ -110,6 +110,7 @@ namespace YaqraApi.Repositories.Context
             builder.Entity<Genre>().HasIndex(x => x.Name).IsUnique();
 
             builder.Entity<Post>().UseTptMappingStrategy();
+            builder.Entity<RecommendationStatistics>().HasKey(r => new { r.UserId, r.GenreId });
 
             base.OnModelCreating(builder);
         }
@@ -122,6 +123,7 @@ namespace YaqraApi.Repositories.Context
         public DbSet<Playlist> Playlists { get; set; }
         public DbSet<DiscussionArticleNews> DiscussionArticleNews { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<RecommendationStatistics> RecommendationStatistics { get; set; }
 
     }
 }
