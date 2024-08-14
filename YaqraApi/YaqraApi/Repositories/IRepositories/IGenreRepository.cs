@@ -1,4 +1,5 @@
-﻿using YaqraApi.Models;
+﻿using YaqraApi.DTOs.Book;
+using YaqraApi.Models;
 
 namespace YaqraApi.Repositories.IRepositories
 {
@@ -12,5 +13,6 @@ namespace YaqraApi.Repositories.IRepositories
         void Delete(Genre genre);
         Task<Genre> UpdateAsync(int currentGenreId, Genre editedGenre);
         void Attach(IEnumerable<Genre> genres);
+        Task<List<Book>?> RandomizeBooksBasedOnGenre(int genreId, int count);
     }
 }

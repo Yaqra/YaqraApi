@@ -29,6 +29,7 @@ namespace YaqraApi.Services
         private readonly IBookService _bookService;
         private readonly IGenreRepository _genreRepository;
         private readonly IAuthorRepository _authorRepository;
+        private readonly IRecommendationService _recommendationService;
         private readonly IWebHostEnvironment _environment;
         private readonly Mapper _mapper;
         public UserService(
@@ -38,6 +39,7 @@ namespace YaqraApi.Services
             IBookService bookService,
             IGenreRepository genreRepository,
             IAuthorRepository authorRepository,
+            IRecommendationService recommendationService,
             IWebHostEnvironment environment)
         {
             _userManager = userManager;
@@ -46,6 +48,7 @@ namespace YaqraApi.Services
             _bookService = bookService;
             _genreRepository = genreRepository;
             _authorRepository = authorRepository;
+            _recommendationService = recommendationService;
             _environment = environment;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
@@ -264,6 +267,7 @@ namespace YaqraApi.Services
                     if (dto == null)
                         continue;
                     user.FavouriteGenres.Add(new Genre {Id= dto.GenreId, Name = dto.GenreName});
+                    await _recommendationService.IncrementPoints(user.Id, dto.GenreId);
                 }
             }
 
@@ -293,6 +297,7 @@ namespace YaqraApi.Services
             if (genreToDelete == null)
                 return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "genre not found" };
 
+            await _recommendationService.DecrementPoints(user.Id, genreToDelete.Id);
             user.FavouriteGenres.Remove(genreToDelete);
             var identityResult = await _userManager.UpdateAsync(user);
             if (identityResult.Succeeded == false)
@@ -527,6 +532,16 @@ namespace YaqraApi.Services
             if (user.UserBooks.Any(ub => ub.BookId == dto.BookId) == true)
                 return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "u already have this book in one of ur collections [to read, currently reading, already read]" };
 
+            var bookResult = await _bookService.GetByIdAsync(dto.BookId);
+            if(bookResult.Succeeded == true)
+            {
+                var book = bookResult.Result;
+                foreach (var genreId in book.GenresDto.Select(g=>g.GenreId))
+                {
+                    await _recommendationService.IncrementPoints(user.Id, genreId);
+                }
+            }
+
             user.UserBooks.Add(_mapper.Map<UserBookWithStatus>(dto));
             var identityResult = await _userManager.UpdateAsync(user);
 
@@ -628,6 +643,17 @@ namespace YaqraApi.Services
             var bookToDelete = user.UserBooks.SingleOrDefault(b => b.BookId == bookId);
             if (bookToDelete == null)
                 return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "book not found" };
+
+
+            var bookResult = await _bookService.GetByIdAsync(bookToDelete.BookId);
+            if (bookResult.Succeeded == true)
+            {
+                var book = bookResult.Result;
+                foreach (var genreId in book.GenresDto.Select(g => g.GenreId))
+                {
+                    await _recommendationService.DecrementPoints(user.Id, genreId);
+                }
+            }
 
             user.UserBooks.Remove(bookToDelete);
 

@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.Json;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.Storage.Json;
+using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
+using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
@@ -12,9 +15,11 @@ namespace YaqraApi.Services
     public class GenreService : IGenreService
     {
         private readonly IGenreRepository _genreRepository;
+        private readonly Mapper _mapper;
         public GenreService(IGenreRepository genreRepository)
         {
             _genreRepository = genreRepository;
+            _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         public async Task<GenericResultDto<GenreDto>> AddAsync(string genreName)
         {
@@ -67,6 +72,23 @@ namespace YaqraApi.Services
         {
             var result = (int)Math.Ceiling((double)_genreRepository.GetCount() / Pagination.Genres);
             return new GenericResultDto<int> {Succeeded = true, Result = result};
+        }
+        
+        public async Task<GenericResultDto<List<BookDto>?>> RandomizeBooksBasedOnGenre(int genreId, int count)
+        {
+            var books = await _genreRepository.RandomizeBooksBasedOnGenre(genreId, count);
+            if (books == null)
+                return new GenericResultDto<List<BookDto>?> { Succeeded = false, ErrorMessage = "genre not found" };
+            var booksDto = new List<BookDto>();
+            foreach (var book in books)
+            {
+                var rates = book.Reviews.Select(r => r.Rate);
+                var dto = _mapper.Map<BookDto>(book);
+                dto.Rate = BookHelpers.CalcualteRate(rates.ToList());
+                booksDto.Add(dto);
+            }
+
+            return new GenericResultDto<List<BookDto>?> { Succeeded = true, Result = booksDto };
         }
 
         public async Task<GenericResultDto<GenreDto>> UpdateAsync(int currentGenreId, string newGenreName)

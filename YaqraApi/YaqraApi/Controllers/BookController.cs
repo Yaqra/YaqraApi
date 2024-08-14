@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
+using YaqraApi.Helpers;
 using YaqraApi.Models.Enums;
 using YaqraApi.Services;
 using YaqraApi.Services.IServices;
@@ -16,11 +17,13 @@ namespace YaqraApi.Controllers
     public class BookController : ControllerBase
     {
         private readonly IBookService _bookService;
+        private readonly IRecommendationService _recommendationService;
         private readonly Mapper _mapper;
 
-        public BookController(IBookService bookService)
+        public BookController(IBookService bookService, IRecommendationService recommendationService)
         {
             _bookService = bookService;
+            _recommendationService = recommendationService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         [HttpPost("addBook")]
@@ -168,6 +171,14 @@ namespace YaqraApi.Controllers
         public async Task<IActionResult> FindBooks(BookFinderDto dto)
         {
             var result = await _bookService.FindBooks(dto);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
+        [HttpGet("recommendations")]
+        public async Task<IActionResult> GetRecommendedBooks()
+        {
+            var result = await _recommendationService.RecommendBooks(UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);

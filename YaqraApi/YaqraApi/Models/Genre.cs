@@ -9,5 +9,6 @@ namespace YaqraApi.Models
         public string Name { get; set; }
         public ICollection<ApplicationUser> Users { get; set; }
         public ICollection<Book> Books { get; set; }
+        public ICollection<RecommendationStatistics> RecommendationStatistics { get; set; }
     }
 }

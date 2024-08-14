@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Community;
+using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Models.Enums;
 using YaqraApi.Services;
@@ -68,7 +69,7 @@ namespace YaqraApi.Controllers
         public async Task<IActionResult> AddReviewAsync(AddReviewDto dto)
         {
             //var review = _mapper.Map<ReviewDto>(dto);
-            var result = await _communityService.AddReviewAsync(dto);
+            var result = await _communityService.AddReviewAsync(dto, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Created((string?)null, result.Result);
@@ -122,7 +123,7 @@ namespace YaqraApi.Controllers
         [HttpPut("addBooksToPlaylist")]
         public async Task<IActionResult> AddBooksToPlaylistAsync([FromForm]int playlistId, [FromForm] List<int> booksIds)
         {
-            var result = await _communityService.AddBooksToPlaylist(playlistId, booksIds);
+            var result = await _communityService.AddBooksToPlaylist(playlistId, booksIds, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Created((string?)null, result.Result);
@@ -130,7 +131,7 @@ namespace YaqraApi.Controllers
         [HttpPut("removeBooksFromPlaylist")]
         public async Task<IActionResult> RemoveBooksFromPlaylistAsync([FromForm] int playlistId, [FromForm] List<int> booksIds)
         {
-            var result = await _communityService.RemoveBooksFromPlaylist(playlistId, booksIds);
+            var result = await _communityService.RemoveBooksFromPlaylist(playlistId, booksIds, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Created((string?)null, result.Result);
@@ -138,7 +139,7 @@ namespace YaqraApi.Controllers
         [HttpPut("addBooksToDiscussion")]
         public async Task<IActionResult> AddBooksToDiscussionAsync([FromForm] int discussionId, [FromForm] List<int> booksIds)
         {
-            var result = await _communityService.AddBooksToDiscussion(discussionId, booksIds);
+            var result = await _communityService.AddBooksToDiscussion(discussionId, booksIds, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Created((string?)null, result.Result);
@@ -146,7 +147,7 @@ namespace YaqraApi.Controllers
         [HttpPut("removeBooksFromDiscussion")]
         public async Task<IActionResult> RemoveBooksFromDiscussionAsync([FromForm] int discussionId, [FromForm] List<int> booksIds)
         {
-            var result = await _communityService.RemoveBooksFromDiscussion(discussionId, booksIds);
+            var result = await _communityService.RemoveBooksFromDiscussion(discussionId, booksIds, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Created((string?)null, result.Result);

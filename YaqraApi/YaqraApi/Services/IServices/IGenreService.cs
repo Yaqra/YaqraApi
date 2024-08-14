@@ -1,4 +1,5 @@
 ﻿using YaqraApi.DTOs;
+using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.Models;
 
@@ -13,6 +14,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<GenreDto>> AddAsync(string genreName);
         Task<GenericResultDto<GenreDto>> UpdateAsync(int currentGenreId, string newGenreName);
         Task<GenericResultDto<string>> DeleteAsync(int id);
+        Task<GenericResultDto<List<BookDto>?>> RandomizeBooksBasedOnGenre(int genreId, int count);
         void Attach(IEnumerable<Genre> genres);
     }
 }
