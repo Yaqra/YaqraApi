@@ -28,6 +28,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<List<BookDto>>> FindBooks(BookFinderDto dto);
         Task<GenericResultDto<List<BookDto>>> GetTrendingBooks();
         Task AddTrendingBook(int bookId);
+        Task<GenericResultDto<List<BookDto>>> GetUpcomingBooks(int page);
 
     }
 }

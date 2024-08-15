@@ -277,5 +277,12 @@ namespace YaqraApi.Repositories
             await _context.TrendingBooks.AddAsync(trending);
             await SaveChangesAsync();
         }
+
+        public async Task<List<Book>> GetUpcomingBooks(int page)
+        {
+            return await _context.Books.Where(b => b.AddedDate > DateTime.UtcNow)
+                                    .Skip((page - 1) * Pagination.Books).Take(Pagination.Books)
+                                    .ToListAsync();
+        }
     }
 }

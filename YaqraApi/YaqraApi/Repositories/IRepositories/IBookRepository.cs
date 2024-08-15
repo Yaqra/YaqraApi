@@ -23,6 +23,7 @@ namespace YaqraApi.Repositories.IRepositories
         Task<List<BookDto>> FindBooks(BookFinderDto dto);
         Task<List<Book>> GetTrendingBooks();
         Task AddTrendingBook(TrendingBook trending);
+        Task<List<Book>> GetUpcomingBooks(int page);
 
     }
 }
