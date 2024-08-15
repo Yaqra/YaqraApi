@@ -252,5 +252,30 @@ namespace YaqraApi.Repositories
                 .Skip((dto.Page - 1) * Pagination.BookTitlesAndIds).Take(Pagination.BookTitlesAndIds)
                 .ToList();
         }
+
+        public async Task<List<Book>> GetTrendingBooks()
+        {
+            var books = await _context.TrendingBooks
+                .Include(b => b.Book)
+                .Where(b => b.AddedDate >= DateTime.UtcNow.AddDays(-7))
+                .GroupBy(b => b.BookId)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.FirstOrDefault().Book) // Select the first book in each group
+                .ToListAsync();
+
+            foreach (var book in books)
+            {
+                _context.Entry(book).Collection(b => b.Reviews).Load();
+            }
+
+            return books
+                .Take(Pagination.TrendingBooks).ToList();
+        }
+
+        public async Task AddTrendingBook(TrendingBook trending)
+        {
+            await _context.TrendingBooks.AddAsync(trending);
+            await SaveChangesAsync();
+        }
     }
 }

@@ -3,20 +3,12 @@
   "WorkspaceRootPath": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/./YaqraApi/True/SqlTable/dbo.BooksGenres.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
+      "AbsoluteMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapi\\repositories\\bookrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|solutionrelative:yaqraapi\\repositories\\bookrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/./YaqraApi/True/SqlTable/dbo.Books.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/./YaqraApi/True/SqlTable/dbo.Genres.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|ViewDataWindow_MSSQL__/./YaqraApi/True/SqlTable/dbo.RecommendationStatistics.sql||{0058A1F7-65F3-4DB9-B3D0-CA7E64DD73CD}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapi\\controllers\\bookcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|solutionrelative:yaqraapi\\controllers\\bookcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapi\\services\\bookservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|solutionrelative:yaqraapi\\services\\bookservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,54 +27,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "dbo.Books [Data]",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/./YaqraApi/True/SqlTable/dbo.Books.sql",
-              "ToolTip": "dbo.Books [Data]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-08-14T19:16:55.37Z",
+              "Title": "BookService.cs",
+              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Services\\BookService.cs",
+              "RelativeDocumentMoniker": "YaqraApi\\Services\\BookService.cs",
+              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Services\\BookService.cs",
+              "RelativeToolTip": "YaqraApi\\Services\\BookService.cs",
+              "ViewState": "AQIAADIBAAAAAAAAAAAkwEIBAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-15T15:40:34.985Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "dbo.BooksGenres [Data]",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/./YaqraApi/True/SqlTable/dbo.BooksGenres.sql",
-              "ToolTip": "dbo.BooksGenres [Data]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-08-14T19:16:52.121Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "dbo.Genres [Data]",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/./YaqraApi/True/SqlTable/dbo.Genres.sql",
-              "ToolTip": "dbo.Genres [Data]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-08-14T19:15:55.301Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "dbo.RecommendationStatistics [Data]",
-              "DocumentMoniker": "ViewDataWindow_MSSQL__/./YaqraApi/True/SqlTable/dbo.RecommendationStatistics.sql",
-              "ToolTip": "dbo.RecommendationStatistics [Data]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-08-14T19:15:09.482Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "BookController.cs",
-              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Controllers\\BookController.cs",
-              "RelativeDocumentMoniker": "YaqraApi\\Controllers\\BookController.cs",
-              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Controllers\\BookController.cs",
-              "RelativeToolTip": "YaqraApi\\Controllers\\BookController.cs",
-              "ViewState": "AQIAAKoAAAAAAAAAAAAAALEAAAAhAAAA",
+              "Title": "BookRepository.cs",
+              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Repositories\\BookRepository.cs",
+              "RelativeDocumentMoniker": "YaqraApi\\Repositories\\BookRepository.cs",
+              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Repositories\\BookRepository.cs",
+              "RelativeToolTip": "YaqraApi\\Repositories\\BookRepository.cs",
+              "ViewState": "AQIAAP4AAAAAAAAAAAAUwP8AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-14T19:10:24.192Z",
+              "WhenOpened": "2024-08-15T15:31:01.651Z",
               "EditorCaption": ""
             }
           ]

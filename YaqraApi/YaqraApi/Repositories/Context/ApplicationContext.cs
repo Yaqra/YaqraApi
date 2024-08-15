@@ -124,6 +124,7 @@ namespace YaqraApi.Repositories.Context
         public DbSet<DiscussionArticleNews> DiscussionArticleNews { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<RecommendationStatistics> RecommendationStatistics { get; set; }
+        public DbSet<TrendingBook> TrendingBooks { get; set; }
 
     }
 }

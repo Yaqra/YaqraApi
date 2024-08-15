@@ -532,6 +532,27 @@ namespace YaqraApi.Migrations
                     b.ToTable("RecommendationStatistics");
                 });
 
+            modelBuilder.Entity("YaqraApi.Models.TrendingBook", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("TrendingBooks");
+                });
+
             modelBuilder.Entity("YaqraApi.Models.UserBookWithStatus", b =>
                 {
                     b.Property<string>("UserId")
@@ -845,6 +866,17 @@ namespace YaqraApi.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("YaqraApi.Models.TrendingBook", b =>
+                {
+                    b.HasOne("YaqraApi.Models.Book", "Book")
+                        .WithMany("TrendingBooks")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+                });
+
             modelBuilder.Entity("YaqraApi.Models.UserBookWithStatus", b =>
                 {
                     b.HasOne("YaqraApi.Models.Book", "Book")
@@ -913,6 +945,8 @@ namespace YaqraApi.Migrations
             modelBuilder.Entity("YaqraApi.Models.Book", b =>
                 {
                     b.Navigation("Reviews");
+
+                    b.Navigation("TrendingBooks");
 
                     b.Navigation("UserBooks");
                 });

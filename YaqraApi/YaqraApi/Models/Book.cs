@@ -15,7 +15,7 @@
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Playlist> Playlists { get; set; }
         public ICollection<DiscussionArticleNews> DiscussionArticleNews { get; set; }
-
+        public ICollection<TrendingBook>? TrendingBooks { get; set; }
 
     }
 }

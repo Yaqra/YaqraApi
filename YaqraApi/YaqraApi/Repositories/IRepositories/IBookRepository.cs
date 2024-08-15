@@ -21,6 +21,8 @@ namespace YaqraApi.Repositories.IRepositories
         void Attach(IEnumerable<Book> books);
         Task<List<Review>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field);
         Task<List<BookDto>> FindBooks(BookFinderDto dto);
+        Task<List<Book>> GetTrendingBooks();
+        Task AddTrendingBook(TrendingBook trending);
 
     }
 }

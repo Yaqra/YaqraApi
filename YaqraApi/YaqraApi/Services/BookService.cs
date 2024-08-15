@@ -311,5 +311,30 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = await _bookRepository.FindBooks(dto) };
         }
+
+        public async Task<GenericResultDto<List<BookDto>>> GetTrendingBooks()
+        {
+            var books = await _bookRepository.GetTrendingBooks();
+            if (books == null)
+                return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = new List<BookDto>()};
+
+            var booksDto = new List<BookDto>();
+            foreach (var book in books)
+            {
+                var rates = book.Reviews.Select(r => r.Rate);
+                var dto = _mapper.Map<BookDto>(book);
+                dto.Rate = BookHelpers.CalcualteRate(rates.ToList());
+                booksDto.Add(dto);
+            }
+            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = booksDto};
+        }
+
+        public async Task AddTrendingBook(int bookId)
+        {
+            var book = await _bookRepository.GetByIdAsync(bookId);
+            if (book == null)
+                return;
+            await _bookRepository.AddTrendingBook(new TrendingBook { BookId = bookId });
+        }
     }
 }

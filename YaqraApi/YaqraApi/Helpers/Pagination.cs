@@ -13,6 +13,7 @@
         public static int Posts = 18; 
         public static int Comments = 27; 
         public static int RecommendedBooks = 9; 
+        public static int TrendingBooks = 9; 
 
     }
 }

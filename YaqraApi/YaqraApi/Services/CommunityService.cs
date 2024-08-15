@@ -63,6 +63,8 @@ namespace YaqraApi.Services
                 if(bookResult.Succeeded == true)
                 {
                     var book = bookResult.Result;
+                    await _bookService.AddTrendingBook(book.Id);
+
                     foreach (var genreId in book.GenresDto.Select(g=>g.GenreId))
                     {
                         await _recommendationService.IncrementPoints(userId, genreId);
@@ -105,6 +107,7 @@ namespace YaqraApi.Services
             if (bookResult.Succeeded == true)
             {
                 var book = bookResult.Result;
+                await _bookService.AddTrendingBook(book.Id);
                 foreach (var genreId in book.GenresDto.Select(g => g.GenreId))
                 {
                     await _recommendationService.IncrementPoints(userId, genreId);
@@ -274,6 +277,7 @@ namespace YaqraApi.Services
                 if (bookResult.Succeeded == true)
                 {
                     var book = bookResult.Result;
+                    await _bookService.AddTrendingBook(book.Id);
                     foreach (var genreId in book.GenresDto.Select(g => g.GenreId))
                     {
                         await _recommendationService.IncrementPoints(userId, genreId);
