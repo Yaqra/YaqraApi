@@ -191,5 +191,13 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [HttpGet("upcoming")]
+        public async Task<IActionResult> GetUpcomingBooks([FromQuery] int page)
+        {
+            var result = await _bookService.GetUpcomingBooks(page);
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
     }
 }

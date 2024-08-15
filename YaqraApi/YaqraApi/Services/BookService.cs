@@ -336,5 +336,12 @@ namespace YaqraApi.Services
                 return;
             await _bookRepository.AddTrendingBook(new TrendingBook { BookId = bookId });
         }
+
+        public async Task<GenericResultDto<List<BookDto>>> GetUpcomingBooks(int page)
+        {
+            page = page == 0 ? 1 : page;
+            var books = await _bookRepository.GetUpcomingBooks(page);
+            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = _mapper.Map<List<BookDto>>(books) };
+        }
     }
 }
