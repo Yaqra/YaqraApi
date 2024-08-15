@@ -26,6 +26,8 @@ namespace YaqraApi.Services.IServices
         void Attach(IEnumerable<Book> books);
         Task<GenericResultDto<List<ReviewDto>>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field);
         Task<GenericResultDto<List<BookDto>>> FindBooks(BookFinderDto dto);
+        Task<GenericResultDto<List<BookDto>>> GetTrendingBooks();
+        Task AddTrendingBook(int bookId);
 
     }
 }

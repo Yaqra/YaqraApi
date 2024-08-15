@@ -382,7 +382,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="8hk4AqA1H6nHti40Ue7w" name="mapping digaram">
-    <mxGraphModel dx="1338" dy="293" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="2085" dy="740" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -933,6 +933,21 @@
         </mxCell>
         <mxCell id="2k1M9OOIBol2dlPEo0s8-4" value="&lt;span style=&quot;font-size: 20px;&quot;&gt;points&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" parent="1" vertex="1">
           <mxGeometry x="1000" y="490" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="j4KQ-V00ApWUSLHXP68H-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" edge="1" parent="1" source="j4KQ-V00ApWUSLHXP68H-1" target="s6Cg-PXdehKBhB0wUCgS-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="j4KQ-V00ApWUSLHXP68H-1" value="&lt;span style=&quot;font-size: 20px;&quot;&gt;TrendingBooks&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=center;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="720" y="990" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="j4KQ-V00ApWUSLHXP68H-2" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;u&gt;Id&lt;/u&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="720" y="1020" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="j4KQ-V00ApWUSLHXP68H-3" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;u&gt;bookId&lt;/u&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="720" y="1050" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="j4KQ-V00ApWUSLHXP68H-4" value="&lt;span style=&quot;font-size: 20px;&quot;&gt;addedDate&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="720" y="1080" width="160" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

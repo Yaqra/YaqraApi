@@ -183,5 +183,13 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [HttpGet("trending")]
+        public async Task<IActionResult> GetTrendingBooks()
+        {
+            var result = await _bookService.GetTrendingBooks();
+            if (result.Succeeded == false)
+                return BadRequest(result.ErrorMessage);
+            return Ok(result.Result);
+        }
     }
 }
