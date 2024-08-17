@@ -253,5 +253,30 @@ namespace YaqraApi.Repositories
             SaveChanges();
             return comment;
         }
+
+        public async Task<List<Post>> GetFollowingsPostsAsync(IEnumerable<string> followingsIds, int page)
+        {
+            var posts = _context.Posts
+            .Where(r => followingsIds.Contains(r.UserId))
+            .Include(r => (r as Playlist).Books)
+            .Include(r => (r as DiscussionArticleNews).Books)
+            .Include(r => (r as Review).Book)
+            .Include(r => r.User)
+            .Skip((page - 1) * Pagination.Timeline).Take(Pagination.Timeline)
+            .OrderByDescending(r => r.Id);
+            return await posts.ToListAsync();
+        }
+
+        public async Task<List<Post>> GetPostsAsync(int page)
+        {
+            var posts = _context.Posts
+            .Include(r => (r as Playlist).Books)
+            .Include(r => (r as DiscussionArticleNews).Books)
+            .Include(r => (r as Review).Book)
+            .Include(r => r.User)
+            .Skip((page - 1) * Pagination.Timeline).Take(Pagination.Timeline)
+            .OrderByDescending(r => r.Id);
+            return await posts.ToListAsync();
+        }
     }
 }
