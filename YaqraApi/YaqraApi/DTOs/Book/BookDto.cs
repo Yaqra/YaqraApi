@@ -14,6 +14,7 @@ namespace YaqraApi.DTOs.Book
         public int? NumberOfPages { get; set; }
         public DateTime AddedDate { get; set; } = DateTime.UtcNow;
         public string? Rate { get; set; }
+        public string Type { get; set; } = "Book";
         public List<AuthorDto> AuthorsDto { get; set; } = new List<AuthorDto>();
         public List<GenreDto> GenresDto { get; set; } = new List<GenreDto>();
     }

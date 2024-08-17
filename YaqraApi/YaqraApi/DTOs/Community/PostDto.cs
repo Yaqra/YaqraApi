@@ -24,14 +24,20 @@ namespace YaqraApi.DTOs.Community
         [Precision(4, 2), Range(1, 10)]
         public decimal Rate { get; set; }
         public BookDto Book { get; set; }
-    }    
+        public string Type { get; set; } = "Review";
+
+    }
     public class PlaylistDto : PostDto
     {
         public List<BookDto> Books { get; set; }
+        public string Type { get; set; } = "Playlist";
+
     }
     public class DiscussionArticlesNewsDto : PostDto
     {
         public string Tag { get; set; }
         public List<BookDto>? Books { get; set; }
+        public string Type { get; set; } = "DiscussionArticleNews";
+
     }
 }

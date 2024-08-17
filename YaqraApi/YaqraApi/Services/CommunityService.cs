@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore.Storage.Json;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Collections;
 using System.Net;
 using System.Security.Cryptography.Xml;
 using YaqraApi.AutoMapperConfigurations;
@@ -470,6 +472,48 @@ namespace YaqraApi.Services
             comment.Content = content;
             comment = _communityRepository.UpdateComment(comment);
             return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
+        }
+
+        public async Task<GenericResultDto<ArrayList>> GetFollowingsPostsAsync(IEnumerable<string> followingsIds, int page)
+        {
+            var posts = await _communityRepository.GetFollowingsPostsAsync(followingsIds, page);
+            if (posts.IsNullOrEmpty())
+                return new GenericResultDto<ArrayList> { Succeeded = true, Result = new ArrayList() };
+            return new GenericResultDto<ArrayList> { Succeeded = true, Result = ConvertPostParentToChildren(posts) };
+        }
+        
+        private ArrayList ConvertPostParentToChildren(List<Post> posts)
+        {
+            var arr = new ArrayList();
+            foreach (var post in posts)
+            {
+                if(post is Review)
+                {
+                    var review = post as Review;
+                    var reviewDto = _mapper.Map<ReviewDto>(review);
+                    reviewDto.Book = _mapper.Map<BookDto>(review.Book);
+                    arr.Add(reviewDto);
+                }
+                else if (post is Playlist)
+                {
+                    var playlistDto = _mapper.Map<PlaylistDto>(post as Playlist);
+                    arr.Add(playlistDto);
+                }
+                else // discussionArticleNews
+                {
+                    var discussionDto = _mapper.Map<DiscussionArticlesNewsDto>(post as DiscussionArticleNews);
+                    arr.Add(discussionDto);
+                }
+            }
+            return arr;
+        }
+
+        public async Task<GenericResultDto<ArrayList>> GetPostsAsync(int page)
+        {
+            var posts = await _communityRepository.GetPostsAsync(page);
+            if (posts.IsNullOrEmpty())
+                return new GenericResultDto<ArrayList> { Succeeded = true, Result = new ArrayList() };
+            return new GenericResultDto<ArrayList> { Succeeded = true, Result = ConvertPostParentToChildren(posts) };
         }
     }
 }

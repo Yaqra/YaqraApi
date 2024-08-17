@@ -1,4 +1,5 @@
-﻿using YaqraApi.DTOs;
+﻿using System.Collections;
+using YaqraApi.DTOs;
 using YaqraApi.DTOs.Community;
 using YaqraApi.Models;
 using YaqraApi.Models.Enums;
@@ -34,5 +35,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<List<CommentDto>>> GetPostCommentsAsync(int postId, int page);
         Task<GenericResultDto<CommentDto>> LikeCommentsAsync(int commentId);
         Task<GenericResultDto<CommentDto>> UpdateCommentAsync(int commentId, string content);
+        Task<GenericResultDto<ArrayList>> GetFollowingsPostsAsync(IEnumerable<string> followingsIds, int page);
+        Task<GenericResultDto<ArrayList>> GetPostsAsync(int page);
     }
 }
