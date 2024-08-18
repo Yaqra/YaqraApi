@@ -446,6 +446,40 @@ namespace YaqraApi.Migrations
                     b.ToTable("Genres");
                 });
 
+            modelBuilder.Entity("YaqraApi.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAck")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReceiverId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("YaqraApi.Models.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -765,6 +799,22 @@ namespace YaqraApi.Migrations
 
             modelBuilder.Entity("YaqraApi.Models.ApplicationUser", b =>
                 {
+                    b.OwnsMany("YaqraApi.Models.Connection", "Connections", b1 =>
+                        {
+                            b1.Property<string>("ApplicationUserId")
+                                .HasColumnType("nvarchar(450)");
+
+                            b1.Property<string>("ConnectionId")
+                                .HasColumnType("nvarchar(450)");
+
+                            b1.HasKey("ApplicationUserId", "ConnectionId");
+
+                            b1.ToTable("Connection");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ApplicationUserId");
+                        });
+
                     b.OwnsMany("YaqraApi.Models.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<string>("ApplicationUserId")
@@ -797,6 +847,8 @@ namespace YaqraApi.Migrations
                                 .HasForeignKey("ApplicationUserId");
                         });
 
+                    b.Navigation("Connections");
+
                     b.Navigation("RefreshTokens");
                 });
 
@@ -823,6 +875,25 @@ namespace YaqraApi.Migrations
                     b.Navigation("Post");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("YaqraApi.Models.Notification", b =>
+                {
+                    b.HasOne("YaqraApi.Models.Post", "Post")
+                        .WithMany("Notifications")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YaqraApi.Models.ApplicationUser", "Receiver")
+                        .WithMany("Notifications")
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("Receiver");
                 });
 
             modelBuilder.Entity("YaqraApi.Models.Post", b =>
@@ -935,6 +1006,8 @@ namespace YaqraApi.Migrations
                 {
                     b.Navigation("Comments");
 
+                    b.Navigation("Notifications");
+
                     b.Navigation("ReadingGoals");
 
                     b.Navigation("RecommendationStatistics");
@@ -964,6 +1037,8 @@ namespace YaqraApi.Migrations
             modelBuilder.Entity("YaqraApi.Models.Post", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Notifications");
                 });
 #pragma warning restore 612, 618
         }

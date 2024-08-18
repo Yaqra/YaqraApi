@@ -44,6 +44,8 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<BookCollectionPages>> GetBooksPagesCountAsync(string userId);
         Task<GenericResultDto<BookDto>> UpdateBookStatusAsync(int bookId, int? status, string userId);
         Task<GenericResultDto<string>> DeleteBookAsync(int bookId, string userId);
-
+        Task<GenericResultDto<string>> AddConnectionIdToUser(string userId, string connectionId);
+        Task<GenericResultDto<string>> RemoveConnectionIdFromUser(string userId, string connectionId);
+        Task<List<string>?> GetUserConnections(string userId);
     }
 }

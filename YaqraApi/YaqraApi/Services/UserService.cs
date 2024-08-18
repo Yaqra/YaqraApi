@@ -16,6 +16,7 @@ using YaqraApi.DTOs.UserBookWithStatus;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Models.Enums;
+using YaqraApi.Repositories.Context;
 using YaqraApi.Repositories.IRepositories;
 using YaqraApi.Services.IServices;
 
@@ -40,7 +41,8 @@ namespace YaqraApi.Services
             IGenreRepository genreRepository,
             IAuthorRepository authorRepository,
             IRecommendationService recommendationService,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment
+            )
         {
             _userManager = userManager;
             _genreService = genreService;
@@ -749,6 +751,44 @@ namespace YaqraApi.Services
                 ToReadBooksPages = (int)Math.Ceiling((double)toReadBooksCount / Pagination.BookTitlesAndIds),
             };
             return new GenericResultDto<BookCollectionPages> { Succeeded = true, Result = result };
+        }
+
+        public async Task<GenericResultDto<string>> AddConnectionIdToUser(string userId, string connectionId)
+        {
+            if(userId == null)
+                return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "user id is null" };
+            var user = await _userManager.Users
+                .SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "user not found" };
+            user.Connections.Add(new Connection { ConnectionId = connectionId });
+            await _userManager.UpdateAsync(user);
+            return new GenericResultDto<string> { Succeeded = true };
+        }
+
+        public async Task<GenericResultDto<string>> RemoveConnectionIdFromUser(string userId, string connectionId)
+        {
+            if (userId == null)
+                return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "user id is null" };
+            var user = await _userManager.Users
+                .SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "user not found" };
+            var connection = user.Connections.SingleOrDefault(c => c.ConnectionId == connectionId);
+            if (connection == null)
+                return new GenericResultDto<string> { Succeeded = true };
+            user.Connections.Remove(connection);
+            await _userManager.UpdateAsync(user);
+            return new GenericResultDto<string> { Succeeded = true };
+        }
+
+        public async Task<List<string>?> GetUserConnections(string userId)
+        {
+            var user = await _userManager.Users.SingleOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+                return null;
+            var connections = user.Connections.Select(c => c.ConnectionId);
+            return connections.ToList();
         }
     }
 }

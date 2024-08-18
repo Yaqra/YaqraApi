@@ -39,6 +39,7 @@ D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\obj\Release\net8.0\win
 D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\obj\Release\net8.0\win-x86\PubTmp\Out\System.Drawing.Common.dll
 D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\obj\Release\net8.0\win-x86\PubTmp\Out\System.IdentityModel.Tokens.Jwt.dll
 D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\obj\Release\net8.0\win-x86\PubTmp\Out\System.Memory.Data.dll
+D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\obj\Release\net8.0\win-x86\PubTmp\Out\System.Net.WebSockets.WebSocketProtocol.dll
 D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\obj\Release\net8.0\win-x86\PubTmp\Out\System.Runtime.Caching.dll
 D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\obj\Release\net8.0\win-x86\PubTmp\Out\System.Security.Cryptography.ProtectedData.dll
 D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\obj\Release\net8.0\win-x86\PubTmp\Out\System.Security.Permissions.dll

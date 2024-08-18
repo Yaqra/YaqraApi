@@ -33,6 +33,8 @@ namespace YaqraApi.Repositories.IRepositories
         Comment UpdateComment(Comment comment);
         Task<List<Post>> GetFollowingsPostsAsync(IEnumerable<string> followersIds, int page);
         Task<List<Post>> GetPostsAsync(int page);
+        Task<string?> GetPostUserIdAsync(int postId);
+        Task<string?> GetCommentUserIdAsync(int commentId);
 
     }
 }

@@ -17,5 +17,12 @@ namespace YaqraApi.Models
         public ICollection<UserBookWithStatus> UserBooks { get; set; }
         public ICollection<Comment> Comments{ get; set; }
         public ICollection<RecommendationStatistics> RecommendationStatistics { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
+        public ICollection<Connection> Connections { get; set; }
+    }
+    [Owned]
+    public class Connection
+    {
+        public string ConnectionId { get; set;}
     }
 }

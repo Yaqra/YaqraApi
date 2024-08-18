@@ -15,6 +15,7 @@ namespace YaqraApi.Models
         public int LikeCount { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public ICollection<Comment> Comments { get; set; }
+        public ICollection<Notification> Notifications { get; set; }
     }
     public class Review : Post
     {

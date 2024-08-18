@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using YaqraApi.DTOs.User;
 using YaqraApi.Models;
 
 namespace YaqraApi.DTOs.Community
@@ -11,7 +12,7 @@ namespace YaqraApi.DTOs.Community
         public int LikeCount { get; set; }
         public string Content { get; set; }
         public ICollection<CommentDto>? Replies { get; set; }
-        public string UserId { get; set; }
+        public UserDto User { get; set; }
         public int? ParentCommentId { get; set; }
     }
 }

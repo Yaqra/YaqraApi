@@ -222,7 +222,9 @@ namespace YaqraApi.Repositories
 
         public async Task<Comment?> GetCommentAsync(int commentId)
         {
-            var comment = await _context.Comments.SingleOrDefaultAsync(c => c.Id == commentId);
+            var comment = await _context.Comments
+                .Include(c=>c.User)
+                .SingleOrDefaultAsync(c => c.Id == commentId);
             if (comment == null)
                 return null;
             LoadReplies(comment);
@@ -237,6 +239,7 @@ namespace YaqraApi.Repositories
                     .Skip((page - 1) * Pagination.Comments).Take(Pagination.Comments)
                     .OrderBy(c=>c.CreatedDate)
                 )
+                .ThenInclude(c=>c.User)
                 .SingleOrDefaultAsync(p=>p.Id == postId));
             if (post == null)
                 return null;
@@ -277,6 +280,16 @@ namespace YaqraApi.Repositories
             .Skip((page - 1) * Pagination.Timeline).Take(Pagination.Timeline)
             .OrderByDescending(r => r.Id);
             return await posts.ToListAsync();
+        }
+
+        public async Task<string?> GetPostUserIdAsync(int postId)
+        {
+            return (await _context.Posts.SingleOrDefaultAsync(p => p.Id == postId))?.UserId;
+        }
+
+        public async Task<string?> GetCommentUserIdAsync(int commentId)
+        {
+            return (await _context.Comments.SingleOrDefaultAsync(p => p.Id == commentId))?.UserId;
         }
     }
 }

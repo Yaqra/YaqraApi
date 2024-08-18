@@ -15,6 +15,7 @@
         public static int RecommendedBooks = 9; 
         public static int TrendingBooks = 9; 
         public static int Timeline = 27; 
+        public static int Notifications = 36; 
 
     }
 }
