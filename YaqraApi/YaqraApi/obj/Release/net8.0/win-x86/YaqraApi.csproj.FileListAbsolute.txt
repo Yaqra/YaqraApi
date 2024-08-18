@@ -134,3 +134,4 @@ D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\obj\Release\net8.0\win
 D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\obj\Release\net8.0\win-x86\YaqraApi.pdb
 D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\obj\Release\net8.0\win-x86\YaqraApi.genruntimeconfig.cache
 D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\obj\Release\net8.0\win-x86\ref\YaqraApi.dll
+D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\bin\Release\net8.0\win-x86\System.Net.WebSockets.WebSocketProtocol.dll

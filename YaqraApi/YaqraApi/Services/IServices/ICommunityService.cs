@@ -37,5 +37,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<CommentDto>> UpdateCommentAsync(int commentId, string content);
         Task<GenericResultDto<ArrayList>> GetFollowingsPostsAsync(IEnumerable<string> followingsIds, int page);
         Task<GenericResultDto<ArrayList>> GetPostsAsync(int page);
+        Task<GenericResultDto<string>> GetPostUserIdAsync(int postId);
+        Task<GenericResultDto<string>> GetCommentUserIdAsync(int commentId);
     }
 }

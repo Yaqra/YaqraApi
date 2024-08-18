@@ -145,3 +145,4 @@ D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\bin\Debug\net8.0\Micro
 D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\bin\Debug\net8.0\YaqraApi.staticwebassets.runtime.json
 D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\bin\Debug\net8.0\Newtonsoft.Json.dll
+D:\Computer Science\MyProjects\YaqraApi\YaqraApi\YaqraApi\bin\Debug\net8.0\System.Net.WebSockets.WebSocketProtocol.dll

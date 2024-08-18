@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Community;
+using YaqraApi.DTOs.Notification;
 using YaqraApi.Helpers;
+using YaqraApi.Hubs;
 using YaqraApi.Models;
 using YaqraApi.Models.Enums;
 using YaqraApi.Services;
@@ -17,11 +20,20 @@ namespace YaqraApi.Controllers
     public class CommunityController : ControllerBase
     {
         private readonly ICommunityService _communityService;
+        private readonly IHubContext<NotificationHub> _hub;
+        private readonly INotificationService _notificationService;
+        private readonly IUserService _userService;
         private readonly Mapper _mapper;
 
-        public CommunityController(ICommunityService communityService)
+        public CommunityController(ICommunityService communityService, 
+            IHubContext<NotificationHub> hub,
+            INotificationService notificationService,
+            IUserService userService)
         {
             _communityService = communityService;
+            _hub = hub;
+            _notificationService = notificationService;
+            _userService = userService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
 
         }
@@ -110,7 +122,29 @@ namespace YaqraApi.Controllers
         public async Task<IActionResult> LikeAsync([FromQuery] int postId)
         {
             await _communityService.LikeAsync(postId);
+            var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User));
+            
+            if (userResult.Succeeded == false)
+                return NoContent();
+            var receiverIdResult = await _communityService.GetPostUserIdAsync(postId);
+            if(receiverIdResult.Succeeded == false || userResult.Result.UserId == receiverIdResult.Result) 
+                return NoContent();
+
+            var notification = await _notificationService.BuildNotification(postId, $"أُعجب {userResult.Result.Username} بمنشورك", receiverIdResult.Result);
+
+            //send signalr
+            var connections = await _userService.GetUserConnections(receiverIdResult.Result);
+
+            if (connections == null)
+                return NoContent();
+
+            foreach (var con in connections)
+            {
+                await _hub.Clients.Client(con).SendAsync("ReceiveNotification", _mapper.Map<NotificationDto>(notification));
+            }
+            
             return NoContent();
+
         }
         [HttpPut("discussion")]
         public async Task<IActionResult> UpdateDiscussionAsync(UpdateDiscussionArticleNewsDto dto)
@@ -199,6 +233,46 @@ namespace YaqraApi.Controllers
             var result = await _communityService.AddCommentAsync(dto);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
+
+            var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User));
+            if (userResult.Succeeded == false)
+                return Created((string?)null, result.Result);
+
+            var posterResult = await _communityService.GetPostUserIdAsync(dto.PostId);
+            if(posterResult.Succeeded == false || userResult.Result.UserId == posterResult.Result)
+                return Created((string?)null, result.Result);
+
+            var posterNotification = await _notificationService.BuildNotification(dto.PostId, $"علَّق {userResult.Result.Username} على منشورك", posterResult.Result);
+            //send signalr
+            var connections = await _userService.GetUserConnections(posterResult.Result);
+
+            if (connections == null)
+                return NoContent();
+
+            foreach (var con in connections)
+            {
+                await _hub.Clients.Client(con).SendAsync("ReceiveNotification", _mapper.Map<NotificationDto>(posterNotification));
+            }
+
+            if (dto.ParentCommentId == null)
+                return Created((string?)null, result.Result);
+
+            var commenterResult = await _communityService.GetCommentUserIdAsync(dto.ParentCommentId.Value);
+            if (commenterResult.Succeeded == false)
+                return Created((string?)null, result.Result);
+            var commenterNotification = await _notificationService.BuildNotification(dto.PostId, $"ردَّ {userResult.Result.Username} على تعليقك", commenterResult.Result);
+
+            //send signalR
+            connections = await _userService.GetUserConnections(commenterResult.Result);
+
+            if (connections == null)
+                return NoContent();
+
+            foreach (var con in connections)
+            {
+                await _hub.Clients.Client(con).SendAsync("ReceiveNotification", _mapper.Map<NotificationDto>(commenterNotification));
+            }
+
             return Created((string?)null, result.Result);
         }
         [HttpGet("comment")]
@@ -232,7 +306,28 @@ namespace YaqraApi.Controllers
             var result = await _communityService.LikeCommentsAsync(commentId);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Created((string?)null, result.Result);
+
+            var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User));
+            if (userResult.Succeeded == false)
+                return NoContent();
+
+            var commentResult = await _communityService.GetCommentAsync(commentId);
+            if (commentResult.Succeeded == false)
+                return NoContent();
+            var notification = await _notificationService.BuildNotification(commentResult.Result.PostId, $"أُعجب {userResult.Result.Username} بتعليقك", commentResult.Result.User.UserId);
+
+            //send signalR
+            var connections = await _userService.GetUserConnections(commentResult.Result.User.UserId);
+
+            if (connections == null)
+                return NoContent();
+
+            foreach (var con in connections)
+            {
+                await _hub.Clients.Client(con).SendAsync("ReceiveNotification", _mapper.Map<NotificationDto>(notification));
+            }
+
+            return NoContent();
         }
         [HttpPut("comment")]
         public async Task<IActionResult> UpdateCommentsAsync([FromForm] int commentId, [FromForm] string content)

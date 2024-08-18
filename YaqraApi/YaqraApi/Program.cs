@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using YaqraApi.Repositories.IRepositories;
 using YaqraApi.Repositories;
+using YaqraApi.Hubs;
 namespace YaqraApi
 {
     public class Program
@@ -60,6 +61,21 @@ namespace YaqraApi
                         ValidAudience = builder.Configuration["JWT:Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
                     };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            // If the request is for SignalR, try to read the token from the query string
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notification"))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JWT"));
@@ -76,6 +92,8 @@ namespace YaqraApi
             builder.Services.AddScoped<IRecommendationRepository, RecommendationRepository>();
             builder.Services.AddScoped<IRecommendationService, RecommendationService>();
             builder.Services.AddScoped<ITimelineService, TimelineService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 
@@ -98,6 +116,7 @@ namespace YaqraApi
 
 
             app.MapControllers();
+            app.MapHub<NotificationHub>("/Notification");
 
             app.Run();
         }

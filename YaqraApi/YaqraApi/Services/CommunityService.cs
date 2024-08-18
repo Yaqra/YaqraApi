@@ -515,5 +515,21 @@ namespace YaqraApi.Services
                 return new GenericResultDto<ArrayList> { Succeeded = true, Result = new ArrayList() };
             return new GenericResultDto<ArrayList> { Succeeded = true, Result = ConvertPostParentToChildren(posts) };
         }
+
+        public async Task<GenericResultDto<string>> GetPostUserIdAsync(int postId)
+        {
+            var userId = await _communityRepository.GetPostUserIdAsync(postId);
+            if (userId == null)
+                return new GenericResultDto<string> { Succeeded = false };
+            return new GenericResultDto<string> { Succeeded = true, Result = userId };
+        }
+
+        public async Task<GenericResultDto<string>> GetCommentUserIdAsync(int commentId)
+        {
+            var userId = await _communityRepository.GetCommentUserIdAsync(commentId);
+            if (userId == null)
+                return new GenericResultDto<string> { Succeeded = false };
+            return new GenericResultDto<string> { Succeeded = true, Result = userId };
+        }
     }
 }

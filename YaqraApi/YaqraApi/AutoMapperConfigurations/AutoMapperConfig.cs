@@ -3,6 +3,7 @@ using YaqraApi.DTOs.Auth;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.Community;
+using YaqraApi.DTOs.Notification;
 using YaqraApi.DTOs.ReadingGoal;
 using YaqraApi.DTOs.User;
 using YaqraApi.DTOs.UserBookWithStatus;
@@ -176,10 +177,19 @@ namespace YaqraApi.AutoMapperConfigurations
                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                    .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
                    .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId))
-                   .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
                    .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
                    .ForMember(dest => dest.ParentCommentId, opt => opt.MapFrom(src => src.ParentCommentId))
                    .ForMember(dest => dest.LikeCount, opt => opt.MapFrom(src => src.LikeCount))
+                   .ReverseMap();
+                
+                //notificationDto notification
+                cfg.CreateMap<Notification, NotificationDto>()
+                   .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                   .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
+                   .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId))
+                   .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
+                   .ForMember(dest => dest.IsAck, opt => opt.MapFrom(src => src.IsAck))
+                   .ForMember(dest => dest.ReceiverId, opt => opt.MapFrom(src => src.ReceiverId))
                    .ReverseMap();
             });
 

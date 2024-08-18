@@ -26,6 +26,8 @@ namespace YaqraApi.Repositories.Context
 
                 u.Property(x => x.UserName).IsRequired();
 
+                u.OwnsMany(u => u.Connections);
+
             });
 
             builder.Entity<ApplicationUser>(u =>
@@ -125,6 +127,7 @@ namespace YaqraApi.Repositories.Context
         public DbSet<Comment> Comments { get; set; }
         public DbSet<RecommendationStatistics> RecommendationStatistics { get; set; }
         public DbSet<TrendingBook> TrendingBooks { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
     }
 }
