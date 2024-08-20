@@ -19,6 +19,8 @@ namespace YaqraApi.Models
         public ICollection<RecommendationStatistics> RecommendationStatistics { get; set; }
         public ICollection<Notification> Notifications { get; set; }
         public ICollection<Connection> Connections { get; set; }
+        public ICollection<PostLikes> PostLikes { get; set; }
+        public ICollection<CommentLikes> CommentLikes { get; set; }
     }
     [Owned]
     public class Connection

@@ -24,7 +24,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<DiscussionArticlesNewsDto>> AddBooksToDiscussion(int discussionId, List<int> booksIds, string userId);
         Task<GenericResultDto<DiscussionArticlesNewsDto>> RemoveBooksFromDiscussion(int discussionId, List<int> booksIds, string userId);
         Task<GenericResultDto<List<DiscussionArticlesNewsDto>>> GetAllDiscussionsAsync(int page, DiscussionArticleNewsTag tag);
-        Task LikeAsync(int postId);
+        Task<Post?> LikeAsync(int postId, string userId);
         Task<GenericResultDto<string>> Delete(int postId);
         Task<GenericResultDto<List<ReviewDto>>> GetUserReviews(string userId, int page);
         Task<GenericResultDto<List<PlaylistDto>>> GetUserPlaylists(string userId, int page);
@@ -33,7 +33,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<string>> DeleteCommentAsync(int commentId);
         Task<GenericResultDto<CommentDto>> GetCommentAsync(int commentId);
         Task<GenericResultDto<List<CommentDto>>> GetPostCommentsAsync(int postId, int page);
-        Task<GenericResultDto<CommentDto>> LikeCommentsAsync(int commentId);
+        Task<GenericResultDto<CommentDto>> LikeCommentsAsync(int commentId, string userId);
         Task<GenericResultDto<CommentDto>> UpdateCommentAsync(int commentId, string content);
         Task<GenericResultDto<ArrayList>> GetFollowingsPostsAsync(IEnumerable<string> followingsIds, int page);
         Task<GenericResultDto<ArrayList>> GetPostsAsync(int page);

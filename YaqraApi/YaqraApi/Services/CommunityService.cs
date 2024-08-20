@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore.Storage.Json;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections;
@@ -359,13 +360,25 @@ namespace YaqraApi.Services
 
         }
 
-        public async Task LikeAsync(int postId)
+        public async Task<Post?> LikeAsync(int postId, string userId)
         {
             var post = await _communityRepository.GetPostAsync(postId);
             if (post == null)
-                return;
-            post.LikeCount++;
+                return null;
+
+            var postLike = post.PostLikes.SingleOrDefault(p => p.UserId == userId);
+            if (postLike != null)
+            {
+                post.PostLikes.Remove(postLike);
+                post.LikeCount--;
+            }
+            else
+            {
+                post.PostLikes.Add(new PostLikes { PostId = postId, UserId = userId });
+                post.LikeCount++;
+            }
             _communityRepository.UpdatePost(post);
+            return post;
         }
 
         public async Task<GenericResultDto<List<ReviewDto>>> GetUserReviews(string userId, int page)
@@ -451,14 +464,26 @@ namespace YaqraApi.Services
             return new GenericResultDto<List<CommentDto>> { Succeeded = true, Result = result };
         }
 
-        public async Task<GenericResultDto<CommentDto>> LikeCommentsAsync(int commentId)
+        public async Task<GenericResultDto<CommentDto>> LikeCommentsAsync(int commentId, string userId)
         {
             var comment = await _communityRepository.GetCommentAsync(commentId);
 
             if (comment == null)
                 return new GenericResultDto<CommentDto> { Succeeded = false, ErrorMessage = "comment not found" };
 
-            comment.LikeCount++;
+
+            var commentLike = comment.CommentLikes.SingleOrDefault(p => p.UserId == userId);
+            if (commentLike != null)
+            {
+                comment.CommentLikes.Remove(commentLike);
+                comment.LikeCount--;
+            }
+            else
+            {
+                comment.CommentLikes.Add(new CommentLikes { CommentId = commentId, UserId = userId });
+                comment.LikeCount++;
+            }
+
             _communityRepository.UpdateComment(comment);
             return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
 

@@ -114,6 +114,33 @@ namespace YaqraApi.Repositories.Context
             builder.Entity<Post>().UseTptMappingStrategy();
             builder.Entity<RecommendationStatistics>().HasKey(r => new { r.UserId, r.GenreId });
 
+            builder.Entity<PostLikes>(p =>
+            {
+                p.HasOne(u => u.User)
+                .WithMany(u => u.PostLikes)
+                .HasForeignKey(u => u.UserId);
+
+                p.HasOne(u => u.Post)
+                .WithMany(u => u.PostLikes)
+                .HasForeignKey(u => u.PostId);
+
+                p.HasKey(k => new { k.UserId, k.PostId });
+            });
+
+            builder.Entity<CommentLikes>(c =>
+            {
+                c.HasOne(u => u.User)
+                .WithMany(u => u.CommentLikes)
+                .HasForeignKey(u => u.UserId);
+
+                c.HasOne(u => u.Comment)
+                .WithMany(u => u.CommentLikes)
+                .HasForeignKey(u => u.CommentId);
+
+                c.HasKey(k => new { k.UserId, k.CommentId });
+
+            });
+
             base.OnModelCreating(builder);
         }
         public DbSet<Genre> Genres { get; set; }
@@ -128,6 +155,8 @@ namespace YaqraApi.Repositories.Context
         public DbSet<RecommendationStatistics> RecommendationStatistics { get; set; }
         public DbSet<TrendingBook> TrendingBooks { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<PostLikes> PostLikes { get; set; }
+        public DbSet<CommentLikes> CommentLikes { get; set; }
 
     }
 }

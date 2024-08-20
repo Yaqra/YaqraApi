@@ -121,19 +121,21 @@ namespace YaqraApi.Controllers
         [HttpPut("like")]
         public async Task<IActionResult> LikeAsync([FromQuery] int postId)
         {
-            await _communityService.LikeAsync(postId);
+            var post = await _communityService.LikeAsync(postId, UserHelpers.GetUserId(User));
+            if (post == null)
+                return NoContent();
             var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User));
             
             if (userResult.Succeeded == false)
                 return NoContent();
-            var receiverIdResult = await _communityService.GetPostUserIdAsync(postId);
-            if(receiverIdResult.Succeeded == false || userResult.Result.UserId == receiverIdResult.Result) 
+            var receiver = post.User;
+            if(receiver == null || userResult.Result.UserId == receiver.Id) 
                 return NoContent();
 
-            var notification = await _notificationService.BuildNotification(postId, $"أُعجب {userResult.Result.Username} بمنشورك", receiverIdResult.Result);
+            var notification = await _notificationService.BuildNotification(postId, $"أُعجب {userResult.Result.Username} بمنشورك", receiver.Id);
 
             //send signalr
-            var connections = await _userService.GetUserConnections(receiverIdResult.Result);
+            var connections = receiver.Connections.Select(c=>c.ConnectionId);
 
             if (connections == null)
                 return NoContent();
@@ -281,7 +283,7 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetCommentAsync(commentId);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Created((string?)null, result.Result);
+            return Ok(result.Result);
         }
         [HttpDelete("comment")]
         public async Task<IActionResult> DeleteCommentAsync([FromQuery] int commentId)
@@ -303,7 +305,7 @@ namespace YaqraApi.Controllers
         [HttpPut("likeComment")]
         public async Task<IActionResult> LikeCommentsAsync([FromQuery] int commentId)
         {
-            var result = await _communityService.LikeCommentsAsync(commentId);
+            var result = await _communityService.LikeCommentsAsync(commentId, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
 
@@ -311,13 +313,11 @@ namespace YaqraApi.Controllers
             if (userResult.Succeeded == false)
                 return NoContent();
 
-            var commentResult = await _communityService.GetCommentAsync(commentId);
-            if (commentResult.Succeeded == false)
-                return NoContent();
-            var notification = await _notificationService.BuildNotification(commentResult.Result.PostId, $"أُعجب {userResult.Result.Username} بتعليقك", commentResult.Result.User.UserId);
+            var comment = result.Result;
+            var notification = await _notificationService.BuildNotification(comment.PostId, $"أُعجب {userResult.Result.Username} بتعليقك", comment.User.UserId);
 
             //send signalR
-            var connections = await _userService.GetUserConnections(commentResult.Result.User.UserId);
+            var connections = await _userService.GetUserConnections(comment.User.UserId);
 
             if (connections == null)
                 return NoContent();

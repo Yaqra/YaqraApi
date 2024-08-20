@@ -426,6 +426,21 @@ namespace YaqraApi.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("YaqraApi.Models.CommentLikes", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CommentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "CommentId");
+
+                    b.HasIndex("CommentId");
+
+                    b.ToTable("CommentLikes");
+                });
+
             modelBuilder.Entity("YaqraApi.Models.Genre", b =>
                 {
                     b.Property<int>("Id")
@@ -512,6 +527,21 @@ namespace YaqraApi.Migrations
                     b.ToTable("Posts");
 
                     b.UseTptMappingStrategy();
+                });
+
+            modelBuilder.Entity("YaqraApi.Models.PostLikes", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "PostId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PostLikes");
                 });
 
             modelBuilder.Entity("YaqraApi.Models.ReadingGoal", b =>
@@ -877,6 +907,25 @@ namespace YaqraApi.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("YaqraApi.Models.CommentLikes", b =>
+                {
+                    b.HasOne("YaqraApi.Models.Comment", "Comment")
+                        .WithMany("CommentLikes")
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YaqraApi.Models.ApplicationUser", "User")
+                        .WithMany("CommentLikes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Comment");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("YaqraApi.Models.Notification", b =>
                 {
                     b.HasOne("YaqraApi.Models.Post", "Post")
@@ -903,6 +952,25 @@ namespace YaqraApi.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("YaqraApi.Models.PostLikes", b =>
+                {
+                    b.HasOne("YaqraApi.Models.Post", "Post")
+                        .WithMany("PostLikes")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YaqraApi.Models.ApplicationUser", "User")
+                        .WithMany("PostLikes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
 
                     b.Navigation("User");
                 });
@@ -1004,9 +1072,13 @@ namespace YaqraApi.Migrations
 
             modelBuilder.Entity("YaqraApi.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("CommentLikes");
+
                     b.Navigation("Comments");
 
                     b.Navigation("Notifications");
+
+                    b.Navigation("PostLikes");
 
                     b.Navigation("ReadingGoals");
 
@@ -1026,6 +1098,8 @@ namespace YaqraApi.Migrations
 
             modelBuilder.Entity("YaqraApi.Models.Comment", b =>
                 {
+                    b.Navigation("CommentLikes");
+
                     b.Navigation("Replies");
                 });
 
@@ -1039,6 +1113,8 @@ namespace YaqraApi.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Notifications");
+
+                    b.Navigation("PostLikes");
                 });
 #pragma warning restore 612, 618
         }
