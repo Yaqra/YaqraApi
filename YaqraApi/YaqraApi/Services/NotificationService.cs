@@ -42,9 +42,6 @@ namespace YaqraApi.Services
 
         public async Task<Notification?> BuildNotification(int postId, string message, string receiverId)
         {
-            var post = await _communityRepository.GetPostAsync(postId);
-            if (post == null)
-                return null;
             var notification = new Notification
             {
                 CreatedDate = DateTime.UtcNow,

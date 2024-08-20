@@ -86,6 +86,7 @@ namespace YaqraApi.Repositories
         {
             return await(_context.Posts
                 .Include(r => r.User)
+                .Include(r=>r.PostLikes)
                 .SingleOrDefaultAsync(r => r.Id == postId));
         }
 
@@ -224,6 +225,7 @@ namespace YaqraApi.Repositories
         {
             var comment = await _context.Comments
                 .Include(c=>c.User)
+                .Include(c=>c.CommentLikes)
                 .SingleOrDefaultAsync(c => c.Id == commentId);
             if (comment == null)
                 return null;
