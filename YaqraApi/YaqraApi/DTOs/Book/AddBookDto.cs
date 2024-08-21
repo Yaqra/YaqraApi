@@ -8,7 +8,9 @@ namespace YaqraApi.DTOs.Book
         public string Title { get; set; }
         public string? Description { get; set; }
         public int? NumberOfPages { get; set; }
-        public List<int>? GenresIds { get; set; }
-        public List<int> AuthorsIds { get; set; }
+        //public List<int>? GenresIds { get; set; }
+        //public List<int> AuthorsIds { get; set; }
+        public HashSet<int>? GenresIds { get; set; }
+        public HashSet<int> AuthorsIds { get; set; }
     }
 }

@@ -49,18 +49,16 @@ namespace YaqraApi.Services
         public async Task<GenericResultDto<BookDto?>> AddAsync(AddBookDto dto)
         {
             var book = await CreateBook(dto);
-            if (book == null)
-                return new GenericResultDto<BookDto?> { Succeeded = false, ErrorMessage = "something went wrong while adding book" };
 
             if (dto.GenresIds != null)
                 book = await AddGenresToBook(dto.GenresIds, book);
 
             book = await AddAuthorsToBook(dto.AuthorsIds, book);
 
-            _bookRepository.UpdateAll(book);
+            await _bookRepository.AddAsync(book);
 
-            if(dto.Image != null) 
-            { 
+            if (dto.Image != null)
+            {
                 var updateImgResult = await UpdateImageAsync(dto.Image, book.Id);
                 if (updateImgResult.Succeeded == true)
                     book.Image = updateImgResult.Result.Image;
@@ -86,13 +84,15 @@ namespace YaqraApi.Services
             foreach (var book in books)
             {
                 var dto = _mapper.Map<BookDto>(book);
+                
                 var x = await _bookRepository.GetBookRates(dto.Id);
-                foreach(var genre in book.Genres)
-                    dto.GenresDto.Add(new GenreDto { GenreId = genre.Id, GenreName = genre.Name });
-                foreach (var author in book.Authors)
-                    dto.AuthorsDto.Add(_mapper.Map<AuthorDto>(author));
+                
+                dto.GenresDto = book.Genres.Select(genre=> new GenreDto { GenreId = genre.Id, GenreName = genre.Name }).ToList();
 
-                    dto.Rate = BookHelpers.CalcualteRate(x);
+                dto.AuthorsDto = _mapper.Map<List<AuthorDto>>(book.Authors);
+
+                dto.Rate = BookHelpers.FormatRate(BookHelpers.CalcualteRate(x));
+
                 result.Add(dto);
             }
 
@@ -124,13 +124,11 @@ namespace YaqraApi.Services
 
             var result = _mapper.Map<BookDto>(book);
 
-            foreach (var author in book.Authors)
-                result.AuthorsDto.Add(_mapper.Map<AuthorDto>(author));
+            result.AuthorsDto = _mapper.Map<List<AuthorDto>>(book.Authors);
 
-            foreach (var genre in book.Genres)
-                result.GenresDto.Add(new GenreDto { GenreId = genre.Id, GenreName = genre.Name });
+            result.GenresDto = book.Genres.Select(genre => new GenreDto { GenreId = genre.Id, GenreName = genre.Name }).ToList();
 
-            result.Rate = BookHelpers.CalcualteRate(await _bookRepository.GetBookRates(bookId));
+            result.Rate = BookHelpers.FormatRate(BookHelpers.CalcualteRate(await _bookRepository.GetBookRates(bookId)));
 
             return new GenericResultDto<BookDto> { Succeeded = true, Result = result };
         }
@@ -200,30 +198,24 @@ namespace YaqraApi.Services
                 Title = dto.Title,
             };
 
-            return await _bookRepository.AddAsync(book);
-        }
-        private async Task<Book> AddGenresToBook(List<int> genresIds, Book book)
-        {
-            book.Genres = new List<Genre>();
-            foreach (var id in genresIds)
-            {
-                var genre = (await _genreService.GetByIdAsync(id)).Result;
-                if (genre == null)
-                    continue;
-                book.Genres.Add(new Genre { Id = genre.GenreId, Name = genre.GenreName });
-            }
             return book;
         }
-        private async Task<Book> AddAuthorsToBook(List<int> AuthorsIds, Book book)
+        private async Task<Book> AddGenresToBook(HashSet<int> genresIds, Book book)
         {
-            book.Authors = new List<Author>();
-            foreach (var id in AuthorsIds)
-            {
-                var author = (await _authorService.GetByIdAsync(id)).Result;
-                if (author == null)
-                    continue;
-                book.Authors.Add(_mapper.Map<Author>(author));
-            }
+            var genres = (await _genreService.GetRangeAsync(genresIds)).Result.ToList();
+            if (genres == null)
+                return book;
+            book.Genres = genres.Select(g => new Genre { Id = g.GenreId, Name = g.GenreName }).ToList();
+            _genreService.Attach(book.Genres);
+            return book;
+        }
+        private async Task<Book> AddAuthorsToBook(HashSet<int> AuthorsIds, Book book)
+        {
+            var authors = (await _authorService.GetRangeAsync(AuthorsIds)).Result.ToList();
+            if (authors == null)
+                return book;
+            book.Authors = _mapper.Map<List<Author>>(authors);
+            _authorService.Attach(book.Authors);
             return book;
         }
         public async Task<GenericResultDto<List<BookDto>>> GetRecent(int page)
@@ -235,7 +227,7 @@ namespace YaqraApi.Services
             return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = result.ToList()};
         }
 
-        public async Task<GenericResultDto<BookDto>> AddGenresToBook(List<int> genresIds, int bookId)
+        public async Task<GenericResultDto<BookDto>> AddGenresToBook(HashSet<int> genresIds, int bookId)
         {
             var book = await _bookRepository.GetByIdAsync(bookId);
             if (book == null)
@@ -247,7 +239,7 @@ namespace YaqraApi.Services
             return result;
         }
 
-        public async Task<GenericResultDto<BookDto>> RemoveGenresFromBook(List<int> genresIds, int bookId)
+        public async Task<GenericResultDto<BookDto>> RemoveGenresFromBook(HashSet<int> genresIds, int bookId)
         {
             var book = await _bookRepository.GetByIdAsync(bookId);
             if (book == null)
@@ -264,7 +256,7 @@ namespace YaqraApi.Services
             return result;
         }
 
-        public async Task<GenericResultDto<BookDto>> AddAuthorsToBook(List<int> AuthorsIds, int bookId)
+        public async Task<GenericResultDto<BookDto>> AddAuthorsToBook(HashSet<int> AuthorsIds, int bookId)
         {
             var book = await _bookRepository.GetByIdAsync(bookId);
             if (book == null)
@@ -276,7 +268,7 @@ namespace YaqraApi.Services
             return result;
         }
 
-        public async Task<GenericResultDto<BookDto>> RemoveAuthorsFromBook(List<int> authorIds, int bookId)
+        public async Task<GenericResultDto<BookDto>> RemoveAuthorsFromBook(HashSet<int> authorIds, int bookId)
         {
             var book = await _bookRepository.GetByIdAsync(bookId);
             if (book == null)
@@ -297,9 +289,7 @@ namespace YaqraApi.Services
         {
             page = page == 0 ? 1 : page;
             var reviews = await _bookRepository.GetReviews(bookId, page, type, field);
-            var reviewsDto = new List<ReviewDto>();
-            foreach (var review in reviews)
-                reviewsDto.Add(_mapper.Map<ReviewDto>(review));
+            var reviewsDto = _mapper.Map<List<ReviewDto>>(reviews);
 
             return new GenericResultDto<List<ReviewDto>> { Succeeded = true, Result = reviewsDto };
     
@@ -323,7 +313,7 @@ namespace YaqraApi.Services
             {
                 var rates = book.Reviews.Select(r => r.Rate);
                 var dto = _mapper.Map<BookDto>(book);
-                dto.Rate = BookHelpers.CalcualteRate(rates.ToList());
+                dto.Rate = BookHelpers.FormatRate(BookHelpers.CalcualteRate(rates.ToList()));
                 booksDto.Add(dto);
             }
             return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = booksDto};

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Author;
 using YaqraApi.Helpers;
@@ -122,6 +123,13 @@ namespace YaqraApi.Repositories
         public async Task<List<decimal>?> GetAuthorBooksRates(List<int> booksIds)
         {
             return _context.Reviews.Where(r => booksIds.Contains(r.BookId)).Select(r => r.Rate).ToList();
+        }
+
+        public async Task<IQueryable<Author>> GetRangeAsync(HashSet<int> authorsIds)
+        {
+            return _context.Authors
+                            .AsNoTracking()
+                            .Where(a => authorsIds.Contains(a.Id));
         }
     }
 }
