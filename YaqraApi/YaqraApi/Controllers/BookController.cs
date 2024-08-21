@@ -128,7 +128,7 @@ namespace YaqraApi.Controllers
         }
 
         [HttpPut("addGenres")]
-        public async Task<IActionResult> AddGenresToBook([FromForm] int bookId, [FromForm] List<int> genreIds)
+        public async Task<IActionResult> AddGenresToBook([FromForm] int bookId, [FromForm] HashSet<int> genreIds)
         {
             var result = await _bookService.AddGenresToBook(genreIds, bookId);
             if (result.Succeeded == false)
@@ -136,7 +136,7 @@ namespace YaqraApi.Controllers
             return Ok(result.Result);
         }
         [HttpPut("removeGenres")]
-        public async Task<IActionResult> RemoveGenresToBook([FromForm] int bookId, [FromForm] List<int> genreIds)
+        public async Task<IActionResult> RemoveGenresToBook([FromForm] int bookId, [FromForm] HashSet<int> genreIds)
         {
             var result = await _bookService.RemoveGenresFromBook(genreIds, bookId);
             if (result.Succeeded == false)
@@ -144,7 +144,7 @@ namespace YaqraApi.Controllers
             return Ok(result.Result);
         }
         [HttpPut("addAuthors")]
-        public async Task<IActionResult> AddAuthorsToBook([FromForm] int bookId, [FromForm] List<int> authorIds)
+        public async Task<IActionResult> AddAuthorsToBook([FromForm] int bookId, [FromForm] HashSet<int> authorIds)
         {
             var result = await _bookService.AddAuthorsToBook(authorIds, bookId);
             if (result.Succeeded == false)
@@ -152,7 +152,7 @@ namespace YaqraApi.Controllers
             return Ok(result.Result);
         }
         [HttpPut("removeAuthors")]
-        public async Task<IActionResult> RemoveAuthorsToBook([FromForm] int bookId, [FromForm] List<int> authorIds)
+        public async Task<IActionResult> RemoveAuthorsToBook([FromForm] int bookId, [FromForm] HashSet<int> authorIds)
         {
             var result = await _bookService.RemoveAuthorsFromBook(authorIds, bookId);
             if (result.Succeeded == false)

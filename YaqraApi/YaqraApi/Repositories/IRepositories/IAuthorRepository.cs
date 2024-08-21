@@ -19,5 +19,6 @@ namespace YaqraApi.Repositories.IRepositories
         void Attach(IEnumerable<Author> authors);
         Task<List<int>?> GetAuthorBooksIds(int authorId);
         Task<List<decimal>?> GetAuthorBooksRates(List<int> booksIds);
+        Task<IQueryable<Author>> GetRangeAsync(HashSet<int> authorsIds);
     }
 }

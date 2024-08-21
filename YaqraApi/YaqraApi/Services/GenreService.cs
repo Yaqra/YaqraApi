@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore.Storage.Json;
+using Microsoft.IdentityModel.Tokens;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Book;
@@ -73,7 +74,15 @@ namespace YaqraApi.Services
             var result = (int)Math.Ceiling((double)_genreRepository.GetCount() / Pagination.Genres);
             return new GenericResultDto<int> {Succeeded = true, Result = result};
         }
-        
+
+        public async Task<GenericResultDto<IQueryable<GenreDto>>> GetRangeAsync(HashSet<int> genreIds)
+        {
+            var genres = await _genreRepository.GetRangeAsync(genreIds);
+            if (genres == null)
+                return new GenericResultDto<IQueryable<GenreDto>> { Succeeded = false, Result = null};
+            return new GenericResultDto<IQueryable<GenreDto>> { Succeeded = true, Result = genres.Select(g => new GenreDto { GenreId = g.Id, GenreName = g.Name }) };
+;        }
+
         public async Task<GenericResultDto<List<BookDto>?>> RandomizeBooksBasedOnGenre(int genreId, int count)
         {
             var books = await _genreRepository.RandomizeBooksBasedOnGenre(genreId, count);
@@ -84,7 +93,7 @@ namespace YaqraApi.Services
             {
                 var rates = book.Reviews.Select(r => r.Rate);
                 var dto = _mapper.Map<BookDto>(book);
-                dto.Rate = BookHelpers.CalcualteRate(rates.ToList());
+                dto.Rate = BookHelpers.FormatRate(BookHelpers.CalcualteRate(rates.ToList()));
                 booksDto.Add(dto);
             }
 

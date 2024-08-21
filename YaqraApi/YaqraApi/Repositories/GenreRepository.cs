@@ -82,5 +82,10 @@ namespace YaqraApi.Repositories
                 return null;
             return genre.Books.ToList();
         }
+
+        public async Task<IQueryable<Genre>> GetRangeAsync(HashSet<int> genreIds)
+        {
+            return _context.Genres.Where(g => genreIds.Contains(g.Id));
+        }
     }
 }

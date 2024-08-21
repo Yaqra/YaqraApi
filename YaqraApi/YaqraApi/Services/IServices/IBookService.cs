@@ -19,10 +19,10 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<BookDto>> UpdateAllAsync(IFormFile? img, BookWithoutImageDto dto);
         Task<GenericResultDto<string>> Delete(int bookId);
         Task<GenericResultDto<List<BookDto>>> GetRecent(int page);
-        Task<GenericResultDto<BookDto>> AddGenresToBook(List<int> genresIds, int bookId);
-        Task<GenericResultDto<BookDto>> RemoveGenresFromBook(List<int> genresIds, int bookId);
-        Task<GenericResultDto<BookDto>> AddAuthorsToBook(List<int> AuthorsIds, int bookId);
-        Task<GenericResultDto<BookDto>> RemoveAuthorsFromBook(List<int> authorIds, int bookId);
+        Task<GenericResultDto<BookDto>> AddGenresToBook(HashSet<int> genresIds, int bookId);
+        Task<GenericResultDto<BookDto>> RemoveGenresFromBook(HashSet<int> genresIds, int bookId);
+        Task<GenericResultDto<BookDto>> AddAuthorsToBook(HashSet<int> AuthorsIds, int bookId);
+        Task<GenericResultDto<BookDto>> RemoveAuthorsFromBook(HashSet<int> authorIds, int bookId);
         void Attach(IEnumerable<Book> books);
         Task<GenericResultDto<List<ReviewDto>>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field);
         Task<GenericResultDto<List<BookDto>>> FindBooks(BookFinderDto dto);

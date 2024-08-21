@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -48,14 +49,10 @@ namespace YaqraApi.Services
         {
             page = page == 0 ? 1 : page;
             var authors = (await _authorRepository.GetAll(page)).ToList();
-            var result = new List<AuthorDto>();
-            foreach (var author in authors)
-            {
-                var dto = _mapper.Map<AuthorDto>(author);
-                dto.Rate = await CalculateAuthorRate(author.Id);
-                result.Add(dto);
-            }
-            return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result=result};
+            var authorsDto = _mapper.Map<List<AuthorDto>>(authors);
+            authorsDto = await AssignRate(authorsDto);
+
+            return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result = authorsDto};
         }
 
         public async Task<GenericResultDto<List<AuthorNameAndIdDto>>> GetAllNamesAndIds(int page)
@@ -73,7 +70,7 @@ namespace YaqraApi.Services
 
             var dto = _mapper.Map<AuthorDto>(author);
 
-            dto.Rate = await CalculateAuthorRate(dto.Id);//there is a problem here attaching author entity to efcore
+            dto.Rate = await CalculateAuthorRate(dto.Id);
 
             return new GenericResultDto<AuthorDto> { Succeeded = true, Result = dto };
         }
@@ -85,13 +82,8 @@ namespace YaqraApi.Services
             if (authors == null)
                 return new GenericResultDto<List<AuthorDto>> { Succeeded = false, ErrorMessage = "no authors with that name were found" };
             
-            var authorsDto = new List<AuthorDto>();
-            foreach(var author in authors)
-            {
-                var dto = _mapper.Map<AuthorDto>(author);
-                dto.Rate = await CalculateAuthorRate(author.Id);
-                authorsDto.Add(dto);
-            }
+            var authorsDto = _mapper.Map<List<AuthorDto>>(authors);
+            authorsDto = await AssignRate(authorsDto);
 
             return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result = authorsDto};
         }
@@ -104,32 +96,6 @@ namespace YaqraApi.Services
             var author = await _authorRepository.GetByIdAsync(authorId);
             if (author == null)
                 return new GenericResultDto<AuthorDto> { Succeeded = false, ErrorMessage = "author not found" };
-
-            //var oldPicPath = author.Picture;
-
-            //var picName = Path.GetFileName(pic.FileName);
-            //var picExtension = Path.GetExtension(picName);
-            //var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
-            //var dir= Path.Combine(_environment.WebRootPath, "Authors");
-            //if (Directory.Exists(dir)==false)
-            //    Directory.CreateDirectory(dir);
-            //var picPath = Path.Combine(dir, picWithGuid);
-
-            //var createPic = Task.Run(async () =>
-            //{
-            //    using (var stream = new FileStream(picPath, FileMode.Create, FileAccess.Write))
-            //    {
-            //        await pic.CopyToAsync(stream);
-            //        author.Picture = $"/Authors/{picWithGuid}";
-            //    }
-
-            //});
-            //var deleteOldPic = Task.Run(() =>
-            //{
-            //    if (string.IsNullOrEmpty(oldPicPath) == false && File.Exists(oldPicPath))
-            //        File.Delete(oldPicPath);
-            //});
-            //Task.WaitAll(createPic, deleteOldPic);
 
             author.Picture = ImageHelpers.UploadImage(ImageHelpers.AuthorsDir,author.Picture, pic,_environment);
 
@@ -204,7 +170,24 @@ namespace YaqraApi.Services
 
             var booksRates = await _authorRepository.GetAuthorBooksRates(booksIdsResult.Result);
 
-            return BookHelpers.CalcualteRate(booksRates);
+            return BookHelpers.FormatRate(BookHelpers.CalcualteRate(booksRates));
+        }
+        private async Task<List<AuthorDto>> AssignRate(List<AuthorDto> authorsDto)
+        {
+            foreach (var dto in authorsDto)
+                dto.Rate = await CalculateAuthorRate(dto.Id);
+            return authorsDto;
+        }
+
+        public async Task<GenericResultDto<IQueryable<AuthorDto>>> GetRangeAsync(HashSet<int> authorsIds)
+        {
+            var authors = await _authorRepository.GetRangeAsync(authorsIds);
+            if (authors == null)
+                return new GenericResultDto<IQueryable<AuthorDto>> { Succeeded = false, Result = null };
+
+            var authorsDto = authors.ProjectTo<AuthorDto>(_mapper.ConfigurationProvider);
+
+            return new GenericResultDto<IQueryable<AuthorDto>> { Succeeded = true, Result = authorsDto };
         }
     }
 }

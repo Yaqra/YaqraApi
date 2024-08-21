@@ -15,6 +15,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<GenreDto>> UpdateAsync(int currentGenreId, string newGenreName);
         Task<GenericResultDto<string>> DeleteAsync(int id);
         Task<GenericResultDto<List<BookDto>?>> RandomizeBooksBasedOnGenre(int genreId, int count);
+        Task<GenericResultDto<IQueryable<GenreDto>>> GetRangeAsync(HashSet<int> genreIds);
         void Attach(IEnumerable<Genre> genres);
     }
 }

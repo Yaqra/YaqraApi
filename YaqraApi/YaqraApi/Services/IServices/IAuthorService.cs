@@ -19,5 +19,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<AuthorDto>> UpdateAllAsync(IFormFile? pic, AuthorWithoutPicDto dto);
         Task<GenericResultDto<string>> Delete(int authorId);
         void Attach(IEnumerable<Author> authors);
+        Task<GenericResultDto<IQueryable<AuthorDto>>> GetRangeAsync(HashSet<int> authorsIds);
+
     }
 }

@@ -117,6 +117,7 @@ namespace YaqraApi.Repositories
         {
             return _context.Reviews.Where(r => r.BookId == bookId).Select(r => r.Rate).ToList();
         }
+
         public async Task<List<Review>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field)
         {
 
@@ -182,73 +183,63 @@ namespace YaqraApi.Repositories
 
         public async Task<List<BookDto>> FindBooks(BookFinderDto dto)
         {
-            List<BookDto> books = new List<BookDto>();
-
-            if(dto.MinimumRate != null)
-            {
-                var booksIds = await _context.Books.Select(b => b.Id).ToListAsync();
-                foreach (var id in booksIds)
-                {
-                    var rates = await GetBookRates(id);
-                    if (rates.Count == 0)
-                        continue;
-                    var sum = rates.Sum();
-                    
-                    var bookRate = ((sum / (rates.Count * 10)) * 10);
-                    if (bookRate >= dto.MinimumRate)
-                    {
-                        var book = await GetByIdAsync(id);
-                        var bookDto = _mapper.Map<BookDto>(book);
-                        bookDto.Rate = bookRate.ToString("0.00");
-                        books.Add(bookDto);
-                    }
-                }
-            }
-            if(dto.AuthorIds.IsNullOrEmpty() == false)
-            {
-                HashSet<int> set = new(dto.AuthorIds);
-
-                foreach (var book in books)
-                {
-                    bool authorExists = false;
-                    foreach (var author in book.AuthorsDto)
-                    {
-                        if (set.Contains(author.Id))
-                            authorExists = true;
-                    }
-                    if (authorExists == false)
-                        books.Remove(book);
-                }
-            }
-            if(dto.GenreIds.IsNullOrEmpty() == false)
-            {
-                HashSet<int> set = new(dto.GenreIds);
-                foreach (var book in books)
-                {
-                    bool genreExists = false;
-                    foreach (var genre in book.GenresDto)
-                    {
-                        if (set.Contains(genre.GenreId))
-                            genreExists = true;
-                    }
-                    if (genreExists == false)
-                        books.Remove(book);
-                }
-            }
-
             if (dto.MinimumRate == null && dto.AuthorIds == null && dto.GenreIds == null)
             {
                 var booksDto = _mapper.Map<List<BookDto>>(await GetAll(dto.Page));
                 foreach (var book in booksDto)
                 {
                     var rates = await GetBookRates(book.Id);
-                    book.Rate = BookHelpers.CalcualteRate(rates);
+                    book.Rate = BookHelpers.FormatRate(BookHelpers.CalcualteRate(rates));
                 }
                 return booksDto;
             }
-                
 
-            return books
+            IQueryable<Book> books = _context.Books
+                    .Include(b => b.Genres)
+                    .Include(b => b.Authors);
+
+            if (dto.GenreIds.IsNullOrEmpty() == false)
+                books = books.Where(b => b.Genres.Any(g => dto.GenreIds.Contains(g.Id)));
+
+            if (dto.AuthorIds.IsNullOrEmpty() == false)
+                   books = books.Where(b => b.Authors.Any(a => dto.AuthorIds.Contains(a.Id)));
+
+            var result = _mapper.Map<List<BookDto>>(books.ToList());
+
+            if (dto.MinimumRate != null)
+            {
+                var elementsToRemove = new List<BookDto>();
+                foreach (var b in result)
+                {
+                    var rates = await GetBookRates(b.Id);
+                    if (rates.Count == 0)
+                    {
+                        elementsToRemove.Add(b);
+                        continue;
+                    }
+
+                    var bookRate = BookHelpers.CalcualteRate(rates);
+                    if (bookRate == null)
+                    {
+                        elementsToRemove.Add(b);
+                        continue;
+                    }
+
+                    if (bookRate < dto.MinimumRate)
+                    {
+                        elementsToRemove.Add(b);
+                        continue;
+                    }
+
+                    b.Rate = BookHelpers.FormatRate(bookRate);
+                }
+                foreach (var item in elementsToRemove)
+                {
+                    result.Remove(item);
+                }
+            }         
+
+            return result
                 .Skip((dto.Page - 1) * Pagination.BookTitlesAndIds).Take(Pagination.BookTitlesAndIds)
                 .ToList();
         }
