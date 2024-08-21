@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using YaqraApi.DTOs.Timeline;
@@ -17,6 +18,7 @@ namespace YaqraApi.Controllers
         {
             _timelineService = timelineService;
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Get(GetTimelineDto dto)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using YaqraApi.Helpers;
@@ -19,11 +20,13 @@ namespace YaqraApi.Controllers
             _notificationService = notificationService;
             _hub = hub;
         }
+        [Authorize]
         [HttpPut]
         public async Task Acknowledge([FromQuery] int notificationId)
         {
             await _notificationService.Acknowledge(notificationId);
         }
+        [Authorize]
         [HttpGet("all")]
         public async Task<IActionResult> GetAll([FromQuery] int page)
         {

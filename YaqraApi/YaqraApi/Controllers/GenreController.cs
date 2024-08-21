@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.Helpers;
@@ -27,6 +28,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+
         [HttpGet("name")]
         public async Task<IActionResult> GetByNameAsync([FromQuery]string genreName)
         {
@@ -43,6 +45,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("addGenre")]
         public async Task<IActionResult> AddAsync([FromQuery]string genreName)
         {
@@ -51,6 +54,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Created((string?)null, result.Result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public async Task<IActionResult> UpdateAsync(UpdateGenreDto dto)
         {
@@ -59,6 +63,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(GenreIdDto dto)
         {

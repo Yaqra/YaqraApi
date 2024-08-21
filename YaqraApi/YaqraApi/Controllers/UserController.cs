@@ -33,7 +33,7 @@ namespace YaqraApi.Controllers
             _userService = userService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
-
+        [Authorize]
         [HttpPut("all")]
         public async Task<IActionResult> UpdateAllAsync(
             IFormFile? pic,
@@ -47,6 +47,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok("user updated successfully");
         }
+        [Authorize]
         [HttpPut("pass")]
         public async Task<IActionResult> UpdatePassword(PasswordUpdateDto dto)
         {
@@ -55,6 +56,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok("password updated successfully");
         }
+        [Authorize]
         [HttpPut("profilePic")]
         public async Task<IActionResult> UpdateProfilePicture(IFormFile pic)
         {
@@ -63,6 +65,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok("profile picture updated successfully");
         }
+        [Authorize]
         [HttpPut("profileCover")]
         public async Task<IActionResult> UpdateProfileCover(IFormFile pic)
         {
@@ -71,6 +74,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok("profile picture updated successfully");
         }
+        [Authorize]
         [HttpPost("follow")]
         public async Task<IActionResult> FollowUser(UserIdDto dto /*the user u want to follow*/)
         {
@@ -79,6 +83,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok($"{result.Result.Follower.UserName} followed {result.Result.Followed.UserName} successfully");
         }
+        [Authorize]
         [HttpGet("user")]
         public async Task<IActionResult> GetUserAsync(UserIdDto dto)
         {
@@ -87,6 +92,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("followrs")]
         public async Task<IActionResult> GetFollowrsListAsync(UserIdDto dto, [FromQuery]int page)
         {
@@ -96,6 +102,7 @@ namespace YaqraApi.Controllers
             else 
                 return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("followings")]
         public async Task<IActionResult> GetFollowingsListAsync(UserIdDto dto, [FromQuery] int page)
         {
@@ -105,6 +112,7 @@ namespace YaqraApi.Controllers
             else
                 return Ok(result.Result);
         }
+        [Authorize]
         [HttpPost("addFavGenres")]
         public async Task<IActionResult> AddFavouriteGenresAsync(List<GenreIdDto> genres)
          {
@@ -114,6 +122,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("genresExcept")]
         public async Task<IActionResult> GetAllExceptUserGenresAsync([FromQuery] int page)
         {
@@ -122,6 +131,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("favGenres")]
         public async Task<IActionResult> GetFavouriteGenresAsync()
         {
@@ -131,6 +141,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpDelete("favGenre")]
         public async Task<IActionResult> DeleteFavouriteGenreAsync(GenreIdDto genreId)
         {
@@ -140,7 +151,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
-
+        [Authorize]
         [HttpPost("addFavAuthors")]
         public async Task<IActionResult> AddFavouriteAuthorsAsync(List<AuthorIdDto> authors,[FromQuery] int page)
         {
@@ -150,6 +161,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("authorsExcept")]
         public async Task<IActionResult> GetAllExceptUserAuthorsAsync([FromQuery] int page)
         {
@@ -158,6 +170,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("favAuthors")]
         public async Task<IActionResult> GetFavouriteAuthors([FromQuery] int page)
         {
@@ -167,6 +180,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpDelete("favAuthor")]
         public async Task<IActionResult> DeleteFavouriteAuthorAsync(AuthorIdDto authorId)
         {
@@ -176,6 +190,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpPost("goal")]
         public async Task<IActionResult> AddReadingGoalAsync(AddReadingGoalDto addReadingGoalDto)
         {
@@ -187,6 +202,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("allGoals")]
         public async Task<IActionResult> GetAllReadingGoalsAsync([FromQuery] int page)
         {
@@ -195,6 +211,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpDelete("goal")]
         public async Task<IActionResult> DeleteReadingGoalAsync([FromQuery]int goalId)
         {
@@ -203,6 +220,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpPut("goal")]
         public async Task<IActionResult> UpdateReadingGoalAsync(UpdateReadingGoalDto dto)
         {
@@ -211,6 +229,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpPost("addBook")]
         public async Task<IActionResult> AddBookToCollectionAsync(AddUserBookWithStatusDto dto)
         {
@@ -227,6 +246,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("getBooks")]
         public async Task<IActionResult> GetBooksAsync([FromQuery] int? status, [FromQuery] int page)
         {
@@ -235,7 +255,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
-
+        [Authorize]
         [HttpPut("updateBook")]
         public async Task<IActionResult> UpdateBookStatusAsync([FromQuery] int? status, [FromQuery] int bookId)
         {
@@ -244,6 +264,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpDelete("deleteBook")]
         public async Task<IActionResult> DeleteBookAsync([FromQuery] int bookId)
         {
@@ -252,6 +273,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("userFollowersPages")]
         public async Task<IActionResult> GetUserFollowersPagesCount(UserIdDto dto)
         {
@@ -260,6 +282,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("userFollowingsPages")]
         public async Task<IActionResult> GetUserFollowingsPagesCount(UserIdDto dto)
         {
@@ -268,6 +291,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("genresExceptUserGenresPages")]
         public async Task<IActionResult> GetGenresExceptUserGenresPagesCount(UserIdDto dto)
         {
@@ -276,6 +300,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("favouriteAuthorsPages")]
         public async Task<IActionResult> GetFavouriteAuthorsPagesCount(UserIdDto dto)
         {
@@ -284,6 +309,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("authorsExceptfavouriteAuthorsPages")]
         public async Task<IActionResult> GetAuthorsExceptfavouriteAuthorsPagesCount(UserIdDto dto)
         {
@@ -292,6 +318,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("readingGoalPages")]
         public async Task<IActionResult> GetReadingGoalPagesCount(UserIdDto dto)
         {
@@ -300,6 +327,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("bookCollectionPages")]
         public async Task<IActionResult> GetBookCollectionPagesCount(UserIdDto dto)
         {
