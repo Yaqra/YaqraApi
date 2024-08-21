@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -21,6 +22,7 @@ namespace YaqraApi.Controllers
             _authorService = authorService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("addAuthor")]
         public async Task<IActionResult> AddAsync(
             IFormFile? picture,
@@ -34,6 +36,7 @@ namespace YaqraApi.Controllers
 
             return Created((string?)null, result.Result);
         }
+        
         [HttpGet("authors")]
         public async Task<IActionResult> GetAllAsync([FromQuery]int page)
         {
@@ -42,6 +45,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        
         [HttpGet("authorPages")]
         public async Task<IActionResult> GetAuthorsPagesCount()
         {
@@ -50,6 +54,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        
         [HttpGet("id")]
         public async Task<IActionResult> GetByIdAsync(AuthorIdDto idDto)
         {
@@ -58,6 +63,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+
         [HttpGet("name")]
         public async Task<IActionResult> GetByNameAsync([FromQuery] string authorName, [FromQuery] int page)
         {
@@ -66,6 +72,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+
         [HttpGet("nameAndId")]
         public async Task<IActionResult> GetAllNamesAndIdsAsync([FromQuery] int page)
         {
@@ -74,6 +81,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+
         [HttpGet("books")]
         public async Task<IActionResult> GetAuthorBooksAsync([FromQuery] int authorId, [FromQuery] int page)
         {
@@ -82,6 +90,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("picture")]
         public async Task<IActionResult> UpdatePictureAsync(IFormFile picture, [FromForm]int authorId)
         {
@@ -93,6 +102,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("all")]
         public async Task<IActionResult> UpdateAllAsync(
             IFormFile? picture,
@@ -109,6 +119,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task<IActionResult> Delete(AuthorIdDto dto)
         {

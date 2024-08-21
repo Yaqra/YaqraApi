@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using YaqraApi.DTOs.Auth;
 using YaqraApi.Helpers;
 using YaqraApi.Services;
@@ -26,6 +27,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.Message);
             return Ok(result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("registerAdmin")]
         public async Task<IActionResult> RegisterAdminAsync(RegisterDto registerDto)
         {

@@ -125,11 +125,13 @@ namespace YaqraApi.Services
             return new GenericResultDto<ReviewDto> { Succeeded = true, Result = resultReview.Result };
         }
 
-        public async Task<GenericResultDto<string>> Delete(int postId)
+        public async Task<GenericResultDto<string>> Delete(int postId, string userId)
         {
             var post = await _communityRepository.GetPostAsync(postId);
             if (post == null)
                 return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "no post with that id" };
+            if (post.UserId != userId)
+                return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "this post isn't yours" };
             _communityRepository.Delete(post);
 
             return new GenericResultDto<string> { Succeeded = true, Result = "post deleted successfully" }; 
@@ -165,8 +167,10 @@ namespace YaqraApi.Services
             return new GenericResultDto<ReviewDto> { Succeeded = true, Result = dto};
         }
 
-        public async Task<GenericResultDto<PlaylistDto>> UpdatePlaylistAsync(UpdatePlaylistDto editedPlaylist)
+        public async Task<GenericResultDto<PlaylistDto>> UpdatePlaylistAsync(UpdatePlaylistDto editedPlaylist, string userId)
         {
+            if (editedPlaylist.UserId != userId)
+                return new GenericResultDto<PlaylistDto> { Succeeded = false, ErrorMessage = "this playlist isn't yours to update" };
             var playlist = _mapper.Map<Playlist>(editedPlaylist);
             var result = await _communityRepository.UpdatePlaylistAsync(playlist);
             if (result == null)
@@ -176,8 +180,10 @@ namespace YaqraApi.Services
             return new GenericResultDto<PlaylistDto> { Succeeded = true, Result = dto };
         }
 
-        public async Task<GenericResultDto<ReviewDto>> UpdateReviewAsync(UpdateReviewDto editedReview)
+        public async Task<GenericResultDto<ReviewDto>> UpdateReviewAsync(UpdateReviewDto editedReview, string userId)
         {
+            if (editedReview.UserId != userId)
+                return new GenericResultDto<ReviewDto> { Succeeded = false, ErrorMessage = "this review isn't yours to update" };
             var review = _mapper.Map<Review>(editedReview);
             var result = await _communityRepository.UpdateReviewAsync(review);
             if (result == null)
@@ -258,8 +264,10 @@ namespace YaqraApi.Services
             return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = true, Result = result.Result };
         }
 
-        public async Task<GenericResultDto<DiscussionArticlesNewsDto>> UpdateDiscussionAsync(UpdateDiscussionArticleNewsDto editedDiscussion)
+        public async Task<GenericResultDto<DiscussionArticlesNewsDto>> UpdateDiscussionAsync(UpdateDiscussionArticleNewsDto editedDiscussion, string userId)
         {
+            if (editedDiscussion.UserId != userId)
+                return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = false, ErrorMessage = "this post isn't your to update" };
             var discussion = _mapper.Map<DiscussionArticleNews>(editedDiscussion);
             var result = await _communityRepository.UpdateDiscussionAsync(discussion);
             if (result == null)
@@ -442,11 +450,13 @@ namespace YaqraApi.Services
             return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
         }
 
-        public async Task<GenericResultDto<string>> DeleteCommentAsync(int commentId)
+        public async Task<GenericResultDto<string>> DeleteCommentAsync(int commentId, string userId)
         {
             var comment = await _communityRepository.GetCommentAsync(commentId);
             if (comment == null)
                 return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "comment not found" };
+            if (comment.UserId != userId)
+                return new GenericResultDto<string> { Succeeded = false, ErrorMessage = "this comment isn't yours to delete" };
             _communityRepository.DeleteComment(comment);
             return new GenericResultDto<string> { Succeeded = true, Result = "comment deleted successfully" };
         }
@@ -489,11 +499,13 @@ namespace YaqraApi.Services
 
         }
 
-        public async Task<GenericResultDto<CommentDto>> UpdateCommentAsync(int commentId, string content)
+        public async Task<GenericResultDto<CommentDto>> UpdateCommentAsync(int commentId, string content, string userId)
         {
             var comment = await _communityRepository.GetCommentAsync(commentId);
             if (comment == null)
                 return new GenericResultDto<CommentDto> { Succeeded = false, ErrorMessage = "comment not found" };
+            if (comment.UserId != userId)
+                return new GenericResultDto<CommentDto> { Succeeded = false, ErrorMessage = "this comment isn't yours to update" };
             comment.Content = content;
             comment = _communityRepository.UpdateComment(comment);
             return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };

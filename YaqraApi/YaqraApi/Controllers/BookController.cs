@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -26,6 +27,7 @@ namespace YaqraApi.Controllers
             _recommendationService = recommendationService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("addBook")]
         public async Task<IActionResult> AddAsync(AddBookDto dto)
         {
@@ -76,6 +78,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("image")]
         public async Task<IActionResult> UpdatePictureAsync(IFormFile image, [FromForm] int bookId)
         {
@@ -87,6 +90,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("all")]
         public async Task<IActionResult> UpdateAllAsync(
             IFormFile? image,
@@ -109,6 +113,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public async Task<IActionResult> Delete(BookIdDto dto)
         {
@@ -126,7 +131,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("addGenres")]
         public async Task<IActionResult> AddGenresToBook([FromForm] int bookId, [FromForm] HashSet<int> genreIds)
         {
@@ -135,6 +140,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("removeGenres")]
         public async Task<IActionResult> RemoveGenresToBook([FromForm] int bookId, [FromForm] HashSet<int> genreIds)
         {
@@ -143,6 +149,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("addAuthors")]
         public async Task<IActionResult> AddAuthorsToBook([FromForm] int bookId, [FromForm] HashSet<int> authorIds)
         {
@@ -151,6 +158,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("removeAuthors")]
         public async Task<IActionResult> RemoveAuthorsToBook([FromForm] int bookId, [FromForm] HashSet<int> authorIds)
         {
@@ -175,6 +183,7 @@ namespace YaqraApi.Controllers
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
         }
+        [Authorize]
         [HttpGet("recommendations")]
         public async Task<IActionResult> GetRecommendedBooks()
         {
