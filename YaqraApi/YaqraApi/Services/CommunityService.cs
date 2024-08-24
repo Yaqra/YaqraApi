@@ -165,7 +165,6 @@ namespace YaqraApi.Services
                 dto.Book.AuthorsDto.Add(_mapper.Map<AuthorDto>(author));
             return new GenericResultDto<ReviewDto> { Succeeded = true, Result = dto};
         }
-
         public async Task<GenericResultDto<PlaylistDto>> UpdatePlaylistAsync(UpdatePlaylistDto editedPlaylist, string userId)
         {
             if (editedPlaylist.UserId != userId)
@@ -178,7 +177,6 @@ namespace YaqraApi.Services
             var dto = (await GetPlaylistAsync(result.Id)).Result;
             return new GenericResultDto<PlaylistDto> { Succeeded = true, Result = dto };
         }
-
         public async Task<GenericResultDto<ReviewDto>> UpdateReviewAsync(UpdateReviewDto editedReview, string userId)
         {
             if (editedReview.UserId != userId)
@@ -190,7 +188,6 @@ namespace YaqraApi.Services
             var dto = (await GetReviewAsync(result.Id)).Result;
             return new GenericResultDto<ReviewDto> { Succeeded = true, Result = dto };
         }
-
         public async Task<GenericResultDto<PlaylistDto>> RemoveBooksFromPlaylist(int playlistId, HashSet<int> booksIds, string userId)
         {
             var playlist = await _communityRepository.GetPlaylistAsync(playlistId);
@@ -238,7 +235,6 @@ namespace YaqraApi.Services
             result.Books = booksDto;
             return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = true, Result = result };
         }
-
         public async Task<GenericResultDto<DiscussionArticlesNewsDto>> AddDiscussionAsync(AddDiscussionArticleNewsDto discussionDto)
         {
             var discussion = _mapper.Map<DiscussionArticleNews>(discussionDto);
@@ -260,7 +256,6 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = true, Result = result.Result };
         }
-
         public async Task<GenericResultDto<DiscussionArticlesNewsDto>> UpdateDiscussionAsync(UpdateDiscussionArticleNewsDto editedDiscussion, string userId)
         {
             if (editedDiscussion.UserId != userId)
@@ -272,7 +267,6 @@ namespace YaqraApi.Services
             var dto = (await GetDiscussionAsync(result.Id)).Result;
             return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = true, Result = dto };
         }
-
         public async Task<GenericResultDto<DiscussionArticlesNewsDto>> AddBooksToDiscussion(int discussionId, HashSet<int> booksIds, string userId)
         {
             var discussion = await _communityRepository.GetDiscussionAsync(discussionId);
@@ -294,7 +288,6 @@ namespace YaqraApi.Services
             await _communityRepository.UpdateDiscussionAsync(discussion);
             return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = true, Result = (await GetDiscussionAsync(discussionId)).Result };
         }
-
         public async Task<GenericResultDto<DiscussionArticlesNewsDto>> RemoveBooksFromDiscussion(int discussionId, HashSet<int> booksIds, string userId)
         {
             var discussion = await _communityRepository.GetDiscussionAsync(discussionId);
@@ -326,7 +319,6 @@ namespace YaqraApi.Services
                 return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = true, ErrorMessage = "discussion updated successfully but something went wrong while retrieving it" };
             return result;
         }
-
         public async Task<GenericResultDto<List<ReviewDto>>> GetAllReviewsAsync(int page)
         {
             page = page == 0 ? 1 : page;
@@ -336,7 +328,6 @@ namespace YaqraApi.Services
                 reviewsDto.Add(_mapper.Map<ReviewDto>(review));
             return new GenericResultDto<List<ReviewDto>> { Succeeded = true, Result = reviewsDto };
         }
-
         public async Task<GenericResultDto<List<PlaylistDto>>> GetAllPlaylistsAsync(int page)
         {
             page = page == 0 ? 1 : page;
@@ -347,7 +338,6 @@ namespace YaqraApi.Services
             return new GenericResultDto<List<PlaylistDto>> { Succeeded = true, Result = playlistsDto };
 
         }
-
         public async Task<GenericResultDto<List<DiscussionArticlesNewsDto>>> GetAllDiscussionsAsync(int page, DiscussionArticleNewsTag tag)
         {
             page = page == 0 ? 1 : page;
@@ -358,7 +348,6 @@ namespace YaqraApi.Services
             return new GenericResultDto<List<DiscussionArticlesNewsDto>> { Succeeded = true, Result = discussionsDto };
 
         }
-
         public async Task<Post?> LikeAsync(int postId, string userId)
         {
             var post = await _communityRepository.GetPostAsync(postId);
@@ -379,7 +368,6 @@ namespace YaqraApi.Services
             _communityRepository.UpdatePost(post);
             return post;
         }
-
         public async Task<GenericResultDto<List<ReviewDto>>> GetUserReviews(string userId, int page)
         {
             page = page == 0 ? 1 : page;
@@ -394,7 +382,6 @@ namespace YaqraApi.Services
             return new GenericResultDto<List<ReviewDto>> { Succeeded = true, Result = reviewsDto };
 
         }
-
         public async Task<GenericResultDto<List<PlaylistDto>>> GetUserPlaylists(string userId, int page)
         {
             page = page == 0 ? 1 : page;
@@ -408,7 +395,6 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<List<PlaylistDto>> { Succeeded = true, Result = playlistsDto };
         }
-
         public async Task<GenericResultDto<List<DiscussionArticlesNewsDto>>> GetUserDiscussions(string userId, int page)
         {
             page = page == 0 ? 1 : page;
@@ -422,7 +408,6 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<List<DiscussionArticlesNewsDto>> { Succeeded = true, Result = discussionsDto };
         }
-
         public async Task<GenericResultDto<CommentDto>> AddCommentAsync(CommentDto dto)
         {
             var comment = _mapper.Map<Comment>(dto);
@@ -433,7 +418,6 @@ namespace YaqraApi.Services
             var result = (await GetCommentAsync(comment.Id)).Result;
             return new GenericResultDto<CommentDto> { Succeeded = true, Result = result };
         }
-
         public async Task<GenericResultDto<CommentDto>> GetCommentAsync(int commentId)
         {
             var comment = await _communityRepository.GetCommentAsync(commentId);
@@ -442,7 +426,6 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
         }
-
         public async Task<GenericResultDto<string>> DeleteCommentAsync(int commentId, string userId)
         {
             var comment = await _communityRepository.GetCommentAsync(commentId);
@@ -453,7 +436,6 @@ namespace YaqraApi.Services
             _communityRepository.DeleteComment(comment);
             return new GenericResultDto<string> { Succeeded = true, Result = "comment deleted successfully" };
         }
-
         public async Task<GenericResultDto<List<CommentDto>>> GetPostCommentsAsync(int postId, int page)
         {
             page = page == 0 ? 1 : page;
@@ -466,7 +448,6 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<List<CommentDto>> { Succeeded = true, Result = result };
         }
-
         public async Task<GenericResultDto<CommentDto>> LikeCommentsAsync(int commentId, string userId)
         {
             var comment = await _communityRepository.GetCommentAsync(commentId);
@@ -491,7 +472,6 @@ namespace YaqraApi.Services
             return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
 
         }
-
         public async Task<GenericResultDto<CommentDto>> UpdateCommentAsync(int commentId, string content, string userId)
         {
             var comment = await _communityRepository.GetCommentAsync(commentId);
@@ -503,7 +483,6 @@ namespace YaqraApi.Services
             comment = _communityRepository.UpdateComment(comment);
             return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
         }
-
         public async Task<GenericResultDto<ArrayList>> GetFollowingsPostsAsync(IEnumerable<string> followingsIds, int page)
         {
             var posts = await _communityRepository.GetFollowingsPostsAsync(followingsIds, page);
@@ -511,7 +490,6 @@ namespace YaqraApi.Services
                 return new GenericResultDto<ArrayList> { Succeeded = true, Result = new ArrayList() };
             return new GenericResultDto<ArrayList> { Succeeded = true, Result = ConvertPostParentToChildren(posts) };
         }
-        
         private ArrayList ConvertPostParentToChildren(List<Post> posts)
         {
             var arr = new ArrayList();
@@ -537,7 +515,6 @@ namespace YaqraApi.Services
             }
             return arr;
         }
-
         public async Task<GenericResultDto<ArrayList>> GetPostsAsync(int page)
         {
             var posts = await _communityRepository.GetPostsAsync(page);
@@ -545,7 +522,6 @@ namespace YaqraApi.Services
                 return new GenericResultDto<ArrayList> { Succeeded = true, Result = new ArrayList() };
             return new GenericResultDto<ArrayList> { Succeeded = true, Result = ConvertPostParentToChildren(posts) };
         }
-
         public async Task<GenericResultDto<string>> GetPostUserIdAsync(int postId)
         {
             var userId = await _communityRepository.GetPostUserIdAsync(postId);
@@ -553,7 +529,6 @@ namespace YaqraApi.Services
                 return new GenericResultDto<string> { Succeeded = false };
             return new GenericResultDto<string> { Succeeded = true, Result = userId };
         }
-
         public async Task<GenericResultDto<string>> GetCommentUserIdAsync(int commentId)
         {
             var userId = await _communityRepository.GetCommentUserIdAsync(commentId);

@@ -3,12 +3,20 @@
   "WorkspaceRootPath": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapi\\services\\communityservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|solutionrelative:yaqraapi\\services\\communityservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|solutionrelative:yaqraapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapi\\repositories\\communityrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|solutionrelative:yaqraapi\\repositories\\communityrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapi\\services\\userproxyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|solutionrelative:yaqraapi\\services\\userproxyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapi\\services\\iservices\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|solutionrelative:yaqraapi\\services\\iservices\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|d:\\computer science\\myprojects\\yaqraapi\\yaqraapi\\yaqraapi\\services\\iservices\\iuserproxyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783286E0-DC7A-484B-859A-54977BC10F56}|YaqraApi\\YaqraApi.csproj|solutionrelative:yaqraapi\\services\\iservices\\iuserproxyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -27,27 +35,53 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "CommunityRepository.cs",
-              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Repositories\\CommunityRepository.cs",
-              "RelativeDocumentMoniker": "YaqraApi\\Repositories\\CommunityRepository.cs",
-              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Repositories\\CommunityRepository.cs",
-              "RelativeToolTip": "YaqraApi\\Repositories\\CommunityRepository.cs",
-              "ViewState": "AQIAADcAAAAAAAAAAAAmwEUAAAA1AAAA",
+              "Title": "UserProxyService.cs",
+              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Services\\UserProxyService.cs",
+              "RelativeDocumentMoniker": "YaqraApi\\Services\\UserProxyService.cs",
+              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Services\\UserProxyService.cs",
+              "RelativeToolTip": "YaqraApi\\Services\\UserProxyService.cs",
+              "ViewState": "AQIAABAAAAAAAAAAAAArwBwAAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-24T11:34:39.559Z",
+              "WhenOpened": "2024-08-24T15:25:59.649Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IUserProxyService.cs",
+              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Services\\IServices\\IUserProxyService.cs",
+              "RelativeDocumentMoniker": "YaqraApi\\Services\\IServices\\IUserProxyService.cs",
+              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Services\\IServices\\IUserProxyService.cs",
+              "RelativeToolTip": "YaqraApi\\Services\\IServices\\IUserProxyService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAABeAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-24T15:25:45.805Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IUserService.cs",
+              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Services\\IServices\\IUserService.cs",
+              "RelativeDocumentMoniker": "YaqraApi\\Services\\IServices\\IUserService.cs",
+              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Services\\IServices\\IUserService.cs",
+              "RelativeToolTip": "YaqraApi\\Services\\IServices\\IUserService.cs",
+              "ViewState": "AQIAACgAAAAAAAAAAAAxwCAAAABIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-24T15:27:38.577Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CommunityService.cs",
-              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Services\\CommunityService.cs",
-              "RelativeDocumentMoniker": "YaqraApi\\Services\\CommunityService.cs",
-              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Services\\CommunityService.cs",
-              "RelativeToolTip": "YaqraApi\\Services\\CommunityService.cs",
-              "ViewState": "AQIAACABAAAAAAAAAAAqwDgBAAAVAAAA",
+              "Title": "UserController.cs",
+              "DocumentMoniker": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "YaqraApi\\Controllers\\UserController.cs",
+              "ToolTip": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\Controllers\\UserController.cs",
+              "RelativeToolTip": "YaqraApi\\Controllers\\UserController.cs",
+              "ViewState": "AQIAAFQAAAAAAAAAAAArwGEAAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-24T11:34:16.243Z",
+              "WhenOpened": "2024-08-24T15:51:15.768Z",
               "EditorCaption": ""
             }
           ]
