@@ -81,6 +81,10 @@
       "PackagePath": "staticwebassets\\ProfilePictures\\0cca08a1809076586c912020062f2d6c5d6ef264-6c67-4753-8193-05c27c14f525.gif"
     },
     {
+      "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\ProfilePictures\\1d77293be-ea31-4902-90cd-859aafe865c2.png",
+      "PackagePath": "staticwebassets\\ProfilePictures\\1d77293be-ea31-4902-90cd-859aafe865c2.png"
+    },
+    {
       "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\ProfilePictures\\1e3c60d5d-b1d7-40d8-a42d-ad677f3da981.png",
       "PackagePath": "staticwebassets\\ProfilePictures\\1e3c60d5d-b1d7-40d8-a42d-ad677f3da981.png"
     },
@@ -91,6 +95,10 @@
     {
       "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\ProfilePictures\\horizon-sunset-skyline-night-building-city-19137-pxhere70eda8dd-03aa-4aaa-94a4-17e7f688c1b4.jpg",
       "PackagePath": "staticwebassets\\ProfilePictures\\horizon-sunset-skyline-night-building-city-19137-pxhere70eda8dd-03aa-4aaa-94a4-17e7f688c1b4.jpg"
+    },
+    {
+      "Id": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\ProfilePictures\\هفكd6265875-4ba7-4185-aec5-908b4cbd3c7b.jpg",
+      "PackagePath": "staticwebassets\\ProfilePictures\\هفكd6265875-4ba7-4185-aec5-908b4cbd3c7b.jpg"
     },
     {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.YaqraApi.Microsoft.AspNetCore.StaticWebAssets.props",

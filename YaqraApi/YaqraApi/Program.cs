@@ -93,6 +93,7 @@ namespace YaqraApi
             builder.Services.AddScoped<IRecommendationService, RecommendationService>();
             builder.Services.AddScoped<ITimelineService, TimelineService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<IUserProxyService, UserProxyService>();
             builder.Services.AddSignalR();
 
             var app = builder.Build();

@@ -25,12 +25,16 @@ namespace YaqraApi.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserService _userService;
+        private readonly IUserProxyService _userProxyService;
         private readonly Mapper _mapper;
 
-        public UserController(UserManager<ApplicationUser> userManager, IUserService userService)
+        public UserController(UserManager<ApplicationUser> userManager, 
+            IUserService userService,
+            IUserProxyService userProxyService)
         {
             _userManager = userManager;
             _userService = userService;
+            _userProxyService = userProxyService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         [Authorize]
@@ -42,7 +46,7 @@ namespace YaqraApi.Controllers
             [FromForm] string? userBio)
         {
             var userDto = new UserDto { Bio = userBio, UserId = UserHelpers.GetUserId(User), Username=userName };
-            var result = await _userService.UpdateAllAsync(pic, cover, userDto);
+            var result = await _userProxyService.UpdateAllAsync(pic, cover, userDto);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok("user updated successfully");
@@ -60,7 +64,7 @@ namespace YaqraApi.Controllers
         [HttpPut("profilePic")]
         public async Task<IActionResult> UpdateProfilePicture(IFormFile pic)
         {
-            var result = await _userService.UpdateProfilePictureAsync(pic, UserHelpers.GetUserId(User));
+            var result = await _userProxyService.UpdateProfilePictureAsync(pic, UserHelpers.GetUserId(User));
             if(result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok("profile picture updated successfully");
@@ -69,7 +73,7 @@ namespace YaqraApi.Controllers
         [HttpPut("profileCover")]
         public async Task<IActionResult> UpdateProfileCover(IFormFile pic)
         {
-            var result = await _userService.UpdateProfileCoverAsync(pic, UserHelpers.GetUserId(User));
+            var result = await _userProxyService.UpdateProfileCoverAsync(pic, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok("profile picture updated successfully");
@@ -78,7 +82,7 @@ namespace YaqraApi.Controllers
         [HttpPost("follow")]
         public async Task<IActionResult> FollowUser(UserIdDto dto /*the user u want to follow*/)
         {
-            var result = await _userService.FollowUserAsync(dto, UserHelpers.GetUserId(User));
+            var result = await _userProxyService.FollowUserAsync(dto, UserHelpers.GetUserId(User));
             if(result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok($"{result.Result.Follower.UserName} followed {result.Result.Followed.UserName} successfully");
@@ -87,7 +91,7 @@ namespace YaqraApi.Controllers
         [HttpGet("user")]
         public async Task<IActionResult> GetUserAsync(UserIdDto dto)
         {
-            var result = await _userService.GetUserAsync(dto.UserId);
+            var result = await _userProxyService.GetUserAsync(dto.UserId);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
             return Ok(result.Result);
