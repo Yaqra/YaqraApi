@@ -29,6 +29,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<List<BookDto>>> GetTrendingBooks();
         Task AddTrendingBook(int bookId);
         Task<GenericResultDto<List<BookDto>>> GetUpcomingBooks(int page);
-
+        Task<GenericResultDto<IQueryable<Book>>> GetRangeAsync(HashSet<int> booksIds);
+        Task LoadGenres(Book book);
     }
 }

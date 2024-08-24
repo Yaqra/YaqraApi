@@ -275,5 +275,16 @@ namespace YaqraApi.Repositories
                                     .Skip((page - 1) * Pagination.Books).Take(Pagination.Books)
                                     .ToListAsync();
         }
+
+        public async Task<IQueryable<Book>> GetRange(HashSet<int> booksIds)
+        {
+            return _context.Books
+                .Where(b => booksIds.Contains(b.Id));
+        }
+
+        public async Task LoadGenres(Book book)
+        {
+            await _context.Entry(book).Collection(b => b.Genres).LoadAsync();
+        }
     }
 }

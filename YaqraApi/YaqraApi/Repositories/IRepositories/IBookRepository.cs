@@ -24,6 +24,8 @@ namespace YaqraApi.Repositories.IRepositories
         Task<List<Book>> GetTrendingBooks();
         Task AddTrendingBook(TrendingBook trending);
         Task<List<Book>> GetUpcomingBooks(int page);
+        Task<IQueryable<Book>> GetRange(HashSet<int> booksIds);
+        Task LoadGenres(Book book);
 
     }
 }

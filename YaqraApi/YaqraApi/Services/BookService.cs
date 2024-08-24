@@ -63,8 +63,9 @@ namespace YaqraApi.Services
                 if (updateImgResult.Succeeded == true)
                     book.Image = updateImgResult.Result.Image;
             }
+            var bookDto = _mapper.Map<BookDto>((await GetByIdAsync(book.Id)).Result);
 
-            return new GenericResultDto<BookDto?> { Succeeded = true, Result = _mapper.Map<BookDto>(book) };
+            return new GenericResultDto<BookDto?> { Succeeded = true, Result = bookDto };
         }
 
         public async Task<GenericResultDto<string>> Delete(int bookId)
@@ -182,6 +183,8 @@ namespace YaqraApi.Services
             if (book == null)
                 return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "book not found" };
 
+            book.Authors = null;
+            book.Genres = null;
             book.Image= ImageHelpers.UploadImage(ImageHelpers.BooksDir, book.Image, img, _environment);
 
             _bookRepository.UpdateAll(book);
@@ -202,6 +205,16 @@ namespace YaqraApi.Services
         }
         private async Task<Book> AddGenresToBook(HashSet<int> genresIds, Book book)
         {
+            if(book.Genres != null)
+            {
+                foreach (var genre in book.Genres)
+                {
+                    if (genresIds.Contains(genre.Id))
+                        genresIds.Remove(genre.Id);
+                }
+            }
+            if (genresIds.IsNullOrEmpty())
+                return book;
             var genres = (await _genreService.GetRangeAsync(genresIds)).Result.ToList();
             if (genres == null)
                 return book;
@@ -211,6 +224,16 @@ namespace YaqraApi.Services
         }
         private async Task<Book> AddAuthorsToBook(HashSet<int> AuthorsIds, Book book)
         {
+            if(book.Authors != null)
+            {
+                foreach (var author in book.Authors)
+                {
+                    if (AuthorsIds.Contains(author.Id))
+                        AuthorsIds.Remove(author.Id);
+                }
+            }
+            if (AuthorsIds.IsNullOrEmpty())
+                return book;
             var authors = (await _authorService.GetRangeAsync(AuthorsIds)).Result.ToList();
             if (authors == null)
                 return book;
@@ -233,7 +256,12 @@ namespace YaqraApi.Services
             if (book == null)
                 return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "book not found" };
             book.Authors = null;
+            var firstGenre = book.Genres.FirstOrDefault();
             book = await AddGenresToBook(genresIds, book);
+            if(book.Genres.FirstOrDefault() == firstGenre)
+            {
+                return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "genres already exist" };
+            }
             _bookRepository.UpdateAll(book);
             var result = await GetByIdAsync(bookId);
             return result;
@@ -247,10 +275,15 @@ namespace YaqraApi.Services
             book.Authors = null;
             var genresToRemove = book.Genres.Where(g => genresIds.Contains(g.Id));
 
+            var genresCount = book.Genres.Count;
             _genreService.Attach(genresToRemove);
             foreach (var genre in genresToRemove)
                 book.Genres.Remove(genre);
 
+            if (book.Genres.Count == genresCount)
+            {
+                return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "no genres to remove" };
+            }
             _bookRepository.UpdateAll(book);
             var result = await GetByIdAsync(bookId);
             return result;
@@ -262,7 +295,12 @@ namespace YaqraApi.Services
             if (book == null)
                 return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "book not found" };
             book.Genres = null;
+            var firstAuthor= book.Authors.FirstOrDefault();
             book = await AddAuthorsToBook(AuthorsIds, book);
+            if (book.Authors.FirstOrDefault() == firstAuthor)
+            {
+                return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "authors already exist" };
+            }
             _bookRepository.UpdateAll(book);
             var result = await GetByIdAsync(bookId);
             return result;
@@ -276,10 +314,15 @@ namespace YaqraApi.Services
             book.Genres = null;
             var authorsToRemove = book.Authors.Where(g => authorIds.Contains(g.Id));
 
+            var authorsCount = book.Authors.Count;
             _authorService.Attach(authorsToRemove);
             foreach (var author in authorsToRemove)
                 book.Authors.Remove(author);
 
+            if (book.Authors.Count == authorsCount)
+            {
+                return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "no authors to remove" };
+            }
             _bookRepository.UpdateAll(book);
             var result = await GetByIdAsync(bookId);
             return result;
@@ -332,6 +375,16 @@ namespace YaqraApi.Services
             page = page == 0 ? 1 : page;
             var books = await _bookRepository.GetUpcomingBooks(page);
             return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = _mapper.Map<List<BookDto>>(books) };
+        }
+
+        public async Task<GenericResultDto<IQueryable<Book>>> GetRangeAsync(HashSet<int> booksIds)
+        {
+            return new GenericResultDto<IQueryable<Book>> { Succeeded = true, Result = await _bookRepository.GetRange(booksIds) };
+        }
+
+        public async Task LoadGenres(Book book)
+        {
+            await _bookRepository.LoadGenres(book);
         }
     }
 }
