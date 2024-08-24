@@ -15,14 +15,14 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<PlaylistDto>> AddPlaylistAsync(AddPlaylistDto playlist);
         Task<GenericResultDto<PlaylistDto>> GetPlaylistAsync(int playlistId);
         Task<GenericResultDto<PlaylistDto>> UpdatePlaylistAsync(UpdatePlaylistDto editedPlaylist, string userId);
-        Task<GenericResultDto<PlaylistDto>> AddBooksToPlaylist(int playlistId, List<int>booksIds, string userId);
-        Task<GenericResultDto<PlaylistDto>> RemoveBooksFromPlaylist(int playlistId, List<int> booksIds, string userId);
+        Task<GenericResultDto<PlaylistDto>> AddBooksToPlaylist(int playlistId, HashSet<int>booksIds, string userId);
+        Task<GenericResultDto<PlaylistDto>> RemoveBooksFromPlaylist(int playlistId, HashSet<int> booksIds, string userId);
         Task<GenericResultDto<List<PlaylistDto>>> GetAllPlaylistsAsync(int page);
         Task<GenericResultDto<DiscussionArticlesNewsDto>> AddDiscussionAsync(AddDiscussionArticleNewsDto discussion);
         Task<GenericResultDto<DiscussionArticlesNewsDto>> GetDiscussionAsync(int discussionId);
         Task<GenericResultDto<DiscussionArticlesNewsDto>> UpdateDiscussionAsync(UpdateDiscussionArticleNewsDto editedDiscussion, string userId);
-        Task<GenericResultDto<DiscussionArticlesNewsDto>> AddBooksToDiscussion(int discussionId, List<int> booksIds, string userId);
-        Task<GenericResultDto<DiscussionArticlesNewsDto>> RemoveBooksFromDiscussion(int discussionId, List<int> booksIds, string userId);
+        Task<GenericResultDto<DiscussionArticlesNewsDto>> AddBooksToDiscussion(int discussionId, HashSet<int> booksIds, string userId);
+        Task<GenericResultDto<DiscussionArticlesNewsDto>> RemoveBooksFromDiscussion(int discussionId, HashSet<int> booksIds, string userId);
         Task<GenericResultDto<List<DiscussionArticlesNewsDto>>> GetAllDiscussionsAsync(int page, DiscussionArticleNewsTag tag);
         Task<Post?> LikeAsync(int postId, string userId);
         Task<GenericResultDto<string>> Delete(int postId, string userId);

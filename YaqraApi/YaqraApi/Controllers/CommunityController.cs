@@ -113,7 +113,7 @@ namespace YaqraApi.Controllers
             var result = await _communityService.UpdateReviewAsync(dto, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Created((string?)null, result.Result);
+            return Ok(result.Result);
         }
         [Authorize]
         [HttpPut("playlist")]
@@ -122,7 +122,7 @@ namespace YaqraApi.Controllers
             var result = await _communityService.UpdatePlaylistAsync(dto, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Created((string?)null, result.Result);
+            return Ok(result.Result);
         }
         [Authorize]
         [HttpPut("like")]
@@ -162,20 +162,20 @@ namespace YaqraApi.Controllers
             var result = await _communityService.UpdateDiscussionAsync(dto, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Created((string?)null, result.Result);
+            return Ok(result.Result);
         }
         [Authorize]
         [HttpPut("addBooksToPlaylist")]
-        public async Task<IActionResult> AddBooksToPlaylistAsync([FromForm]int playlistId, [FromForm] List<int> booksIds)
+        public async Task<IActionResult> AddBooksToPlaylistAsync([FromForm]int playlistId, [FromForm] HashSet<int> booksIds)
         {
             var result = await _communityService.AddBooksToPlaylist(playlistId, booksIds, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Created((string?)null, result.Result);
+            return Ok(result.Result);
         }
         [Authorize]
         [HttpPut("removeBooksFromPlaylist")]
-        public async Task<IActionResult> RemoveBooksFromPlaylistAsync([FromForm] int playlistId, [FromForm] List<int> booksIds)
+        public async Task<IActionResult> RemoveBooksFromPlaylistAsync([FromForm] int playlistId, [FromForm] HashSet<int> booksIds)
         {
             var result = await _communityService.RemoveBooksFromPlaylist(playlistId, booksIds, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
@@ -184,21 +184,21 @@ namespace YaqraApi.Controllers
         }
         [Authorize]
         [HttpPut("addBooksToDiscussion")]
-        public async Task<IActionResult> AddBooksToDiscussionAsync([FromForm] int discussionId, [FromForm] List<int> booksIds)
+        public async Task<IActionResult> AddBooksToDiscussionAsync([FromForm] int discussionId, [FromForm] HashSet<int> booksIds)
         {
             var result = await _communityService.AddBooksToDiscussion(discussionId, booksIds, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Created((string?)null, result.Result);
+            return Ok(result.Result);
         }
         [Authorize]
         [HttpPut("removeBooksFromDiscussion")]
-        public async Task<IActionResult> RemoveBooksFromDiscussionAsync([FromForm] int discussionId, [FromForm] List<int> booksIds)
+        public async Task<IActionResult> RemoveBooksFromDiscussionAsync([FromForm] int discussionId, [FromForm] HashSet<int> booksIds)
         {
             var result = await _communityService.RemoveBooksFromDiscussion(discussionId, booksIds, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Created((string?)null, result.Result);
+            return Ok(result.Result);
         }
         [HttpGet("allDiscussions")]
         public async Task<IActionResult> GetAllDiscussionsAsync([FromQuery] int page, DiscussionArticleNewsTag tag)
@@ -246,6 +246,7 @@ namespace YaqraApi.Controllers
         [HttpPost("comment")]
         public async Task<IActionResult> AddCommentAsync(CommentDto dto)
         {
+
             var result = await _communityService.AddCommentAsync(dto);
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
@@ -306,7 +307,7 @@ namespace YaqraApi.Controllers
             var result = await _communityService.DeleteCommentAsync(commentId, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Created((string?)null, result.Result);
+            return Ok(result.Result);
         }
         [HttpGet("postComments")]
         public async Task<IActionResult> GetPostCommentsAsync([FromQuery] int postId, [FromQuery] int page)
@@ -351,7 +352,7 @@ namespace YaqraApi.Controllers
             var result = await _communityService.UpdateCommentAsync(commentId, content, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Created((string?)null, result.Result);
+            return Ok(result.Result);
         }
 
     }

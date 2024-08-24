@@ -12,6 +12,7 @@ using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.Community;
 using YaqraApi.DTOs.Genre;
+using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Models.Enums;
 using YaqraApi.Repositories;
@@ -35,44 +36,46 @@ namespace YaqraApi.Services
             _recommendationService = recommendationService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
-        private Playlist AddBooksToPlaylist(Playlist playlist, List<int> BooksIds)
+        private async Task<Playlist> AddBooksToPlaylist(Playlist playlist, HashSet<int> booksIds)
         {
-            foreach (var id in BooksIds)
-                playlist.Books.Add(new Book { Id = id });
-            _bookService.Attach(playlist.Books);
+            foreach (var book in playlist.Books)
+            {
+                if (booksIds.Contains(book.Id))
+                    booksIds.Remove(book.Id);
+            }
+            playlist.Books.AddRange((await _bookService.GetRangeAsync(booksIds)).Result);
             return playlist;
         }
-        private DiscussionArticleNews AddBooksToDiscussion(DiscussionArticleNews discussion, List<int> BooksIds)
+        private async Task <DiscussionArticleNews> AddBooksToDiscussion(DiscussionArticleNews discussion, HashSet<int> booksIds)
         {
             if(discussion.Books == null)
                 discussion.Books = new List<Book>();
 
-            foreach (var id in BooksIds)
-                discussion.Books.Add(new Book { Id = id });
-            _bookService.Attach(discussion.Books);
+            foreach (var book in discussion.Books)
+            {
+                if (booksIds.Contains(book.Id))
+                    booksIds.Remove(book.Id);
+            }
+            discussion.Books.AddRange((await _bookService.GetRangeAsync(booksIds)).Result);
             return discussion;
         }
-        public async Task<GenericResultDto<PlaylistDto>> AddBooksToPlaylist(int playlistId, List<int> booksIds, string userId)
+        public async Task<GenericResultDto<PlaylistDto>> AddBooksToPlaylist(int playlistId, HashSet<int> booksIds, string userId)
         {
             var playlist = await _communityRepository.GetPlaylistAsync(playlistId);
             if (playlist == null)
                 return new GenericResultDto<PlaylistDto> { Succeeded = false, ErrorMessage = "playlist not found" };
 
-            playlist = AddBooksToPlaylist(playlist, booksIds);
+            playlist = await AddBooksToPlaylist(playlist, booksIds);
 
-            foreach (var bookId in booksIds)
+            foreach (var book in playlist.Books)
             {
-                var bookResult = await _bookService.GetByIdAsync(bookId);
-                if(bookResult.Succeeded == true)
+                await _bookService.AddTrendingBook(book.Id);
+                await _bookService.LoadGenres(book);
+                foreach (var genreId in book.Genres.Select(g=>g.Id))
                 {
-                    var book = bookResult.Result;
-                    await _bookService.AddTrendingBook(book.Id);
-
-                    foreach (var genreId in book.GenresDto.Select(g=>g.GenreId))
-                    {
-                        await _recommendationService.IncrementPoints(userId, genreId);
-                    }
+                    await _recommendationService.IncrementPoints(userId, genreId);
                 }
+                
             }
 
             await _communityRepository.UpdatePlaylistAsync(playlist);
@@ -192,7 +195,7 @@ namespace YaqraApi.Services
             return new GenericResultDto<ReviewDto> { Succeeded = true, Result = dto };
         }
 
-        public async Task<GenericResultDto<PlaylistDto>> RemoveBooksFromPlaylist(int playlistId, List<int> booksIds, string userId)
+        public async Task<GenericResultDto<PlaylistDto>> RemoveBooksFromPlaylist(int playlistId, HashSet<int> booksIds, string userId)
         {
             var playlist = await _communityRepository.GetPlaylistAsync(playlistId);
             if (playlist == null)
@@ -276,32 +279,29 @@ namespace YaqraApi.Services
             return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = true, Result = dto };
         }
 
-        public async Task<GenericResultDto<DiscussionArticlesNewsDto>> AddBooksToDiscussion(int discussionId, List<int> booksIds, string userId)
+        public async Task<GenericResultDto<DiscussionArticlesNewsDto>> AddBooksToDiscussion(int discussionId, HashSet<int> booksIds, string userId)
         {
             var discussion = await _communityRepository.GetDiscussionAsync(discussionId);
             if (discussion == null)
                 return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = false, ErrorMessage = "discussion not found" };
 
-            foreach (var bookId in booksIds)
+            discussion = await AddBooksToDiscussion(discussion, booksIds);
+
+            foreach (var book in discussion.Books)
             {
-                var bookResult = await _bookService.GetByIdAsync(bookId);
-                if (bookResult.Succeeded == true)
+                await _bookService.AddTrendingBook(book.Id);
+                await _bookService.LoadGenres(book);
+                foreach (var genreId in book.Genres.Select(g => g.Id))
                 {
-                    var book = bookResult.Result;
-                    await _bookService.AddTrendingBook(book.Id);
-                    foreach (var genreId in book.GenresDto.Select(g => g.GenreId))
-                    {
-                        await _recommendationService.IncrementPoints(userId, genreId);
-                    }
+                    await _recommendationService.IncrementPoints(userId, genreId);
                 }
             }
 
-            discussion = AddBooksToDiscussion(discussion, booksIds);
             await _communityRepository.UpdateDiscussionAsync(discussion);
             return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = true, Result = (await GetDiscussionAsync(discussionId)).Result };
         }
 
-        public async Task<GenericResultDto<DiscussionArticlesNewsDto>> RemoveBooksFromDiscussion(int discussionId, List<int> booksIds, string userId)
+        public async Task<GenericResultDto<DiscussionArticlesNewsDto>> RemoveBooksFromDiscussion(int discussionId, HashSet<int> booksIds, string userId)
         {
             var discussion = await _communityRepository.GetDiscussionAsync(discussionId);
             if (discussion == null)
@@ -438,7 +438,9 @@ namespace YaqraApi.Services
             comment = await _communityRepository.AddCommentAsync(comment);
             if (comment == null)
                 return new GenericResultDto<CommentDto> { Succeeded = false, ErrorMessage = "something went wrong while posting ur comment" };
-            return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
+
+            var result = (await GetCommentAsync(comment.Id)).Result;
+            return new GenericResultDto<CommentDto> { Succeeded = true, Result = result };
         }
 
         public async Task<GenericResultDto<CommentDto>> GetCommentAsync(int commentId)

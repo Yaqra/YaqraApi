@@ -22,9 +22,10 @@ namespace YaqraApi.Controllers
         }
         [Authorize]
         [HttpPut]
-        public async Task Acknowledge([FromQuery] int notificationId)
+        public async Task<IActionResult> Acknowledge([FromQuery] int notificationId)
         {
             await _notificationService.Acknowledge(notificationId);
+            return NoContent();
         }
         [Authorize]
         [HttpGet("all")]
