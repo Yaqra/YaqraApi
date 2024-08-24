@@ -81,13 +81,13 @@ namespace YaqraApi.Services
             await _communityRepository.UpdatePlaylistAsync(playlist);
             return new GenericResultDto<PlaylistDto> { Succeeded = true, Result = (await GetPlaylistAsync(playlistId)).Result };
         }
-
         public async Task<GenericResultDto<PlaylistDto>> AddPlaylistAsync(AddPlaylistDto playlistDto)
         {
             var playlist = _mapper.Map<Playlist>(playlistDto);
             var original = new List<Book>();
-            foreach (var id in playlistDto.BooksIds)
-                original.Add(new Book { Id = id });
+
+            original.AddRange(playlistDto.BooksIds.Select(id => new Book { Id = id }));
+
             _bookService.Attach(original);
 
             playlist.Books = original;
@@ -101,7 +101,6 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<PlaylistDto> { Succeeded = true, Result = result.Result};
         }
-
         public async Task<GenericResultDto<ReviewDto>> AddReviewAsync(AddReviewDto review, string userId)
         {
             var original = _mapper.Map<Review>(review);
@@ -127,7 +126,6 @@ namespace YaqraApi.Services
             var resultReview = await GetReviewAsync(result.Id);
             return new GenericResultDto<ReviewDto> { Succeeded = true, Result = resultReview.Result };
         }
-
         public async Task<GenericResultDto<string>> Delete(int postId, string userId)
         {
             var post = await _communityRepository.GetPostAsync(postId);
@@ -139,7 +137,6 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<string> { Succeeded = true, Result = "post deleted successfully" }; 
         }
-
         public async Task<GenericResultDto<PlaylistDto>> GetPlaylistAsync(int playlistId)
         {
             var playlist = await _communityRepository.GetPlaylistAsync(playlistId);
@@ -154,7 +151,6 @@ namespace YaqraApi.Services
             result.Books = booksDto;
             return new GenericResultDto<PlaylistDto> { Succeeded = true, Result = result};
         }
-
         public async Task<GenericResultDto<ReviewDto>> GetReviewAsync(int reviewId)
         {
             var review = await _communityRepository.GetReviewAsync(reviewId);
@@ -203,17 +199,15 @@ namespace YaqraApi.Services
             
             var booksToRemove = playlist.Books.Where(g => booksIds.Contains(g.Id));
 
-            foreach (var bookId in booksIds)
+            foreach (var book in booksToRemove)
             {
-                var bookResult = await _bookService.GetByIdAsync(bookId);
-                if (bookResult.Succeeded == true)
+                await _bookService.LoadGenres(book);
+
+                foreach (var genreId in book.Genres.Select(g => g.Id))
                 {
-                    var book = bookResult.Result;
-                    foreach (var genreId in book.GenresDto.Select(g => g.GenreId))
-                    {
-                        await _recommendationService.DecrementPoints(userId, genreId);
-                    }
+                    await _recommendationService.DecrementPoints(userId, genreId);
                 }
+                
             }
 
             _bookService.Attach(booksToRemove);
@@ -311,17 +305,14 @@ namespace YaqraApi.Services
 
             var booksToRemove = discussion.Books.Where(g => booksIds.Contains(g.Id));
 
-            foreach (var bookId in booksIds)
+            foreach (var book in booksToRemove)
             {
-                var bookResult = await _bookService.GetByIdAsync(bookId);
-                if (bookResult.Succeeded == true)
-                {
-                    var book = bookResult.Result;
-                    foreach (var genreId in book.GenresDto.Select(g => g.GenreId))
+                await _bookService.LoadGenres(book);
+
+                foreach (var genreId in book.Genres.Select(g => g.Id))
                     {
                         await _recommendationService.DecrementPoints(userId, genreId);
                     }
-                }
             }
 
             _bookService.Attach(booksToRemove);
