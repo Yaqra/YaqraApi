@@ -20,13 +20,16 @@ namespace YaqraApi.Services
     {
         private readonly IAuthorRepository _authorRepository;
         private readonly IWebHostEnvironment _environment;
+        private readonly IBookProxyService _bookProxyService;
         private readonly Mapper _mapper;
 
         public AuthorService(IAuthorRepository authorRepository, 
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IBookProxyService bookProxyService)
         {
             _authorRepository = authorRepository;
             _environment = environment;
+            _bookProxyService = bookProxyService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         public void Attach(IEnumerable<Author> authors)
@@ -168,9 +171,16 @@ namespace YaqraApi.Services
             if (booksIdsResult.Succeeded == false)
                 return null;
 
-            var booksRates = await _authorRepository.GetAuthorBooksRates(booksIdsResult.Result);
+            List<decimal> booksRates = new();
+            foreach (var bookId in booksIdsResult.Result)
+            {
+                var bookRate = await _bookProxyService.CalculateRate(bookId);
+                if(bookRate != null)
+                    booksRates.Add(bookRate.Value);
+            }
+            var authorRate = booksRates.Sum() / booksRates.Count();
 
-            return BookHelpers.FormatRate(BookHelpers.CalcualteRate(booksRates));
+            return BookHelpers.FormatRate(authorRate);
         }
         private async Task<List<AuthorDto>> AssignRate(List<AuthorDto> authorsDto)
         {
