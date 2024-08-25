@@ -35,13 +35,6 @@ namespace YaqraApi.Helpers
                 dto.GenresDto.Add(new GenreDto { GenreId = genre.Id, GenreName = genre.Name});
             return dto;
         }
-        public static decimal? CalcualteRate(List<decimal>? rates)
-        {
-            if (rates.IsNullOrEmpty())
-                return null;
-            var sum = rates.Sum();
-            return ((sum / (rates.Count * 10)) * 10);
-        }
         public static string? FormatRate(decimal? rate)
         {
             if (rate == null)
