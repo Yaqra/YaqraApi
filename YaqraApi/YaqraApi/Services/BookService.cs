@@ -343,7 +343,7 @@ namespace YaqraApi.Services
         {
             dto.Page = dto.Page == 0 ? 1 : dto.Page;   
 
-            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = await _bookRepository.FindBooks(dto) };
+            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = await _bookRepository.FindBooks(dto, _bookProxyService) };
         }
 
         public async Task<GenericResultDto<List<BookDto>>> GetTrendingBooks()
