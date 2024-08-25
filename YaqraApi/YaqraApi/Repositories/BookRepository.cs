@@ -10,6 +10,7 @@ using YaqraApi.Models;
 using YaqraApi.Models.Enums;
 using YaqraApi.Repositories.Context;
 using YaqraApi.Repositories.IRepositories;
+using YaqraApi.Services.IServices;
 
 namespace YaqraApi.Repositories
 {
@@ -181,15 +182,14 @@ namespace YaqraApi.Repositories
 
         }
 
-        public async Task<List<BookDto>> FindBooks(BookFinderDto dto)
+        public async Task<List<BookDto>> FindBooks(BookFinderDto dto, IBookProxyService bookProxyService)
         {
             if (dto.MinimumRate == null && dto.AuthorIds == null && dto.GenreIds == null)
             {
                 var booksDto = _mapper.Map<List<BookDto>>(await GetAll(dto.Page));
                 foreach (var book in booksDto)
                 {
-                    var rates = await GetBookRates(book.Id);
-                    book.Rate = BookHelpers.FormatRate(BookHelpers.CalcualteRate(rates));
+                    book.Rate = BookHelpers.FormatRate(await bookProxyService.CalculateRate(book.Id));
                 }
                 return booksDto;
             }
@@ -211,14 +211,7 @@ namespace YaqraApi.Repositories
                 var elementsToRemove = new List<BookDto>();
                 foreach (var b in result)
                 {
-                    var rates = await GetBookRates(b.Id);
-                    if (rates.Count == 0)
-                    {
-                        elementsToRemove.Add(b);
-                        continue;
-                    }
-
-                    var bookRate = BookHelpers.CalcualteRate(rates);
+                    var bookRate = await bookProxyService.CalculateRate(b.Id);
                     if (bookRate == null)
                     {
                         elementsToRemove.Add(b);
@@ -254,11 +247,6 @@ namespace YaqraApi.Repositories
                 .Select(g => g.FirstOrDefault().Book) // Select the first book in each group
                 .ToListAsync();
 
-            foreach (var book in books)
-            {
-                _context.Entry(book).Collection(b => b.Reviews).Load();
-            }
-
             return books
                 .Take(Pagination.TrendingBooks).ToList();
         }
@@ -285,6 +273,11 @@ namespace YaqraApi.Repositories
         public async Task LoadGenres(Book book)
         {
             await _context.Entry(book).Collection(b => b.Genres).LoadAsync();
+        }
+
+        public async Task<int> GetBookReviewsCount(int bookId)
+        {
+            return _context.Reviews.Where(r=>r.BookId==bookId).Count();
         }
     }
 }

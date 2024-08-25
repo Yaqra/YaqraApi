@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
@@ -26,14 +27,17 @@ namespace YaqraApi.Services
         private readonly ICommunityRepository _communityRepository;
         private readonly IBookService _bookService;
         private readonly IRecommendationService _recommendationService;
+        private readonly IBookProxyService _bookProxyService;
         private readonly Mapper _mapper;
         public CommunityService(ICommunityRepository communityRepository, 
             IBookService bookService,
-            IRecommendationService recommendationService)
+            IRecommendationService recommendationService,
+            IBookProxyService bookProxyService)
         {
             _communityRepository = communityRepository;
             _bookService = bookService;
             _recommendationService = recommendationService;
+            _bookProxyService = bookProxyService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         private async Task<Playlist> AddBooksToPlaylist(Playlist playlist, HashSet<int> booksIds)
@@ -118,11 +122,14 @@ namespace YaqraApi.Services
                     await _recommendationService.IncrementPoints(userId, genreId);
                 }
             }
-            
+
+            await _bookProxyService.UpdateRate(review.BookId, review.Rate);
 
             var result = await _communityRepository.AddReviewAsync(original);
             if (result == null)
                 return new GenericResultDto<ReviewDto> { Succeeded = false, ErrorMessage = "something went wrong" };
+            
+            
             var resultReview = await GetReviewAsync(result.Id);
             return new GenericResultDto<ReviewDto> { Succeeded = true, Result = resultReview.Result };
         }

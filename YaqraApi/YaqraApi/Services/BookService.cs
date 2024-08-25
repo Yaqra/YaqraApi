@@ -27,18 +27,21 @@ namespace YaqraApi.Services
         private readonly IGenreService _genreService;
         private readonly IAuthorService _authorService;
         private readonly IWebHostEnvironment _environment;
+        private readonly IBookProxyService _bookProxyService;
         private readonly Mapper _mapper;
 
         public BookService(
             IBookRepository bookRepository, 
             IGenreService genreService,
             IAuthorService authorService, 
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IBookProxyService bookProxyService)
         {
             _bookRepository = bookRepository;
             _genreService = genreService;
             _authorService = authorService;
             _environment = environment;
+            _bookProxyService = bookProxyService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         public void Attach(IEnumerable<Book> books)
@@ -86,13 +89,11 @@ namespace YaqraApi.Services
             {
                 var dto = _mapper.Map<BookDto>(book);
                 
-                var x = await _bookRepository.GetBookRates(dto.Id);
-                
                 dto.GenresDto = book.Genres.Select(genre=> new GenreDto { GenreId = genre.Id, GenreName = genre.Name }).ToList();
 
                 dto.AuthorsDto = _mapper.Map<List<AuthorDto>>(book.Authors);
 
-                dto.Rate = BookHelpers.FormatRate(BookHelpers.CalcualteRate(x));
+                dto.Rate = BookHelpers.FormatRate(await _bookProxyService.CalculateRate(dto.Id));
 
                 result.Add(dto);
             }
@@ -129,7 +130,7 @@ namespace YaqraApi.Services
 
             result.GenresDto = book.Genres.Select(genre => new GenreDto { GenreId = genre.Id, GenreName = genre.Name }).ToList();
 
-            result.Rate = BookHelpers.FormatRate(BookHelpers.CalcualteRate(await _bookRepository.GetBookRates(bookId)));
+            result.Rate = BookHelpers.FormatRate(await _bookProxyService.CalculateRate(bookId));
 
             return new GenericResultDto<BookDto> { Succeeded = true, Result = result };
         }
@@ -354,9 +355,8 @@ namespace YaqraApi.Services
             var booksDto = new List<BookDto>();
             foreach (var book in books)
             {
-                var rates = book.Reviews.Select(r => r.Rate);
                 var dto = _mapper.Map<BookDto>(book);
-                dto.Rate = BookHelpers.FormatRate(BookHelpers.CalcualteRate(rates.ToList()));
+                dto.Rate = BookHelpers.FormatRate(await _bookProxyService.CalculateRate(book.Id));
                 booksDto.Add(dto);
             }
             return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = booksDto};

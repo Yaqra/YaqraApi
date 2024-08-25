@@ -3,6 +3,7 @@ using YaqraApi.DTOs.Book;
 using YaqraApi.DTOs.Book;
 using YaqraApi.Models;
 using YaqraApi.Models.Enums;
+using YaqraApi.Services.IServices;
 
 namespace YaqraApi.Repositories.IRepositories
 {
@@ -20,12 +21,12 @@ namespace YaqraApi.Repositories.IRepositories
         Task<List<decimal>> GetBookRates(int bookId);
         void Attach(IEnumerable<Book> books);
         Task<List<Review>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field);
-        Task<List<BookDto>> FindBooks(BookFinderDto dto);
+        Task<List<BookDto>> FindBooks(BookFinderDto dto, IBookProxyService bookProxyService);
         Task<List<Book>> GetTrendingBooks();
         Task AddTrendingBook(TrendingBook trending);
         Task<List<Book>> GetUpcomingBooks(int page);
         Task<IQueryable<Book>> GetRange(HashSet<int> booksIds);
         Task LoadGenres(Book book);
-
+        Task<int> GetBookReviewsCount(int bookId);
     }
 }

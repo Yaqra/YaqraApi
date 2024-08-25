@@ -16,10 +16,12 @@ namespace YaqraApi.Services
     public class GenreService : IGenreService
     {
         private readonly IGenreRepository _genreRepository;
+        private readonly IBookProxyService _bookProxyService;
         private readonly Mapper _mapper;
-        public GenreService(IGenreRepository genreRepository)
+        public GenreService(IGenreRepository genreRepository, IBookProxyService bookProxyService)
         {
             _genreRepository = genreRepository;
+            _bookProxyService = bookProxyService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         public async Task<GenericResultDto<GenreDto>> AddAsync(string genreName)
@@ -91,9 +93,8 @@ namespace YaqraApi.Services
             var booksDto = new List<BookDto>();
             foreach (var book in books)
             {
-                var rates = book.Reviews.Select(r => r.Rate);
                 var dto = _mapper.Map<BookDto>(book);
-                dto.Rate = BookHelpers.FormatRate(BookHelpers.CalcualteRate(rates.ToList()));
+                dto.Rate = BookHelpers.FormatRate(await _bookProxyService.CalculateRate(book.Id));
                 booksDto.Add(dto);
             }
 

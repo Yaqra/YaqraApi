@@ -76,7 +76,6 @@ namespace YaqraApi.Repositories
         {
             var genre = await _context.Genres
                 .Include(g => g.Books.OrderBy(b=>Guid.NewGuid()).Take(count))
-                .ThenInclude(b=>b.Reviews)
                 .SingleOrDefaultAsync(g => g.Id == genreId);
             if (genre == null)
                 return null;
