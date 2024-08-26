@@ -120,11 +120,6 @@ namespace YaqraApi.Repositories
             return author.Books.Select(b => b.Id).ToList();
         }
 
-        public async Task<List<decimal>?> GetAuthorBooksRates(List<int> booksIds)
-        {
-            return _context.Reviews.Where(r => booksIds.Contains(r.BookId)).Select(r => r.Rate).ToList();
-        }
-
         public async Task<IQueryable<Author>> GetRangeAsync(HashSet<int> authorsIds)
         {
             return _context.Authors

@@ -13,6 +13,9 @@ namespace YaqraApi.Helpers
 
         public static string? UploadImage(string dir, string oldPicPath, IFormFile pic, IWebHostEnvironment env)
         {
+            if (pic == null)
+                return null;
+
             var picName = Path.GetFileName(pic.FileName);
             var picExtension = Path.GetExtension(picName);
             var picWithGuid = $"{picName.TrimEnd(picExtension.ToArray())}{Guid.NewGuid().ToString()}{picExtension}";
