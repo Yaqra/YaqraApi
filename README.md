@@ -100,10 +100,6 @@ _Coming soon!_
 
 _Coming soon!_
 
-## License
-
-This project is licensed under the MIT License.
-
 ---
 
 Thank you for exploring YaqraApi! We hope it enhances your book-related social interactions.
