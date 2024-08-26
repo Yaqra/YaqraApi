@@ -5,7 +5,9 @@ VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YaqraApi", "YaqraApi\YaqraApi.csproj", "{783286E0-DC7A-484B-859A-54977BC10F56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YaqraApiWorker", "YaqraApiWorker\YaqraApiWorker.csproj", "{703FCEB8-B5AC-4F45-8ACD-B91F5C0E022E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YaqraApiWorker", "YaqraApiWorker\YaqraApiWorker.csproj", "{703FCEB8-B5AC-4F45-8ACD-B91F5C0E022E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YaqraApi.Tests", "YaqraApi.Tests\YaqraApi.Tests.csproj", "{58C8D312-37CE-4734-B831-2E19C0B79205}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{703FCEB8-B5AC-4F45-8ACD-B91F5C0E022E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{703FCEB8-B5AC-4F45-8ACD-B91F5C0E022E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{703FCEB8-B5AC-4F45-8ACD-B91F5C0E022E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58C8D312-37CE-4734-B831-2E19C0B79205}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58C8D312-37CE-4734-B831-2E19C0B79205}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58C8D312-37CE-4734-B831-2E19C0B79205}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58C8D312-37CE-4734-B831-2E19C0B79205}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
