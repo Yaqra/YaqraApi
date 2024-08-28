@@ -11,6 +11,7 @@ YaqraApi is a robust API designed for Yaqra platform, a social media website tai
 - **SignalR**
 - **AutoMapper**
 - **Worker Service**
+- **Dapper**
 
 ## Features
 
@@ -80,6 +81,10 @@ YaqraApi project is organized into the following key components:
 - **Efficient Data Structures**: Utilizes data structures like hashtables for in-memory storage.
 - **Efficient Data Queries**: Uses `IQueryable` for optimized data queries.
 - **SOLID Principles**: Ensures the code adheres to the principles of object-oriented design.
+## Worker Service
+
+- **Purpose**: The worker service is a background service designed to clean up unwanted items from the database, such as revoked or expired tokens, to maintain database efficiency and integrity.
+- **Implementation**: This service uses Dapper for efficient database operations, leveraging its lightweight and high-performance capabilities for direct SQL execution.
 
 ## API Documentation
 
