@@ -178,7 +178,9 @@ namespace YaqraApi.Services
                 if(bookRate != null)
                     booksRates.Add(bookRate.Value);
             }
-            var authorRate = booksRates.Sum() / booksRates.Count();
+            decimal? authorRate = null;
+            if(booksRates.Count != 0)
+                authorRate = booksRates.Sum() / booksRates.Count();
 
             return BookHelpers.FormatRate(authorRate);
         }

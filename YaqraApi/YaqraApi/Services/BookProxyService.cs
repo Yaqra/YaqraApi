@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
 using YaqraApi.Repositories.IRepositories;
 using YaqraApi.Services.IServices;
 
@@ -8,7 +9,7 @@ namespace YaqraApi.Services
     {
         private readonly IBookRepository _bookRepository;
         //                     bookId  rate
-        public static Dictionary<int, decimal> BooksRates { get; set; } = new();
+        public static Dictionary<int, decimal?> BooksRates { get; set; } = new();
         public BookProxyService(IBookRepository bookRepository)
         {
             _bookRepository = bookRepository;
@@ -22,8 +23,10 @@ namespace YaqraApi.Services
 
             if (rates.IsNullOrEmpty())
                 return null;
-
-            rate = ((rates.Sum() / (rates.Count * 10)) * 10);
+            if (rates.Count != 0)
+                rate = ((rates.Sum() / (rates.Count * 10)) * 10);
+            else
+                rate = null;
             BooksRates.Add(bookId, rate);
             return rate;
         }
@@ -37,7 +40,7 @@ namespace YaqraApi.Services
                 BooksRates.Remove(bookId);
                 return;
             }
-            decimal updatedRate = ((rate * reviewsCountBeforeAddingNewReview) + newRate) / (reviewsCountBeforeAddingNewReview + 1);
+            decimal? updatedRate = ((rate * reviewsCountBeforeAddingNewReview) + newRate) / (reviewsCountBeforeAddingNewReview + 1);
             BooksRates[bookId] = updatedRate;
         }
     }

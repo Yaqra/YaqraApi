@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using YaqraApi.DTOs;
 using YaqraApi.DTOs.Auth;
 using YaqraApi.Helpers;
 using YaqraApi.Services;
@@ -24,7 +25,7 @@ namespace YaqraApi.Controllers
         {
             var result = await _authService.RegisterAsync(registerDto, new List<string> { Roles.User });
             if(result.IsAuthenticated == false)
-                return BadRequest(result.Message);
+                return BadRequest(result);
             return Ok(result);
         }
         [Authorize(Roles = "Admin")]
@@ -33,7 +34,7 @@ namespace YaqraApi.Controllers
         {
             var result = await _authService.RegisterAsync(registerDto, new List<string> { Roles.User, Roles.Admin });
             if (result.IsAuthenticated == false)
-                return BadRequest(result.Message);
+                return BadRequest(result);
             return Ok(result);
         }
         [HttpPost("login")]
@@ -41,7 +42,7 @@ namespace YaqraApi.Controllers
         {
             var result = await _authService.LoginAsync(loginDto);
             if(result.IsAuthenticated == false)
-                return BadRequest(result.Message);
+                return BadRequest(result);
 
             SetRefreshTokenInCookies(result.RefreshToken,result.RefreshTokenExpiration);
             return Ok(result);
@@ -62,7 +63,7 @@ namespace YaqraApi.Controllers
             var result = await _authService.RefreshAccessTokenAsync(refreshToken);
 
             if (result.IsAuthenticated == false)
-                return BadRequest(result.Message);
+                return BadRequest(result);
 
             SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
 

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using YaqraApi.AutoMapperConfigurations;
+using YaqraApi.DTOs;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Genre;
 using YaqraApi.DTOs.ReadingGoal;
@@ -48,7 +49,7 @@ namespace YaqraApi.Controllers
             var userDto = new UserDto { Bio = userBio, UserId = UserHelpers.GetUserId(User), Username=userName };
             var result = await _userProxyService.UpdateAllAsync(pic, cover, userDto);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
+                return BadRequest(result);
             return Ok("user updated successfully");
         }
         [Authorize]
@@ -57,7 +58,7 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.UpdatePasswordAsync(dto, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
+                return BadRequest(result);
             return Ok("password updated successfully");
         }
         [Authorize]
@@ -66,7 +67,7 @@ namespace YaqraApi.Controllers
         {
             var result = await _userProxyService.UpdateProfilePictureAsync(pic, UserHelpers.GetUserId(User));
             if(result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
+                return BadRequest(result);
             return Ok("profile picture updated successfully");
         }
         [Authorize]
@@ -75,7 +76,7 @@ namespace YaqraApi.Controllers
         {
             var result = await _userProxyService.UpdateProfileCoverAsync(pic, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
+                return BadRequest(result);
             return Ok("profile picture updated successfully");
         }
         [Authorize]
@@ -84,8 +85,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userProxyService.FollowUserAsync(dto, UserHelpers.GetUserId(User));
             if(result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok($"{result.Result.Follower.UserName} followed {result.Result.Followed.UserName} successfully");
+                return BadRequest(result);
+            return Ok(new GenericResultDto<string> { Succeeded = true, Result = $"{result.Result.Follower.UserName} followed {result.Result.Followed.UserName} successfully" });
         }
         [Authorize]
         [HttpGet("user")]
@@ -93,8 +94,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userProxyService.GetUserAsync(dto.UserId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("followrs")]
@@ -102,9 +103,9 @@ namespace YaqraApi.Controllers
         {
             var result = _userService.GetUserFollowersNames(dto.UserId, page);
             if(result.Succeeded==false)
-                return BadRequest(result.ErrorMessage);
+                return BadRequest(result);
             else 
-                return Ok(result.Result);
+                return Ok(result);
         }
         [Authorize]
         [HttpGet("followings")]
@@ -112,9 +113,9 @@ namespace YaqraApi.Controllers
         {
             var result = _userService.GetUserFollowingsNames(dto.UserId, page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
+                return BadRequest(result);
             else
-                return Ok(result.Result);
+                return Ok(result);
         }
         [Authorize]
         [HttpPost("addFavGenres")]
@@ -123,8 +124,8 @@ namespace YaqraApi.Controllers
             var result = await _userService.AddFavouriteGenresAsync(genres, UserHelpers.GetUserId(User));
 
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("genresExcept")]
@@ -132,8 +133,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.GetAllGenresExceptUserGenresAsync(UserHelpers.GetUserId(User), page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("favGenres")]
@@ -142,8 +143,8 @@ namespace YaqraApi.Controllers
             var result = await _userService.GetFavouriteGenresAsync(UserHelpers.GetUserId(User));
 
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpDelete("favGenre")]
@@ -152,8 +153,8 @@ namespace YaqraApi.Controllers
             var result = await _userService.DeleteFavouriteGenreAsync(genreId, UserHelpers.GetUserId(User));
 
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpPost("addFavAuthors")]
@@ -162,8 +163,8 @@ namespace YaqraApi.Controllers
             var result = await _userService.AddFavouriteAuthorsAsync(authors, UserHelpers.GetUserId(User), page);
 
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("authorsExcept")]
@@ -171,8 +172,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.GetAllAuthorsExceptUserAuthorsAsync(UserHelpers.GetUserId(User), page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("favAuthors")]
@@ -181,8 +182,8 @@ namespace YaqraApi.Controllers
             var result = await _userService.GetFavouriteAuthorsAsync(UserHelpers.GetUserId(User),page);
 
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpDelete("favAuthor")]
@@ -191,8 +192,8 @@ namespace YaqraApi.Controllers
             var result = await _userService.DeleteFavouriteAuthorAsync(authorId, UserHelpers.GetUserId(User));
 
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpPost("goal")]
@@ -203,8 +204,8 @@ namespace YaqraApi.Controllers
 
             var result = await _userService.AddReadingGoalAsync(dto, dto.UserId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("allGoals")]
@@ -212,8 +213,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.GetAllReadingGoalsAsync(UserHelpers.GetUserId(User), page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpDelete("goal")]
@@ -221,8 +222,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.DeleteReadingGoalAsync(goalId, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpPut("goal")]
@@ -230,8 +231,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.UpdateReadingGoalAsync(dto, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpPost("addBook")]
@@ -247,8 +248,8 @@ namespace YaqraApi.Controllers
 
             var result = await _userService.AddBookToCollectionAsync(userBookDto, userBookDto.UserId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("getBooks")]
@@ -256,8 +257,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.GetBooksAsync(status, UserHelpers.GetUserId(User), page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpPut("updateBook")]
@@ -265,8 +266,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.UpdateBookStatusAsync(bookId, status, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpDelete("deleteBook")]
@@ -274,8 +275,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.DeleteBookAsync(bookId, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("userFollowersPages")]
@@ -283,8 +284,8 @@ namespace YaqraApi.Controllers
         {
             var result = _userService.GetUserFollowersPagesCount(dto.UserId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("userFollowingsPages")]
@@ -292,8 +293,8 @@ namespace YaqraApi.Controllers
         {
             var result = _userService.GetUserFollowingsPagesCount(dto.UserId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("genresExceptUserGenresPages")]
@@ -301,8 +302,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.GetGenresExceptUserGenresPagesCountAsync(dto.UserId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("favouriteAuthorsPages")]
@@ -310,8 +311,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.GetFavouriteAuthorsPagesCountAsync(dto.UserId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("authorsExceptfavouriteAuthorsPages")]
@@ -319,8 +320,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.GetFavouriteAuthorsExceptUserPagesCountAsync(dto.UserId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("readingGoalPages")]
@@ -328,8 +329,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.GetReadingGoalsPagesCountAsync(dto.UserId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("bookCollectionPages")]
@@ -337,8 +338,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _userService.GetBooksPagesCountAsync(dto.UserId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
     }
 }

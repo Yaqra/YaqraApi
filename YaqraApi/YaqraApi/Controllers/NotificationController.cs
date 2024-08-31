@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using YaqraApi.DTOs;
 using YaqraApi.Helpers;
 using YaqraApi.Hubs;
 using YaqraApi.Services.IServices;
@@ -34,7 +35,7 @@ namespace YaqraApi.Controllers
             var notifications = await _notificationService.GetAll(UserHelpers.GetUserId(User), page);
             if (notifications == null)
                 notifications = new List<DTOs.Notification.NotificationDto>();
-            return Ok(notifications);
+            return Ok(new GenericResultDto<List<DTOs.Notification.NotificationDto>> { Succeeded = true, Result = notifications});
         }
     }
 }

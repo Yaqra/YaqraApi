@@ -24,8 +24,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _timelineService.GetTimeline(dto.page, dto.Followings, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
     }
 }
