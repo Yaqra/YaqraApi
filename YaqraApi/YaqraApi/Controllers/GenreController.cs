@@ -25,8 +25,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _genreService.GetAllAsync(page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
 
         [HttpGet("name")]
@@ -34,16 +34,16 @@ namespace YaqraApi.Controllers
         {
             var result = await _genreService.GetByNameAsync(genreName);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("id")]
         public async Task<IActionResult> GetByIdAsync(GenreIdDto genre)
         {
             var result = await _genreService.GetByIdAsync(genre.GenreId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpPost("addGenre")]
@@ -51,8 +51,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _genreService.AddAsync(genreName);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Created((string?)null, result.Result);
+                return BadRequest(result);
+            return Created((string?)null, result);
         }
         [Authorize(Roles = "Admin")]
         [HttpPut]
@@ -60,8 +60,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _genreService.UpdateAsync(dto.CurrentGenreId,dto.NewGenreName);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete]
@@ -69,16 +69,16 @@ namespace YaqraApi.Controllers
         {
             var result = await _genreService.DeleteAsync(dto.GenreId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("genrePages")]
         public async Task<IActionResult> GetBooksPagesCount()
         {
             var result = await _genreService.GetPagesCount();
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
     }
 }

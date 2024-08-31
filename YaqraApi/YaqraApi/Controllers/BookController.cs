@@ -33,9 +33,9 @@ namespace YaqraApi.Controllers
         {
             var result = await _bookService.AddAsync(dto);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
+                return BadRequest(result);
 
-            return Created((string?)null, result.Result);
+            return Created((string?)null, result);
         }
         
         [HttpGet("books")]
@@ -43,40 +43,40 @@ namespace YaqraApi.Controllers
         {
             var result = await _bookService.GetAll(page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("id")]
         public async Task<IActionResult> GetByIdAsync(BookIdDto idDto)
         {
             var result = await _bookService.GetByIdAsync(idDto.BookId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("title")]
         public async Task<IActionResult> GetByTitleAsync(string bookTitle, [FromQuery] int page)
         {
             var result = await _bookService.GetByTitle(bookTitle, page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("titleAndId")]
         public async Task<IActionResult> GetAllTitlesAndIdsAsync([FromQuery] int page)
         {
             var result = await _bookService.GetAllTitlesAndIds(page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("recent")]
         public async Task<IActionResult> GetRecentAsync([FromQuery] int page)
         {
             var result = await _bookService.GetRecent(page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("image")]
@@ -87,8 +87,8 @@ namespace YaqraApi.Controllers
 
             var result = await _bookService.UpdateImageAsync(image, bookId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("all")]
@@ -110,8 +110,8 @@ namespace YaqraApi.Controllers
 
             var result = await _bookService.UpdateAllAsync(image, dto);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete]
@@ -120,16 +120,16 @@ namespace YaqraApi.Controllers
             var result = await _bookService.Delete(dto.BookId);
 
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("bookPages")]
         public async Task<IActionResult> GetBooksPagesCount()
         {
             var result = await _bookService.GetBooksPagesCount();
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("addGenres")]
@@ -137,8 +137,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _bookService.AddGenresToBook(genreIds, bookId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("removeGenres")]
@@ -146,8 +146,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _bookService.RemoveGenresFromBook(genreIds, bookId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("addAuthors")]
@@ -155,8 +155,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _bookService.AddAuthorsToBook(authorIds, bookId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("removeAuthors")]
@@ -164,24 +164,24 @@ namespace YaqraApi.Controllers
         {
             var result = await _bookService.RemoveAuthorsFromBook(authorIds, bookId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("reviews")]
         public async Task<IActionResult> GetReviews([FromForm] int bookId, [FromForm] int page, [FromForm] SortType sortType, [FromForm] ReviewsSortField sortField)
         {
             var result = await _bookService.GetReviews(bookId, page, sortType, sortField);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("find")]
         public async Task<IActionResult> FindBooks(BookFinderDto dto)
         {
             var result = await _bookService.FindBooks(dto);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("recommendations")]
@@ -189,24 +189,24 @@ namespace YaqraApi.Controllers
         {
             var result = await _recommendationService.RecommendBooks(UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("trending")]
         public async Task<IActionResult> GetTrendingBooks()
         {
             var result = await _bookService.GetTrendingBooks();
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [HttpGet("upcoming")]
         public async Task<IActionResult> GetUpcomingBooks([FromQuery] int page)
         {
             var result = await _bookService.GetUpcomingBooks(page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
     }
 }

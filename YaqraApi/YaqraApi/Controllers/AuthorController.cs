@@ -32,9 +32,9 @@ namespace YaqraApi.Controllers
             var dto = new AddAuthorDto { Bio = authorBio, Name = authorName };
             var result = await _authorService.AddAsync(picture, _mapper.Map<AuthorDto>(dto));
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
+                return BadRequest(result);
 
-            return Created((string?)null, result.Result);
+            return Created((string?)null, result);
         }
         
         [HttpGet("authors")]
@@ -42,8 +42,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _authorService.GetAll(page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         
         [HttpGet("authorPages")]
@@ -52,7 +52,7 @@ namespace YaqraApi.Controllers
             var result = await _authorService.GetAuthorsPagesCount();
             if (result.Succeeded == false)
                 return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+            return Ok(result);
         }
         
         [HttpGet("id")]
@@ -60,8 +60,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _authorService.GetByIdAsync(idDto.AuthorId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
 
         [HttpGet("name")]
@@ -69,8 +69,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _authorService.GetByName(authorName, page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
 
         [HttpGet("nameAndId")]
@@ -78,8 +78,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _authorService.GetAllNamesAndIds(page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
 
         [HttpGet("books")]
@@ -87,8 +87,8 @@ namespace YaqraApi.Controllers
         {
             var result = await _authorService.GetAuthorBooks(authorId, page);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("picture")]
@@ -99,8 +99,8 @@ namespace YaqraApi.Controllers
 
             var result = await _authorService.UpdatePictureAsync(picture,authorId);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("all")]
@@ -116,8 +116,8 @@ namespace YaqraApi.Controllers
 
             var result = await _authorService.UpdateAllAsync(picture, dto);
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete]
@@ -126,8 +126,8 @@ namespace YaqraApi.Controllers
             var result = await _authorService.Delete(dto.AuthorId);
 
             if (result.Succeeded == false)
-                return BadRequest(result.ErrorMessage);
-            return Ok(result.Result);
+                return BadRequest(result);
+            return Ok(result);
         }
     }
 }
