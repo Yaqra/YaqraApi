@@ -34,10 +34,12 @@ namespace YaqraApi.Repositories
             var genre = await _context.Genres.AsNoTracking().SingleOrDefaultAsync(g => g.Id == id);
             return genre;
         }
-        public async Task<Genre> GetByNameAsync(string name)
+        public async Task<IQueryable<Genre>> GetByNameAsync(string name)
         {
-            var genre = await _context.Genres.AsNoTracking().SingleOrDefaultAsync(g => g.Name == name);
-            return genre;
+            var genres = _context.Genres
+                .AsNoTracking()
+                .Where(g => g.Name.Contains(name));
+            return genres;
         }
         public async Task<Genre> AddAsync(Genre genre)
         {
