@@ -10,7 +10,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<List<GenreDto>>> GetAllAsync(int page);
         Task<GenericResultDto<int>> GetPagesCount();
         Task<GenericResultDto<GenreDto>> GetByIdAsync(int id);
-        Task<GenericResultDto<GenreDto>> GetByNameAsync(string name);
+        Task<GenericResultDto<List<GenreDto>>> GetByNameAsync(string name);
         Task<GenericResultDto<GenreDto>> AddAsync(string genreName);
         Task<GenericResultDto<GenreDto>> UpdateAsync(int currentGenreId, string newGenreName);
         Task<GenericResultDto<string>> DeleteAsync(int id);
