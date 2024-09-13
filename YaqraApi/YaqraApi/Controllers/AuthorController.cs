@@ -56,9 +56,9 @@ namespace YaqraApi.Controllers
         }
         
         [HttpGet("id")]
-        public async Task<IActionResult> GetByIdAsync(AuthorIdDto idDto)
+        public async Task<IActionResult> GetByIdAsync(int authorId)
         {
-            var result = await _authorService.GetByIdAsync(idDto.AuthorId);
+            var result = await _authorService.GetByIdAsync(authorId);
             if (result.Succeeded == false)
                 return BadRequest(result);
             return Ok(result);
