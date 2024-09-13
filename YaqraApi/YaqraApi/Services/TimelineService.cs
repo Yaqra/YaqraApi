@@ -25,39 +25,43 @@ namespace YaqraApi.Services
         }
         public async Task<GenericResultDto<ArrayList>> GetTimeline(int page, bool followings, string userId)
         {
-            var user = await _context.Users
-                .Include(u=>u.Followings)
-                .SingleOrDefaultAsync(u=>u.Id==userId);
-            if (user == null)
-                return new GenericResultDto<ArrayList> { Succeeded = false, ErrorMessage = "user not found" };
             var arr = new ArrayList();
-            if(followings == true)
+            if(userId == null || followings == false)
+                arr = (await _communityService.GetPostsAsync(page)).Result;
+            else
             {
                 //get followings timeline
+                var user = await _context.Users
+                    .Include(u => u.Followings)
+                    .SingleOrDefaultAsync(u => u.Id == userId);
+                if (user == null)
+                    return new GenericResultDto<ArrayList> { Succeeded = false, ErrorMessage = "user not found" };
+
                 var followingsIds = user.Followings.Select(f => f.Id);
                 arr = (await _communityService.GetFollowingsPostsAsync(followingsIds, page)).Result;
             }
-            else 
-                //get default timeline
-                arr = (await _communityService.GetPostsAsync(page)).Result;
 
-            var postsIds = arr.OfType<PostDto>().DistinctBy(p=>p.Id).Select(p=>p.Id).ToList();
-            var likedPostsIds = await _communityService.ArePostsLiked(postsIds, userId);
-            for(int i = 0; i<arr.Count; i++)
+            if(userId != null)
             {
-                if (arr[i] is PostDto post)
+                var postsIds = arr.OfType<PostDto>().DistinctBy(p => p.Id).Select(p => p.Id).ToList();
+                var likedPostsIds = await _communityService.ArePostsLiked(postsIds, userId);
+                for (int i = 0; i < arr.Count; i++)
                 {
-                    if(likedPostsIds.Contains(post.Id) == true)
+                    if (arr[i] is PostDto post)
                     {
-                        post.IsLiked = true;
+                        if (likedPostsIds.Contains(post.Id) == true)
+                        {
+                            post.IsLiked = true;
+                        }
                     }
                 }
+
+                //add recommended books
+                var recommendedBooks = (await _recommendationService.RecommendBooks(userId)).Result;
+                if (recommendedBooks.IsNullOrEmpty() == false)
+                    arr.AddRange(recommendedBooks);
             }
 
-            //add recommended books
-            var recommendedBooks = (await _recommendationService.RecommendBooks(userId)).Result;
-            if(recommendedBooks.IsNullOrEmpty() == false)
-                arr.AddRange(recommendedBooks);
             return new GenericResultDto<ArrayList> { Succeeded = true, Result = arr };
         }
     }
