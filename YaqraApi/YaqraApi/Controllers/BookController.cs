@@ -19,12 +19,16 @@ namespace YaqraApi.Controllers
     {
         private readonly IBookService _bookService;
         private readonly IRecommendationService _recommendationService;
+        private readonly ICommunityService _communityService;
         private readonly Mapper _mapper;
 
-        public BookController(IBookService bookService, IRecommendationService recommendationService)
+        public BookController(IBookService bookService, 
+            IRecommendationService recommendationService, 
+            ICommunityService communityService)
         {
             _bookService = bookService;
             _recommendationService = recommendationService;
+            _communityService = communityService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
         [Authorize(Roles = "Admin")]
@@ -173,6 +177,12 @@ namespace YaqraApi.Controllers
             var result = await _bookService.GetReviews(bookId, page, sortType, sortField);
             if (result.Succeeded == false)
                 return BadRequest(result);
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result)
+            {
+                if (LikedPosts.Contains(item.Id) == true)
+                    item.IsLiked = true;
+            }
             return Ok(result);
         }
         [HttpGet("find")]

@@ -35,6 +35,8 @@ namespace YaqraApi.Repositories.IRepositories
         Task<List<Post>> GetPostsAsync(int page);
         Task<string?> GetPostUserIdAsync(int postId);
         Task<string?> GetCommentUserIdAsync(int commentId);
+        Task<bool> IsPostLiked(int postId, string userId);
+        Task<HashSet<int>> ArePostsLiked(HashSet<int> postsIds, string userId);
 
     }
 }

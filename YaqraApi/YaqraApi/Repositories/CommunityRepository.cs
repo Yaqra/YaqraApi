@@ -293,5 +293,16 @@ namespace YaqraApi.Repositories
         {
             return (await _context.Comments.SingleOrDefaultAsync(p => p.Id == commentId))?.UserId;
         }
+
+        public async Task<bool> IsPostLiked(int postId, string userId)
+        {
+            return (await _context.PostLikes.AnyAsync(x => x.PostId == postId && x.UserId == userId));
+        }
+
+        public async Task<HashSet<int>> ArePostsLiked(HashSet<int> postsIds, string userId)
+        {
+            var result  = _context.PostLikes.Where(x => x.UserId == userId && postsIds.Contains(x.PostId));
+            return new HashSet<int>(await result.Select(r=>r.PostId).ToListAsync());
+        }
     }
 }

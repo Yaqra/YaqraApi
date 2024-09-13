@@ -16,6 +16,7 @@ namespace YaqraApi.DTOs.Community
         public string? Title { get; set; }
         public string Content { get; set; }
         public int LikeCount { get; set; }
+        public bool IsLiked { get; set; } = false;   
         public DateTime CreatedDate { get; set; }
     }
     public class ReviewDto : PostDto

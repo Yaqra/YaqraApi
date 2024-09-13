@@ -40,5 +40,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<string>> GetPostUserIdAsync(int postId);
         Task<GenericResultDto<string>> GetCommentUserIdAsync(int commentId);
         Task<GenericResultDto<Post>> GetPostAsync(int postId);
+        Task<bool> IsPostLikedAsync(int postId, string userId);
+        Task<HashSet<int>> ArePostsLiked(List<int> postsIds, string userId);
     }
 }
