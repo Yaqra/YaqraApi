@@ -15,5 +15,6 @@ namespace YaqraApi.DTOs.Community
         public UserDto? User { get; set; }
         public string UserId { get; set; }
         public int? ParentCommentId { get; set; }
+        public bool IsLiked { get; set; } = false;
     }
 }
