@@ -113,14 +113,14 @@ namespace YaqraApi.Services
 
 
             var bookResult = await _bookService.GetByIdAsync(review.BookId);
-            if (bookResult.Succeeded == true)
+            if (bookResult.Succeeded == false)
+                return new GenericResultDto<ReviewDto> { Succeeded = false, ErrorMessage = "Book Not Found" };
+            
+            var book = bookResult.Result;
+            await _bookService.AddTrendingBook(book.Id);
+            foreach (var genreId in book.GenresDto.Select(g => g.GenreId))
             {
-                var book = bookResult.Result;
-                await _bookService.AddTrendingBook(book.Id);
-                foreach (var genreId in book.GenresDto.Select(g => g.GenreId))
-                {
-                    await _recommendationService.IncrementPoints(userId, genreId);
-                }
+                await _recommendationService.IncrementPoints(userId, genreId);
             }
 
             await _bookProxyService.UpdateRate(review.BookId, review.Rate);
