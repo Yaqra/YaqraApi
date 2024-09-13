@@ -22,7 +22,7 @@ namespace YaqraApi.Controllers
             _authorService = authorService;
             _mapper = AutoMapperConfig.InitializeAutoMapper();
         }
-        [Authorize(Roles = "Admin")]
+        [Authorize(/*Roles = "Admin"*/)]
         [HttpPost("addAuthor")]
         public async Task<IActionResult> AddAsync(
             IFormFile? picture,

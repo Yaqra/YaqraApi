@@ -167,7 +167,7 @@ namespace YaqraApi.Services
         }
         private async Task<string?> CalculateAuthorRate(int authorId)
         {
-            var booksIdsResult = await GetAuthorBooksIds(authorId);//there is a problem here attaching author entity to efcore
+            var booksIdsResult = await GetAuthorBooksIds(authorId);
             if (booksIdsResult.Succeeded == false)
                 return null;
 

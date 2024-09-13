@@ -20,8 +20,9 @@ namespace YaqraApi.Controllers
         }
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> Get(GetTimelineDto dto)
+        public async Task<IActionResult> Get(bool followings, int page)
         {
+            var dto = new GetTimelineDto { Followings = followings, page = page };
             var result = await _timelineService.GetTimeline(dto.page, dto.Followings, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result);

@@ -17,5 +17,13 @@
         public static int Timeline = 27; 
         public static int Notifications = 36; 
 
+        public static int CalculatePagesCount(int totalElements, int pageSize)
+        {
+            if (pageSize == 0)
+                return 1;
+
+            return (int)Math.Ceiling((float)totalElements / (float)pageSize);
+        }
+
     }
 }
