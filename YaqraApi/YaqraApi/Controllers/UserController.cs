@@ -90,9 +90,9 @@ namespace YaqraApi.Controllers
         }
         [Authorize]
         [HttpGet("user")]
-        public async Task<IActionResult> GetUserAsync(UserIdDto dto)
+        public async Task<IActionResult> GetUserAsync(string userId)
         {
-            var result = await _userProxyService.GetUserAsync(dto.UserId);
+            var result = await _userProxyService.GetUserAsync(userId);
             if (result.Succeeded == false)
                 return BadRequest(result);
             return Ok(result);

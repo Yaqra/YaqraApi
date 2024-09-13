@@ -128,16 +128,16 @@ namespace YaqraApi.Controllers
         [HttpPut("like")]
         public async Task<IActionResult> LikeAsync([FromQuery] int postId)
         {
-            var post = await _communityService.LikeAsync(postId, UserHelpers.GetUserId(User));
-            if (post == null)
-                return NoContent();
+            var likeResult = await _communityService.LikeAsync(postId, UserHelpers.GetUserId(User));
+
             var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User));
             
             if (userResult.Succeeded == false)
-                return NoContent();
-            var receiver = post.User;
+                return Ok(likeResult);
+            
+            var receiver = (await _communityService.GetPostAsync(postId)).Result.User;
             if(receiver == null || userResult.Result.UserId == receiver.Id) 
-                return NoContent();
+                return Ok(likeResult);
 
             var notification = await _notificationService.BuildNotification(postId, $"أُعجب {userResult.Result.Username} بمنشورك", receiver.Id);
 
@@ -145,14 +145,14 @@ namespace YaqraApi.Controllers
             var connections = receiver.Connections.Select(c=>c.ConnectionId);
 
             if (connections == null)
-                return NoContent();
+                return Ok(likeResult);
 
             foreach (var con in connections)
             {
                 await _hub.Clients.Client(con).SendAsync("ReceiveNotification", _mapper.Map<NotificationDto>(notification));
             }
             
-            return NoContent();
+            return Ok(likeResult);
 
         }
         [Authorize]

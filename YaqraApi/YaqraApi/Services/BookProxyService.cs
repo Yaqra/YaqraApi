@@ -23,10 +23,9 @@ namespace YaqraApi.Services
 
             if (rates.IsNullOrEmpty())
                 return null;
-            if (rates.Count != 0)
-                rate = ((rates.Sum() / (rates.Count * 10)) * 10);
-            else
-                rate = null;
+
+            rate = ((rates.Sum() / (rates.Count * 10)) * 10);
+
             BooksRates.Add(bookId, rate);
             return rate;
         }

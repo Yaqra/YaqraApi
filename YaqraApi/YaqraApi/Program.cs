@@ -20,6 +20,17 @@ namespace YaqraApi
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+                });
+            });
+
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -98,7 +109,7 @@ namespace YaqraApi
             builder.Services.AddSignalR();
 
             var app = builder.Build();
-
+            app.UseOptions();
             // Configure the HTTP request pipeline.
             app.UseSwagger();
             if (app.Environment.IsDevelopment())
@@ -110,15 +121,24 @@ namespace YaqraApi
                     options.RoutePrefix = string.Empty;
                 });
 
+
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
 
+            app.UseCors("AllowAll");
+
+            app.UseRouting();
+
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
             app.MapControllers();
             app.MapHub<NotificationHub>("/Notification");
+
+            //app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173").AllowCredentials());
 
             app.Run();
         }

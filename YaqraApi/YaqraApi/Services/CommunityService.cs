@@ -355,25 +355,29 @@ namespace YaqraApi.Services
             return new GenericResultDto<List<DiscussionArticlesNewsDto>> { Succeeded = true, Result = discussionsDto };
 
         }
-        public async Task<Post?> LikeAsync(int postId, string userId)
+        public async Task<GenericResultDto<LikeDto>> LikeAsync(int postId, string userId)
         {
             var post = await _communityRepository.GetPostAsync(postId);
             if (post == null)
                 return null;
 
+            var result = new GenericResultDto<LikeDto> { Succeeded = true, Result = new LikeDto()};
+
             var postLike = post.PostLikes.SingleOrDefault(p => p.UserId == userId);
-            if (postLike != null)
+            if (postLike != null)//unlike
             {
                 post.PostLikes.Remove(postLike);
                 post.LikeCount--;
+                result.Result.Liked = false;//unlike
             }
-            else
+            else//like
             {
                 post.PostLikes.Add(new PostLikes { PostId = postId, UserId = userId });
                 post.LikeCount++;
+                result.Result.Liked = true;//like
             }
             _communityRepository.UpdatePost(post);
-            return post;
+            return result;
         }
         public async Task<GenericResultDto<List<ReviewDto>>> GetUserReviews(string userId, int page)
         {
@@ -542,6 +546,12 @@ namespace YaqraApi.Services
             if (userId == null)
                 return new GenericResultDto<string> { Succeeded = false };
             return new GenericResultDto<string> { Succeeded = true, Result = userId };
+        }
+
+        public async Task<GenericResultDto<Post>> GetPostAsync(int postId)
+        {
+            var post = await _communityRepository.GetPostAsync(postId);
+            return new GenericResultDto<Post> { Succeeded = true, Result = post };
         }
     }
 }

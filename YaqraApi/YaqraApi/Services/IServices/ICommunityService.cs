@@ -24,7 +24,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<DiscussionArticlesNewsDto>> AddBooksToDiscussion(int discussionId, HashSet<int> booksIds, string userId);
         Task<GenericResultDto<DiscussionArticlesNewsDto>> RemoveBooksFromDiscussion(int discussionId, HashSet<int> booksIds, string userId);
         Task<GenericResultDto<List<DiscussionArticlesNewsDto>>> GetAllDiscussionsAsync(int page, DiscussionArticleNewsTag tag);
-        Task<Post?> LikeAsync(int postId, string userId);
+        Task<GenericResultDto<LikeDto>> LikeAsync(int postId, string userId);
         Task<GenericResultDto<string>> Delete(int postId, string userId);
         Task<GenericResultDto<List<ReviewDto>>> GetUserReviews(string userId, int page);
         Task<GenericResultDto<List<PlaylistDto>>> GetUserPlaylists(string userId, int page);
@@ -39,5 +39,6 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<ArrayList>> GetPostsAsync(int page);
         Task<GenericResultDto<string>> GetPostUserIdAsync(int postId);
         Task<GenericResultDto<string>> GetCommentUserIdAsync(int commentId);
+        Task<GenericResultDto<Post>> GetPostAsync(int postId);
     }
 }
