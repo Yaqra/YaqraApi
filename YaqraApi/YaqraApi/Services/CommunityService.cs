@@ -555,5 +555,19 @@ namespace YaqraApi.Services
             var post = await _communityRepository.GetPostAsync(postId);
             return new GenericResultDto<Post> { Succeeded = true, Result = post };
         }
+
+        public async Task<bool> IsPostLikedAsync(int postId, string userId)
+        {
+            if (userId == null) return false;
+            return (await _communityRepository.IsPostLiked(postId, userId));
+        }
+        public async Task<HashSet<int>> ArePostsLiked(List<int> postsIds, string userId)
+        {
+            var result = new HashSet<int>();
+            if (userId == null)
+                return result;
+
+            return await _communityRepository.ArePostsLiked(new HashSet<int>(postsIds.Distinct()), userId);
+        }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections;
+using System.Linq;
 using YaqraApi.DTOs;
+using YaqraApi.DTOs.Community;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Repositories.Context;
@@ -38,6 +40,19 @@ namespace YaqraApi.Services
             else 
                 //get default timeline
                 arr = (await _communityService.GetPostsAsync(page)).Result;
+
+            var postsIds = arr.OfType<PostDto>().DistinctBy(p=>p.Id).Select(p=>p.Id).ToList();
+            var likedPostsIds = await _communityService.ArePostsLiked(postsIds, userId);
+            for(int i = 0; i<arr.Count; i++)
+            {
+                if (arr[i] is PostDto post)
+                {
+                    if(likedPostsIds.Contains(post.Id) == true)
+                    {
+                        post.IsLiked = true;
+                    }
+                }
+            }
 
             //add recommended books
             var recommendedBooks = (await _recommendationService.RecommendBooks(userId)).Result;

@@ -44,6 +44,7 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetReviewAsync(reviewId);
             if (result.Succeeded == false)
                 return BadRequest(result);
+            result.Result.IsLiked = await _communityService.IsPostLikedAsync(result.Result.Id, UserHelpers.GetUserId(User));
             return Ok(result);
         }
         [HttpGet("allReviews")]
@@ -52,6 +53,12 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetAllReviewsAsync(page);
             if (result.Succeeded == false)
                 return BadRequest(result);
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result)
+            {
+                if (LikedPosts.Contains(item.Id) == true)
+                    item.IsLiked = true;
+            }
             return Ok(result);
         }
         [HttpGet("allPlaylists")]
@@ -60,6 +67,13 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetAllPlaylistsAsync(page);
             if (result.Succeeded == false)
                 return BadRequest(result);
+
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result)
+            {
+                if (LikedPosts.Contains(item.Id) == true)
+                    item.IsLiked = true;
+            }
             return Ok(result);
         }
         [HttpGet("playlist")]
@@ -68,6 +82,7 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetPlaylistAsync(playlistId);
             if (result.Succeeded == false)
                 return BadRequest(result);
+            result.Result.IsLiked = await _communityService.IsPostLikedAsync(result.Result.Id, UserHelpers.GetUserId(User));
             return Ok(result);
         }
         [HttpGet("discussion")]
@@ -76,6 +91,7 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetDiscussionAsync(discussionId);
             if (result.Succeeded == false)
                 return BadRequest(result);
+            result.Result.IsLiked = await _communityService.IsPostLikedAsync(result.Result.Id, UserHelpers.GetUserId(User));
             return Ok(result);
         }
         [Authorize]
@@ -206,6 +222,12 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetAllDiscussionsAsync(page, tag);
             if (result.Succeeded == false)
                 return BadRequest(result);
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result)
+            {
+                if (LikedPosts.Contains(item.Id) == true)
+                    item.IsLiked = true;
+            }
             return Ok(result);
         }
         [HttpGet("userReviews")]
