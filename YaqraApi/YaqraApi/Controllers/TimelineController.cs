@@ -18,7 +18,6 @@ namespace YaqraApi.Controllers
         {
             _timelineService = timelineService;
         }
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Get(bool followings, int page)
         {
