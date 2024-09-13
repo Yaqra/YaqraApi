@@ -2,6 +2,7 @@
 {
     public class LikeDto
     {
-        public bool Liked { get; set; }
+        public bool IsLiked { get; set; }
+        public int LikesCount { get; set; }
     }
 }

@@ -368,13 +368,15 @@ namespace YaqraApi.Services
             {
                 post.PostLikes.Remove(postLike);
                 post.LikeCount--;
-                result.Result.Liked = false;//unlike
+                result.Result.IsLiked = false;//unlike
+                result.Result.LikesCount = post.LikeCount;
             }
             else//like
             {
                 post.PostLikes.Add(new PostLikes { PostId = postId, UserId = userId });
                 post.LikeCount++;
-                result.Result.Liked = true;//like
+                result.Result.IsLiked = true;//like
+                result.Result.LikesCount = post.LikeCount;
             }
             _communityRepository.UpdatePost(post);
             return result;
