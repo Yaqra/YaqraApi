@@ -98,10 +98,10 @@ namespace YaqraApi.Controllers
             return Ok(result);
         }
         [Authorize]
-        [HttpGet("followrs")]
-        public async Task<IActionResult> GetFollowrsListAsync(UserIdDto dto, [FromQuery]int page)
+        [HttpGet("followers")]
+        public async Task<IActionResult> GetFollowrsListAsync(string userId, int page)
         {
-            var result = _userService.GetUserFollowersNames(dto.UserId, page);
+            var result = _userService.GetUserFollowersNames(userId, page);
             if(result.Succeeded==false)
                 return BadRequest(result);
             else 
@@ -109,9 +109,9 @@ namespace YaqraApi.Controllers
         }
         [Authorize]
         [HttpGet("followings")]
-        public async Task<IActionResult> GetFollowingsListAsync(UserIdDto dto, [FromQuery] int page)
+        public async Task<IActionResult> GetFollowingsListAsync(string userId, int page)
         {
-            var result = _userService.GetUserFollowingsNames(dto.UserId, page);
+            var result = _userService.GetUserFollowingsNames(userId, page);
             if (result.Succeeded == false)
                 return BadRequest(result);
             else

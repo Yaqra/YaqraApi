@@ -232,7 +232,7 @@ namespace YaqraApi.Controllers
             return Ok(result);
         }
         [HttpGet("userReviews")]
-        public async Task<IActionResult> GeUserReviewsAsync([FromForm] string userId, [FromForm] int page)
+        public async Task<IActionResult> GeUserReviewsAsync(string userId, int page)
         {
             var result = await _communityService.GetUserReviews(userId, page);
             if (result.Succeeded == false)
@@ -246,7 +246,7 @@ namespace YaqraApi.Controllers
             return Ok(result);
         }
         [HttpGet("userPlaylists")]
-        public async Task<IActionResult> GeUserPlaylistsAsync([FromForm] string userId, [FromForm] int page)
+        public async Task<IActionResult> GeUserPlaylistsAsync(string userId, int page)
         {
             var result = await _communityService.GetUserPlaylists(userId, page);
             if (result.Succeeded == false)
@@ -260,7 +260,7 @@ namespace YaqraApi.Controllers
             return Ok(result);
         }
         [HttpGet("userDiscussions")]
-        public async Task<IActionResult> GeUserDiscussionsAsync([FromForm] string userId, [FromForm] int page)
+        public async Task<IActionResult> GeUserDiscussionsAsync(string userId, int page)
         {
             var result = await _communityService.GetUserDiscussions(userId, page);
             if (result.Succeeded == false)

@@ -51,9 +51,9 @@ namespace YaqraApi.Controllers
             return Ok(result);
         }
         [HttpGet("id")]
-        public async Task<IActionResult> GetByIdAsync(BookIdDto idDto)
+        public async Task<IActionResult> GetByIdAsync(int bookId)
         {
-            var result = await _bookService.GetByIdAsync(idDto.BookId);
+            var result = await _bookService.GetByIdAsync(bookId);
             if (result.Succeeded == false)
                 return BadRequest(result);
             return Ok(result);
@@ -172,7 +172,7 @@ namespace YaqraApi.Controllers
             return Ok(result);
         }
         [HttpGet("reviews")]
-        public async Task<IActionResult> GetReviews([FromForm] int bookId, [FromForm] int page, [FromForm] SortType sortType, [FromForm] ReviewsSortField sortField)
+        public async Task<IActionResult> GetReviews(int bookId, int page, SortType sortType, ReviewsSortField sortField)
         {
             var result = await _bookService.GetReviews(bookId, page, sortType, sortField);
             if (result.Succeeded == false)
@@ -186,8 +186,15 @@ namespace YaqraApi.Controllers
             return Ok(result);
         }
         [HttpGet("find")]
-        public async Task<IActionResult> FindBooks(BookFinderDto dto)
+        public async Task<IActionResult> FindBooks(decimal? MinimumRate, [FromQuery]HashSet<int>? AuthorIds, [FromQuery] HashSet<int>? GenreIds, int Page)
         {
+            var dto = new BookFinderDto
+            {
+                MinimumRate = MinimumRate,
+                AuthorIds = AuthorIds,
+                GenreIds = GenreIds,
+                Page = Page
+            };
             var result = await _bookService.FindBooks(dto);
             if (result.Succeeded == false)
                 return BadRequest(result);

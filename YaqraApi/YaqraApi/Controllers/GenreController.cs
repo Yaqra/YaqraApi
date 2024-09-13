@@ -38,9 +38,9 @@ namespace YaqraApi.Controllers
             return Ok(result);
         }
         [HttpGet("id")]
-        public async Task<IActionResult> GetByIdAsync(GenreIdDto genre)
+        public async Task<IActionResult> GetByIdAsync(int genreId)
         {
-            var result = await _genreService.GetByIdAsync(genre.GenreId);
+            var result = await _genreService.GetByIdAsync(genreId);
             if (result.Succeeded == false)
                 return BadRequest(result);
             return Ok(result);
