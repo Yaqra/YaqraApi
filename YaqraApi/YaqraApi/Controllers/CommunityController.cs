@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using YaqraApi.AutoMapperConfigurations;
+using YaqraApi.DTOs;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Community;
 using YaqraApi.DTOs.Notification;
@@ -236,6 +237,12 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetUserReviews(userId, page);
             if (result.Succeeded == false)
                 return BadRequest(result);
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result)
+            {
+                if (LikedPosts.Contains(item.Id) == true)
+                    item.IsLiked = true;
+            }
             return Ok(result);
         }
         [HttpGet("userPlaylists")]
@@ -244,6 +251,12 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetUserPlaylists(userId, page);
             if (result.Succeeded == false)
                 return BadRequest(result);
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result)
+            {
+                if (LikedPosts.Contains(item.Id) == true)
+                    item.IsLiked = true;
+            }
             return Ok(result);
         }
         [HttpGet("userDiscussions")]
@@ -252,6 +265,12 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetUserDiscussions(userId, page);
             if (result.Succeeded == false)
                 return BadRequest(result);
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result)
+            {
+                if (LikedPosts.Contains(item.Id) == true)
+                    item.IsLiked = true;
+            }
             return Ok(result);
         }
         [Authorize]
@@ -320,6 +339,12 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetCommentAsync(commentId);
             if (result.Succeeded == false)
                 return BadRequest(result);
+
+            var commentsIds = new List<int>();
+            GetCommentsIds(result.Result, commentsIds);
+            var likedComments = await _communityService.AreCommentsLiked(commentsIds, UserHelpers.GetUserId(User));
+            UpdateCommentLikes(result.Result, likedComments);
+
             return Ok(result);
         }
         [Authorize]
@@ -337,7 +362,16 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetPostCommentsAsync(postId, page);
             if (result.Succeeded == false)
                 return BadRequest(result);
-            return Created((string?)null, result);
+
+            foreach (var comment in result.Result)
+            {
+                var commentsIds = new List<int>();
+                GetCommentsIds(comment, commentsIds);
+                var likedComments = await _communityService.AreCommentsLiked(commentsIds, UserHelpers.GetUserId(User));
+                UpdateCommentLikes(comment, likedComments);
+            }
+
+            return Ok(result);
         }
         [Authorize]
         [HttpPut("likeComment")]
@@ -376,6 +410,28 @@ namespace YaqraApi.Controllers
                 return BadRequest(result);
             return Ok(result);
         }
+        private void GetCommentsIds(CommentDto comment, List<int> Ids)
+        {
+            Ids.Add(comment.Id);
 
+            if (comment.Replies == null)
+                return;
+
+            foreach (var reply in comment.Replies)
+                GetCommentsIds(reply, Ids);
+        }
+        private void UpdateCommentLikes(CommentDto dto, HashSet<int> likedComments)
+        {
+            if (likedComments.Contains(dto.Id) == true)
+                dto.IsLiked = true;
+
+            if (dto.Replies == null)
+                return;
+
+            foreach (var reply in dto.Replies)
+            {
+                UpdateCommentLikes(reply, likedComments);
+            }
+        }
     }
 }
