@@ -349,23 +349,23 @@ namespace YaqraApi.Controllers
 
             var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User));
             if (userResult.Succeeded == false)
-                return NoContent();
+                return Ok(result);
 
-            var comment = result.Result;
+            var comment = (await _communityService.GetCommentAsync(commentId)).Result;
             var notification = await _notificationService.BuildNotification(comment.PostId, $"أُعجب {userResult.Result.Username} بتعليقك", comment.User.UserId);
 
             //send signalR
             var connections = await _userService.GetUserConnections(comment.User.UserId);
 
             if (connections == null)
-                return NoContent();
+                return Ok(result);
 
             foreach (var con in connections)
             {
                 await _hub.Clients.Client(con).SendAsync("ReceiveNotification", _mapper.Map<NotificationDto>(notification));
             }
 
-            return NoContent();
+            return Ok(result);
         }
         [Authorize]
         [HttpPut("comment")]

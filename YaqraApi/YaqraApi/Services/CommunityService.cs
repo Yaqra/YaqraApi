@@ -369,15 +369,16 @@ namespace YaqraApi.Services
                 post.PostLikes.Remove(postLike);
                 post.LikeCount--;
                 result.Result.IsLiked = false;//unlike
-                result.Result.LikesCount = post.LikeCount;
             }
             else//like
             {
                 post.PostLikes.Add(new PostLikes { PostId = postId, UserId = userId });
                 post.LikeCount++;
                 result.Result.IsLiked = true;//like
-                result.Result.LikesCount = post.LikeCount;
             }
+
+            result.Result.LikesCount = post.LikeCount;
+
             _communityRepository.UpdatePost(post);
             return result;
         }
@@ -461,28 +462,33 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<List<CommentDto>> { Succeeded = true, Result = result };
         }
-        public async Task<GenericResultDto<CommentDto>> LikeCommentsAsync(int commentId, string userId)
+        public async Task<GenericResultDto<LikeDto>> LikeCommentsAsync(int commentId, string userId)
         {
             var comment = await _communityRepository.GetCommentAsync(commentId);
 
             if (comment == null)
-                return new GenericResultDto<CommentDto> { Succeeded = false, ErrorMessage = "comment not found" };
+                return new GenericResultDto<LikeDto> { Succeeded = false, ErrorMessage = "comment not found" };
 
+            var result = new GenericResultDto<LikeDto> { Succeeded = true, Result = new LikeDto() };
 
             var commentLike = comment.CommentLikes.SingleOrDefault(p => p.UserId == userId);
             if (commentLike != null)
             {
                 comment.CommentLikes.Remove(commentLike);
                 comment.LikeCount--;
+                result.Result.IsLiked = false;//unlike
             }
             else
             {
                 comment.CommentLikes.Add(new CommentLikes { CommentId = commentId, UserId = userId });
                 comment.LikeCount++;
+                result.Result.IsLiked = true;//like
             }
 
+            result.Result.LikesCount = comment.LikeCount;
+
             _communityRepository.UpdateComment(comment);
-            return new GenericResultDto<CommentDto> { Succeeded = true, Result = _mapper.Map<CommentDto>(comment) };
+            return result;
 
         }
         public async Task<GenericResultDto<CommentDto>> UpdateCommentAsync(int commentId, string content, string userId)
@@ -568,6 +574,21 @@ namespace YaqraApi.Services
                 return result;
 
             return await _communityRepository.ArePostsLiked(new HashSet<int>(postsIds.Distinct()), userId);
+        }
+
+        public async Task<bool> IsCommentLikedAsync(int commentId, string userId)
+        {
+            if (userId == null) return false;
+            return (await _communityRepository.IsCommentLiked(commentId, userId));
+        }
+
+        public async Task<HashSet<int>> AreCommentsLiked(List<int> commentsIds, string userId)
+        {
+            var result = new HashSet<int>();
+            if (userId == null)
+                return result;
+
+            return await _communityRepository.AreCommentsLiked(new HashSet<int>(commentsIds.Distinct()), userId);
         }
     }
 }

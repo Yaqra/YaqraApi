@@ -33,7 +33,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<string>> DeleteCommentAsync(int commentId, string userId);
         Task<GenericResultDto<CommentDto>> GetCommentAsync(int commentId);
         Task<GenericResultDto<List<CommentDto>>> GetPostCommentsAsync(int postId, int page);
-        Task<GenericResultDto<CommentDto>> LikeCommentsAsync(int commentId, string userId);
+        Task<GenericResultDto<LikeDto>> LikeCommentsAsync(int commentId, string userId);
         Task<GenericResultDto<CommentDto>> UpdateCommentAsync(int commentId, string content, string userId);
         Task<GenericResultDto<ArrayList>> GetFollowingsPostsAsync(IEnumerable<string> followingsIds, int page);
         Task<GenericResultDto<ArrayList>> GetPostsAsync(int page);
@@ -42,5 +42,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<Post>> GetPostAsync(int postId);
         Task<bool> IsPostLikedAsync(int postId, string userId);
         Task<HashSet<int>> ArePostsLiked(List<int> postsIds, string userId);
+        Task<bool> IsCommentLikedAsync(int commentId, string userId);
+        Task<HashSet<int>> AreCommentsLiked(List<int> commentsIds, string userId);
     }
 }
