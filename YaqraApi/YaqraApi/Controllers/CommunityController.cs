@@ -147,7 +147,7 @@ namespace YaqraApi.Controllers
         {
             var likeResult = await _communityService.LikeAsync(postId, UserHelpers.GetUserId(User));
 
-            var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User));
+            var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User), null);
             
             if (userResult.Succeeded == false)
                 return Ok(likeResult);
@@ -292,7 +292,7 @@ namespace YaqraApi.Controllers
             if (result.Succeeded == false)
                 return BadRequest(result);
 
-            var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User));
+            var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User), null);
             if (userResult.Succeeded == false)
                 return Created((string?)null, result);
 
@@ -381,7 +381,7 @@ namespace YaqraApi.Controllers
             if (result.Succeeded == false)
                 return BadRequest(result);
 
-            var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User));
+            var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User), null);
             if (userResult.Succeeded == false)
                 return Ok(result);
 

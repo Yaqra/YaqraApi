@@ -17,12 +17,12 @@ namespace YaqraApi.Services
             _userService = userService;
         }
 
-        public async Task<GenericResultDto<UserDto>> GetUserAsync(string userId)
+        public async Task<GenericResultDto<UserDto>> GetUserAsync(string userId, string followerId)
         {
             if(Users.ContainsKey(userId))
                 return new GenericResultDto<UserDto> { Succeeded = true, Result = Users[userId] };
             
-            var userResult = await _userService.GetUserAsync(userId);
+            var userResult = await _userService.GetUserAsync(userId, followerId);
             if(userResult.Succeeded)
                 Users.Add(userId, userResult.Result);
             return userResult;

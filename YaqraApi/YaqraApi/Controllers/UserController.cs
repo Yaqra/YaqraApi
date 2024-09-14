@@ -92,7 +92,7 @@ namespace YaqraApi.Controllers
         [HttpGet("user")]
         public async Task<IActionResult> GetUserAsync(string userId)
         {
-            var result = await _userProxyService.GetUserAsync(userId);
+            var result = await _userProxyService.GetUserAsync(userId, UserHelpers.GetUserId(User));
             if (result.Succeeded == false)
                 return BadRequest(result);
             return Ok(result);
