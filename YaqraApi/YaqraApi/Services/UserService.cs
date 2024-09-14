@@ -150,18 +150,22 @@ namespace YaqraApi.Services
                 };
             return new GenericResultDto<UserFollowerDto> { Succeeded = true, Result = new UserFollowerDto {Follower= user, Followed= followedUser} };
         }
-        public async Task<GenericResultDto<UserDto>> GetUserAsync(string userId)
+        public async Task<GenericResultDto<UserDto>> GetUserAsync(string userId, string followerId)
         {
-            var dto = await _userManager.Users.Select(u => new
+            var dto = await _userManager.Users
+                .Include(u=>u.Followers)
+                .Select(u => new UserDto
             {
-                Id = u.Id,
+                UserId = u.Id,
                 Username = u.UserName,
                 Bio = u.Bio,
                 ProfilePicture = u.ProfilePicture,
                 ProfileCover = u.ProfileCover,
                 FollowersCount = u.Followers.Count(),
                 FollowingsCount = u.Followings.Count(),
-            }).SingleOrDefaultAsync(x => x.Id == userId);
+                IsFollowed = IsUserFollowed(u.Followers, followerId)
+                
+            }).SingleOrDefaultAsync(x => x.UserId == userId);
 
             if (dto == null)
                 return new GenericResultDto<UserDto> { Succeeded = false, ErrorMessage = "user not found" };
@@ -169,16 +173,7 @@ namespace YaqraApi.Services
             return new GenericResultDto<UserDto>
             {
                 Succeeded = true,
-                Result = new UserDto
-                {
-                    UserId = dto.Id,
-                    Username = dto.Username,
-                    Bio = dto?.Bio,
-                    ProfilePicture = dto?.ProfilePicture,
-                    ProfileCover = dto?.ProfileCover,
-                    FollowersCount = dto.FollowersCount,
-                    FollowingsCount = dto.FollowingsCount,
-                }
+                Result = dto
             };
             
         }
@@ -789,6 +784,13 @@ namespace YaqraApi.Services
                 return null;
             var connections = user.Connections.Select(c => c.ConnectionId);
             return connections.ToList();
+        }
+        public static bool IsUserFollowed(ICollection<ApplicationUser> followers, string followerId)
+        {
+            if (followers == null || followerId == null)
+                return false;
+
+            return followers.Any(f => f.Id == followerId);
         }
     }
 }

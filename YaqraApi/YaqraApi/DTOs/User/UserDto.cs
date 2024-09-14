@@ -9,5 +9,6 @@
         public string? ProfileCover { get; set; }
         public int FollowersCount { get; set; }
         public int FollowingsCount { get; set; }
+        public bool IsFollowed { get; set; }
     }
 }
