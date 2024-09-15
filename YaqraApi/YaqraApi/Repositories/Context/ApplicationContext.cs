@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Reflection.Emit;
 using YaqraApi.Models;
 using YaqraApi.Models.Enums;
 
@@ -138,8 +139,13 @@ namespace YaqraApi.Repositories.Context
                 .HasForeignKey(u => u.CommentId);
 
                 c.HasKey(k => new { k.UserId, k.CommentId });
-
             });
+
+            builder.Entity<Notification>()
+                .HasOne(n => n.Post)
+                .WithMany(p => p.Notifications)
+                .HasForeignKey(n => n.PostId)
+                .OnDelete(DeleteBehavior.Cascade);  
 
             base.OnModelCreating(builder);
         }
