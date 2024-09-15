@@ -214,7 +214,7 @@ namespace YaqraApi.Repositories
         public async Task<List<DiscussionArticleNews>?> GetUserDiscussions(string userId, int page)
         {
             return await (_context.DiscussionArticleNews
-                .Where(r => r.UserId == userId && r.Tag == DiscussionArticleNewsTag.Discussion)
+                .Where(r => r.UserId == userId)
                 .Include(r => r.Books)
                 .Include(r => r.User))
                 .Skip((page - 1) * Pagination.Posts).Take(Pagination.Posts)
