@@ -47,14 +47,21 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<string> { Succeeded = true, Result = "genre deleted successfully" };
         }
-        public async Task<GenericResultDto<List<GenreDto>>> GetAllAsync(int page)
+        public async Task<GenericResultDto<PagedResult<GenreDto>>> GetAllAsync(int page)
         {
             page = page==0? 1 : page;
             var result = await _genreRepository.GetAllAsync(page);
             var genreDtos = new List<GenreDto>();
             foreach (var item in result)
                 genreDtos.Add(new GenreDto { GenreId = item.Id, GenreName = item.Name });
-            return new GenericResultDto<List<GenreDto>> { Succeeded = true, Result=genreDtos};
+            var finalResult = new PagedResult<GenreDto>
+            {
+                PageSize = Pagination.Genres,
+                Data = genreDtos,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_genreRepository.GetCount(), Pagination.Genres)
+            };
+            return new GenericResultDto<PagedResult<GenreDto>> { Succeeded = true, Result = finalResult };
         }
         public async Task<GenericResultDto<GenreDto>> GetByIdAsync(int id)
         {

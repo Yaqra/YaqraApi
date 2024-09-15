@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using YaqraApi.AutoMapperConfigurations;
@@ -177,7 +178,15 @@ namespace YaqraApi.Services
             };
             
         }
-        public GenericResultDto<List<UserNameAndId>> GetUserFollowersNames(string userId, int page )
+        public int GetUserFollowersNamesCount(string userId)
+        {
+            return (from user in _userManager.Users
+                         where user.Id == userId
+                         select user.Followers.Count())
+                         .ToList()
+                         .FirstOrDefault();
+        }
+        public GenericResultDto<PagedResult<UserNameAndId>> GetUserFollowersNames(string userId, int page )
         {
             page = page==0? 1 : page;
             var followersList = (from user in _userManager.Users
@@ -191,10 +200,24 @@ namespace YaqraApi.Services
             foreach (var follower in followersList)
                 followersDto.Add(new UserNameAndId { UserId = follower.Id, Username = follower.UserName });
 
-            return new GenericResultDto<List<UserNameAndId>> { Succeeded= true, Result = followersDto };
+            var result = new PagedResult<UserNameAndId> { 
+                Data = followersDto, 
+                PageNumber = page,
+                PageSize = Pagination.UserFollowersNames,
+                TotalPages = Pagination.CalculatePagesCount(GetUserFollowersNamesCount(userId), Pagination.UserFollowersNames)
+            };
+            return new GenericResultDto<PagedResult<UserNameAndId>> { Succeeded= true, Result = result };
         
         }
-        public GenericResultDto<List<UserNameAndId>> GetUserFollowingsNames(string userId, int page)
+        public int GetUserFollowingsNamesCount(string userId)
+        {
+            return (from user in _userManager.Users
+                    where user.Id == userId
+                    select user.Followings.Count())
+                         .ToList()
+                         .FirstOrDefault();
+        }
+        public GenericResultDto<PagedResult<UserNameAndId>> GetUserFollowingsNames(string userId, int page)
         {
             page = page == 0 ? 1 : page;
             var followingsList = (from user in _userManager.Users
@@ -208,7 +231,14 @@ namespace YaqraApi.Services
             foreach (var following in followingsList)
                 followingDto.Add(new UserNameAndId { UserId = following.Id, Username = following.UserName });
 
-            return new GenericResultDto<List<UserNameAndId>> { Succeeded = true, Result = followingDto };
+            var result = new PagedResult<UserNameAndId>
+            {
+                Data = followingDto,
+                PageNumber = page,
+                PageSize = Pagination.UserFollowingsNames,
+                TotalPages = Pagination.CalculatePagesCount(GetUserFollowingsNamesCount(userId), Pagination.UserFollowingsNames)
+            };
+            return new GenericResultDto<PagedResult<UserNameAndId>> { Succeeded = true, Result = result };
         }
         public async Task<GenericResultDto<List<GenreDto>>> GetFavouriteGenresAsync(string userId)
         {
@@ -221,11 +251,11 @@ namespace YaqraApi.Services
                 result.Add(new GenreDto { GenreId = item.Id, GenreName = item.Name });
             return new GenericResultDto<List<GenreDto>> { Succeeded = true, Result = result };
         }
-        public async Task<GenericResultDto<List<GenreDto>>> GetAllGenresExceptUserGenresAsync(string userId, int page)
+        public async Task<GenericResultDto<PagedResult<GenreDto>>> GetAllGenresExceptUserGenresAsync(string userId, int page)
         {
             var user = await _userManager.Users.Include(x => x.FavouriteGenres).SingleOrDefaultAsync(x => x.Id == userId);
             if (user == null)
-                return new GenericResultDto<List<GenreDto>> { Succeeded = false, ErrorMessage = "user not found" };
+                return new GenericResultDto<PagedResult<GenreDto>> { Succeeded = false, ErrorMessage = "user not found" };
 
             var UserGenreIds = new HashSet<int>();
 
@@ -235,13 +265,21 @@ namespace YaqraApi.Services
             var genresExceptUser = new List<GenreDto>();
             var genres = (await _genreService.GetAllAsync(page)).Result;
 
-            foreach (var item in genres)
+            foreach (var item in genres.Data)
             {
                 if (UserGenreIds.Contains(item.GenreId) == false)
                     genresExceptUser.Add(item);
             }
 
-            return new GenericResultDto<List<GenreDto>> { Succeeded = true, Result = genresExceptUser.ToList() };
+            var result = new PagedResult<GenreDto>
+            {
+                PageSize = genresExceptUser.Count,
+                Data = genresExceptUser,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_genreRepository.GetCount() - genresExceptUser.Count, genresExceptUser.Count),
+            };
+
+            return new GenericResultDto<PagedResult<GenreDto>> { Succeeded = true, Result = result };
         }
         public async Task<GenericResultDto<List<GenreDto>>> AddFavouriteGenresAsync(List<GenreIdDto> genres, string userId)
         {
@@ -371,23 +409,32 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result = result };
         }
-        public async Task<GenericResultDto<List<AuthorDto>>> GetFavouriteAuthorsAsync(string userId, int page)
+        public async Task<GenericResultDto<PagedResult<AuthorDto>>> GetFavouriteAuthorsAsync(string userId, int page)
         {
             var user = await _userManager.Users.Include(x => x.FavouriteAuthors).SingleOrDefaultAsync(u => u.Id == userId);
             if (user == null)
-                return new GenericResultDto<List<AuthorDto>> { Succeeded = false, ErrorMessage = "user not found" };
+                return new GenericResultDto<PagedResult<AuthorDto>> { Succeeded = false, ErrorMessage = "user not found" };
 
-            var result = new List<AuthorDto>();
+            var authorsDto = new List<AuthorDto>();
             foreach (var item in user.FavouriteAuthors.Skip((page - 1) * Pagination.Authors).Take(Pagination.Authors))
-                result.Add(new AuthorDto { Id = item.Id, Name = item.Name, Bio = item.Bio, Picture = item.Picture });
-            return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result = result };
+                authorsDto.Add(new AuthorDto { Id = item.Id, Name = item.Name, Bio = item.Bio, Picture = item.Picture });
+
+            var result = new PagedResult<AuthorDto>
+            {
+                PageSize = Pagination.Authors,
+                Data = authorsDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(user.FavouriteAuthors.Count(), Pagination.Authors)
+            };
+
+            return new GenericResultDto<PagedResult<AuthorDto>> { Succeeded = true, Result = result };
         }
-        public async Task<GenericResultDto<List<AuthorDto>>> GetAllAuthorsExceptUserAuthorsAsync(string userId, int page)
+        public async Task<GenericResultDto<PagedResult<AuthorDto>>> GetAllAuthorsExceptUserAuthorsAsync(string userId, int page)
         {
             page = page == 0 ? 1 : page;
             var user = await _userManager.Users.Include(x => x.FavouriteAuthors).SingleOrDefaultAsync(x => x.Id == userId);
             if (user == null)
-                return new GenericResultDto<List<AuthorDto>> { Succeeded = false, ErrorMessage = "user not found" };
+                return new GenericResultDto<PagedResult<AuthorDto>> { Succeeded = false, ErrorMessage = "user not found" };
 
             var UserAuthorsIds = new HashSet<int>();
 
@@ -397,13 +444,21 @@ namespace YaqraApi.Services
             var authorsExceptUser = new List<AuthorDto>();
             var authors = (await _authorService.GetAll(page)).Result;
 
-            foreach (var item in authors)
+            foreach (var item in authors.Data)
             {
                 if (UserAuthorsIds.Contains(item.Id) == false)
                     authorsExceptUser.Add(item);
             }
 
-            return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result = authorsExceptUser.ToList() };
+            var result = new PagedResult<AuthorDto>
+            {
+                PageSize = authorsExceptUser.Count,
+                Data = authorsExceptUser,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_authorService.GetCount()-authorsExceptUser.Count, authorsExceptUser.Count),
+            };
+
+            return new GenericResultDto<PagedResult<AuthorDto>> { Succeeded = true, Result = result };
         }
         public async Task<GenericResultDto<string>> DeleteFavouriteAuthorAsync(AuthorIdDto author, string userId)
         {
@@ -445,20 +500,35 @@ namespace YaqraApi.Services
             var result = user.ReadingGoals.FirstOrDefault();
             return new GenericResultDto<ReadingGoalDto> { Succeeded = true, Result = _mapper.Map<ReadingGoalDto>(result) };
         }
-        public async Task<GenericResultDto<List<ReadingGoalDto>>> GetAllReadingGoalsAsync(string userId, int page)
+        public int GetAllReadingGoalsCountAsync(string userId)
+        {
+            return (from user in _userManager.Users
+                        where user.Id == userId
+                        select user.ReadingGoals.Count)
+                        .ToList().FirstOrDefault();
+        }
+        public async Task<GenericResultDto<PagedResult<ReadingGoalDto>>> GetAllReadingGoalsAsync(string userId, int page)
         {
             page = page==0?1: page;
             var user = await _userManager.Users
                 .Include(x => x.ReadingGoals.Skip((page-1)*Pagination.ReadingGoals).Take(Pagination.ReadingGoals))
                 .SingleOrDefaultAsync(x => x.Id == userId);
             if (user == null)
-                return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = false, ErrorMessage = "user not found" };
+                return new GenericResultDto<PagedResult<ReadingGoalDto>> { Succeeded = false, ErrorMessage = "user not found" };
 
-            var result = new List<ReadingGoalDto>();
+            var readingGoalsDto = new List<ReadingGoalDto>();
             foreach (var item in user.ReadingGoals)
-                result.Add(_mapper.Map<ReadingGoalDto>(item));
+                readingGoalsDto.Add(_mapper.Map<ReadingGoalDto>(item));
 
-            return new GenericResultDto<List<ReadingGoalDto>> { Succeeded = true, Result = result };
+            var result = new PagedResult<ReadingGoalDto>
+            {
+                PageSize = Pagination.ReadingGoals,
+                Data = readingGoalsDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(GetAllReadingGoalsCountAsync(userId), Pagination.ReadingGoals)
+            };
+
+            return new GenericResultDto<PagedResult<ReadingGoalDto>> { Succeeded = true, Result = result };
         }
         public async Task<GenericResultDto<string>> DeleteReadingGoalAsync(int goalId, string userId)
         {
@@ -556,7 +626,16 @@ namespace YaqraApi.Services
                 return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "book added successfully but something went wrong while returing it in response" };
             return new GenericResultDto<BookDto> { Succeeded = true, Result = _mapper.Map<BookDto>(result.Result) };
         }
-        public async Task<GenericResultDto<List<BookDto>>> GetBooksAsync(int? status, string userId, int page)
+        public int GetBooksCount(UserBookStatus status, string userId)
+        {
+            return (from user in _userManager.Users
+                    where user.Id == userId
+                    select user.UserBooks.Where(b => b.Status == status))
+                    .ToList()
+                    .FirstOrDefault()
+                    .Count();
+        }
+        public async Task<GenericResultDto<PagedResult<BookDto>>> GetBooksAsync(int? status, string userId, int page)
         {
             page = page==0? 1 : page;
             var bookStatus = IntToUserBookStatus(status);
@@ -566,14 +645,22 @@ namespace YaqraApi.Services
                 .ThenInclude(x => x.Book)
                 .SingleOrDefaultAsync(x => x.Id == userId);
             if (user == null)
-                return new GenericResultDto<List<BookDto>> { Succeeded = false, ErrorMessage = "user not found" };
+                return new GenericResultDto<PagedResult<BookDto>> { Succeeded = false, ErrorMessage = "user not found" };
 
             var userBooksWithStatus = user.UserBooks;
-            var result = new List<BookDto>();
+            var booksDto = new List<BookDto>();
             foreach (var bookWithStatus in userBooksWithStatus)
-                result.Add(_mapper.Map<BookDto>(bookWithStatus.Book));
+                booksDto.Add(_mapper.Map<BookDto>(bookWithStatus.Book));
 
-            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = result };
+            var result = new PagedResult<BookDto>
+            {
+                PageSize = Pagination.Books,
+                Data = booksDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(GetBooksCount(bookStatus, userId), Pagination.Books)
+            };
+
+            return new GenericResultDto<PagedResult<BookDto>> { Succeeded = true, Result = result };
         }
         private UserBookStatus IntToUserBookStatus(int? status)
         {
@@ -792,5 +879,6 @@ namespace YaqraApi.Services
 
             return followers.Any(f => f.Id == followerId);
         }
+
     }
 }

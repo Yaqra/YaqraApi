@@ -326,33 +326,60 @@ namespace YaqraApi.Services
                 return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = true, ErrorMessage = "discussion updated successfully but something went wrong while retrieving it" };
             return result;
         }
-        public async Task<GenericResultDto<List<ReviewDto>>> GetAllReviewsAsync(int page)
+        public async Task<GenericResultDto<PagedResult<ReviewDto>>> GetAllReviewsAsync(int page)
         {
             page = page == 0 ? 1 : page;
             var reviews = await _communityRepository.GetAllReviewsAsync(page);
             var reviewsDto = new List<ReviewDto>();
             foreach (var review in reviews)
                 reviewsDto.Add(_mapper.Map<ReviewDto>(review));
-            return new GenericResultDto<List<ReviewDto>> { Succeeded = true, Result = reviewsDto };
+
+            var result = new PagedResult<ReviewDto>
+            {
+                PageSize = Pagination.Posts,
+                Data = reviewsDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_communityRepository.GetAllReviewsCount(), Pagination.Posts)
+            };
+
+            return new GenericResultDto<PagedResult<ReviewDto>> { Succeeded = true, Result = result };
         }
-        public async Task<GenericResultDto<List<PlaylistDto>>> GetAllPlaylistsAsync(int page)
+        public async Task<GenericResultDto<PagedResult<PlaylistDto>>> GetAllPlaylistsAsync(int page)
         {
             page = page == 0 ? 1 : page;
             var playlists = await _communityRepository.GetAllPlaylistsAsync(page);
             var playlistsDto = new List<PlaylistDto>();
             foreach (var playlist in playlists)
                 playlistsDto.Add(_mapper.Map<PlaylistDto>(playlist));
-            return new GenericResultDto<List<PlaylistDto>> { Succeeded = true, Result = playlistsDto };
+
+            var result = new PagedResult<PlaylistDto>
+            {
+                PageSize = Pagination.Posts,
+                Data = playlistsDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_communityRepository.GetAllPlaylistsCount(), Pagination.Posts)
+            };
+
+            return new GenericResultDto<PagedResult<PlaylistDto>> { Succeeded = true, Result = result };
 
         }
-        public async Task<GenericResultDto<List<DiscussionArticlesNewsDto>>> GetAllDiscussionsAsync(int page, DiscussionArticleNewsTag tag)
+        public async Task<GenericResultDto<PagedResult<DiscussionArticlesNewsDto>>> GetAllDiscussionsAsync(int page, DiscussionArticleNewsTag tag)
         {
             page = page == 0 ? 1 : page;
             var discussions = await _communityRepository.GetAllDiscussionsAsync(page, tag);
             var discussionsDto = new List<DiscussionArticlesNewsDto>();
             foreach (var discussion in discussions)
                 discussionsDto.Add(_mapper.Map<DiscussionArticlesNewsDto>(discussion));
-            return new GenericResultDto<List<DiscussionArticlesNewsDto>> { Succeeded = true, Result = discussionsDto };
+
+            var result = new PagedResult<DiscussionArticlesNewsDto>
+            {
+                PageSize = Pagination.Posts,
+                Data = discussionsDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_communityRepository.GetAllDiscussionsCount(tag), Pagination.Posts)
+            };
+
+            return new GenericResultDto<PagedResult<DiscussionArticlesNewsDto>> { Succeeded = true, Result = result };
 
         }
         public async Task<GenericResultDto<LikeDto>> LikeAsync(int postId, string userId)
@@ -382,45 +409,69 @@ namespace YaqraApi.Services
             _communityRepository.UpdatePost(post);
             return result;
         }
-        public async Task<GenericResultDto<List<ReviewDto>>> GetUserReviews(string userId, int page)
+        public async Task<GenericResultDto<PagedResult<ReviewDto>>> GetUserReviews(string userId, int page)
         {
             page = page == 0 ? 1 : page;
             var reviews = await _communityRepository.GetUserReviews(userId, page);
             if (reviews == null)
-                return new GenericResultDto<List<ReviewDto>> { Succeeded = false, ErrorMessage = "user not found" };
+                return new GenericResultDto<PagedResult<ReviewDto>> { Succeeded = false, ErrorMessage = "user not found" };
 
             var reviewsDto = new List<ReviewDto>();
             foreach (var review in reviews)
                 reviewsDto.Add(_mapper.Map<ReviewDto>(review));
 
-            return new GenericResultDto<List<ReviewDto>> { Succeeded = true, Result = reviewsDto };
+            var result = new PagedResult<ReviewDto>
+            {
+                PageSize = Pagination.Posts,
+                Data = reviewsDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_communityRepository.GetUserReviewsCount(userId), Pagination.Posts)
+            };
+
+            return new GenericResultDto<PagedResult<ReviewDto>> { Succeeded = true, Result = result };
 
         }
-        public async Task<GenericResultDto<List<PlaylistDto>>> GetUserPlaylists(string userId, int page)
+        public async Task<GenericResultDto<PagedResult<PlaylistDto>>> GetUserPlaylists(string userId, int page)
         {
             page = page == 0 ? 1 : page;
             var playlists = await _communityRepository.GetUserPlaylists(userId, page);
             if (playlists == null)
-                return new GenericResultDto<List<PlaylistDto>> { Succeeded = false, ErrorMessage = "user not found" };
+                return new GenericResultDto<PagedResult<PlaylistDto>> { Succeeded = false, ErrorMessage = "user not found" };
 
             var playlistsDto = new List<PlaylistDto>();
             foreach (var playlist in playlists)
                 playlistsDto.Add(_mapper.Map<PlaylistDto>(playlist));
 
-            return new GenericResultDto<List<PlaylistDto>> { Succeeded = true, Result = playlistsDto };
+            var result = new PagedResult<PlaylistDto>
+            {
+                PageSize = Pagination.Posts,
+                Data = playlistsDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_communityRepository.GetUserPlaylistsCount(userId), Pagination.Posts)
+            };
+
+            return new GenericResultDto<PagedResult<PlaylistDto>> { Succeeded = true, Result = result };
         }
-        public async Task<GenericResultDto<List<DiscussionArticlesNewsDto>>> GetUserDiscussions(string userId, int page)
+        public async Task<GenericResultDto<PagedResult<DiscussionArticlesNewsDto>>> GetUserDiscussions(string userId, int page)
         {
             page = page == 0 ? 1 : page;
             var discussions = await _communityRepository.GetUserDiscussions(userId, page);
             if (discussions == null)
-                return new GenericResultDto<List<DiscussionArticlesNewsDto>> { Succeeded = false, ErrorMessage = "user not found" };
+                return new GenericResultDto<PagedResult<DiscussionArticlesNewsDto>> { Succeeded = false, ErrorMessage = "user not found" };
 
             var discussionsDto = new List<DiscussionArticlesNewsDto>();
             foreach (var dis in discussions)
                 discussionsDto.Add(_mapper.Map<DiscussionArticlesNewsDto>(dis));
 
-            return new GenericResultDto<List<DiscussionArticlesNewsDto>> { Succeeded = true, Result = discussionsDto };
+            var result = new PagedResult<DiscussionArticlesNewsDto>
+            {
+                PageSize = Pagination.Posts,
+                Data = discussionsDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_communityRepository.GetUserDiscussionsCount(userId), Pagination.Posts)
+            };
+
+            return new GenericResultDto<PagedResult<DiscussionArticlesNewsDto>> { Succeeded = true, Result = result };
         }
         public async Task<GenericResultDto<CommentDto>> AddCommentAsync(CommentDto dto)
         {
@@ -450,17 +501,25 @@ namespace YaqraApi.Services
             _communityRepository.DeleteComment(comment);
             return new GenericResultDto<string> { Succeeded = true, Result = "comment deleted successfully" };
         }
-        public async Task<GenericResultDto<List<CommentDto>>> GetPostCommentsAsync(int postId, int page)
+        public async Task<GenericResultDto<PagedResult<CommentDto>>> GetPostCommentsAsync(int postId, int page)
         {
             page = page == 0 ? 1 : page;
             var comments = await _communityRepository.GetPostCommentsAsync(postId, page);
             if (comments == null)
-                return new GenericResultDto<List<CommentDto>> { Succeeded = false, ErrorMessage = "post not found" };
-            List<CommentDto> result = new List<CommentDto>();
+                return new GenericResultDto<PagedResult<CommentDto>> { Succeeded = false, ErrorMessage = "post not found" };
+            var commentsDto = new List<CommentDto>();
             foreach (var comment in comments)
-                result.Add(_mapper.Map<CommentDto>(comment));
+                commentsDto.Add(_mapper.Map<CommentDto>(comment));
 
-            return new GenericResultDto<List<CommentDto>> { Succeeded = true, Result = result };
+            var result = new PagedResult<CommentDto>
+            {
+                PageSize = Pagination.Comments,
+                Data = commentsDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(await _communityRepository.GetPostCommentsCount(postId), Pagination.Comments),
+            };
+
+            return new GenericResultDto<PagedResult<CommentDto>> { Succeeded = true, Result = result };
         }
         public async Task<GenericResultDto<LikeDto>> LikeCommentsAsync(int commentId, string userId)
         {
@@ -590,5 +649,6 @@ namespace YaqraApi.Services
 
             return await _communityRepository.AreCommentsLiked(new HashSet<int>(commentsIds.Distinct()), userId);
         }
+
     }
 }

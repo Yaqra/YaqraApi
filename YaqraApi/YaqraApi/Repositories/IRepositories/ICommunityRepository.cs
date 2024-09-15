@@ -18,17 +18,25 @@ namespace YaqraApi.Repositories.IRepositories
         Task<DiscussionArticleNews?> AddDiscussionAsync(DiscussionArticleNews discussion);
         Task<DiscussionArticleNews?> GetDiscussionAsync(int discussionId);
         Task<DiscussionArticleNews?> UpdateDiscussionAsync(DiscussionArticleNews editedDiscussion);
-        Task<List<Review>> GetAllReviewsAsync(int page);        
+        int GetAllReviewsCount();
+        Task<List<Review>> GetAllReviewsAsync(int page);
+        int GetAllPlaylistsCount();
         Task<List<Playlist>> GetAllPlaylistsAsync(int page);
+        int GetAllDiscussionsCount(DiscussionArticleNewsTag tag);
         Task<List<DiscussionArticleNews>> GetAllDiscussionsAsync(int page, DiscussionArticleNewsTag tag);
         void UpdatePost(Post post);
         void Delete(Post post);
+        int GetUserReviewsCount(string userId);
         Task<List<Review>?> GetUserReviews(string userId, int page);
+        int GetUserPlaylistsCount(string userId);
         Task<List<Playlist>?> GetUserPlaylists(string userId, int page);
+        int GetUserDiscussionsCount(string userId);
         Task<List<DiscussionArticleNews>?> GetUserDiscussions(string userId, int page);
         Task<Comment?> AddCommentAsync(Comment comment);
         void DeleteComment(Comment comment);
         Task<Comment?> GetCommentAsync(int commentId);
+
+        Task<int> GetPostCommentsCount(int postId);
         Task<List<Comment>> GetPostCommentsAsync(int postId, int page);
         Comment UpdateComment(Comment comment);
         Task<List<Post>> GetFollowingsPostsAsync(IEnumerable<string> followersIds, int page);

@@ -114,7 +114,20 @@ namespace YaqraApi.Repositories
             SaveChanges();
             return editedDiscussion;
         }
-
+        public int GetAllReviewsCount()
+        {
+            return _context.Reviews.Count();
+        }
+        public int GetAllPlaylistsCount()
+        {
+            return _context.Playlists.Count();
+        }
+        public int GetAllDiscussionsCount(DiscussionArticleNewsTag tag)
+        {
+            return _context.DiscussionArticleNews
+                .Where(d=>d.Tag == tag)
+                .Count();
+        }
         public async Task<List<Review>> GetAllReviewsAsync(int page)
         {
             return await (_context.Reviews
@@ -154,7 +167,12 @@ namespace YaqraApi.Repositories
             _context.Posts.Update(post);
             SaveChanges();
         }
-
+        public int GetUserReviewsCount(string userId)
+        {
+            return _context.Reviews
+                .Where(r => r.UserId == userId)
+                .ToList().Count;
+        }
         public async Task<List<Review>?> GetUserReviews(string userId, int page)
         {
             return await (_context.Reviews
@@ -168,7 +186,12 @@ namespace YaqraApi.Repositories
                 .OrderByDescending(r => r.CreatedDate)
                 .ToListAsync();
         }
-
+        public int GetUserPlaylistsCount(string userId)
+        {
+            return _context.Playlists
+                .Where(r => r.UserId == userId)
+                .ToList().Count;
+        }
         public async Task<List<Playlist>?> GetUserPlaylists(string userId, int page)
         {
             return await(_context.Playlists
@@ -182,7 +205,12 @@ namespace YaqraApi.Repositories
                 .OrderByDescending(r => r.CreatedDate)
                 .ToListAsync();
         }
-
+        public int GetUserDiscussionsCount(string userId)
+        {
+            return _context.DiscussionArticleNews
+                .Where(r => r.UserId == userId)
+                .ToList().Count;
+        }
         public async Task<List<DiscussionArticleNews>?> GetUserDiscussions(string userId, int page)
         {
             return await (_context.DiscussionArticleNews
@@ -232,7 +260,15 @@ namespace YaqraApi.Repositories
             LoadReplies(comment);
             return comment;
         }
-
+        public async Task<int> GetPostCommentsCount(int postId)
+        {
+            var post = (await _context.Posts
+                 .Include(p => p.Comments)
+                 .SingleOrDefaultAsync(p => p.Id == postId));
+            if (post == null)
+                return 0;
+            return post.Comments.Count;
+        }
         public async Task<List<Comment>> GetPostCommentsAsync(int postId, int page)
         {
            var post = (await _context.Posts
