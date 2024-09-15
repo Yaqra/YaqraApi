@@ -8,7 +8,6 @@ namespace YaqraApi.Models
         [ForeignKey(nameof(Receiver))]
         public string ReceiverId { get; set; }
         public ApplicationUser Receiver { get; set; }
-        [ForeignKey(nameof(Post))]
         public int PostId { get; set; }
         public Post Post { get; set; }
         public string Message { get; set; }
