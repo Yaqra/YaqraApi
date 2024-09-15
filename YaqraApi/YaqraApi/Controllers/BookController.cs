@@ -59,9 +59,9 @@ namespace YaqraApi.Controllers
             return Ok(result);
         }
         [HttpGet("title")]
-        public async Task<IActionResult> GetByTitleAsync(string bookTitle, [FromQuery] int page)
+        public async Task<IActionResult> GetByTitleAsync(string bookTitle)
         {
-            var result = await _bookService.GetByTitle(bookTitle, page);
+            var result = await _bookService.GetByTitle(bookTitle);
             if (result.Succeeded == false)
                 return BadRequest(result);
             return Ok(result);
@@ -177,8 +177,8 @@ namespace YaqraApi.Controllers
             var result = await _bookService.GetReviews(bookId, page, sortType, sortField);
             if (result.Succeeded == false)
                 return BadRequest(result);
-            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
-            foreach (var item in result.Result)
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Data.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result.Data)
             {
                 if (LikedPosts.Contains(item.Id) == true)
                     item.IsLiked = true;

@@ -10,6 +10,7 @@ using YaqraApi.Models;
 using YaqraApi.Models.Enums;
 using YaqraApi.Repositories.Context;
 using YaqraApi.Repositories.IRepositories;
+using YaqraApi.Services;
 using YaqraApi.Services.IServices;
 
 namespace YaqraApi.Repositories
@@ -76,11 +77,11 @@ namespace YaqraApi.Repositories
             return books;
         }
 
-        public async Task<IQueryable<Book>> GetByTitle(string bookName, int page)
+        public async Task<IQueryable<Book>> GetByTitle(string bookName)
         {
             var books = _context.Books
                 .Where(a => a.Title.Contains(bookName))
-                .Skip((page-1)*Pagination.Books).Take(Pagination.Books);
+                .Take(Pagination.Books);
             return books;
         }
 
@@ -104,6 +105,13 @@ namespace YaqraApi.Repositories
             return _context.Books.Count();
         }
 
+        public int GetRecentCount()
+        {
+            return _context.Books
+                .Where(b => b.AddedDate >= DateTime.UtcNow.AddDays(-7))
+                .Count();
+        }
+
         public async Task<IQueryable<Book>> GetRecent(int page)
         {
             var books = _context.Books
@@ -118,7 +126,12 @@ namespace YaqraApi.Repositories
         {
             return _context.Reviews.Where(r => r.BookId == bookId).Select(r => r.Rate).ToList();
         }
-
+        public int GetReviewsCount(int bookId)
+        {
+            return _context.Reviews
+           .Where(r => r.BookId == bookId)
+           .Count();
+        }
         public async Task<List<Review>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field)
         {
 
@@ -181,7 +194,49 @@ namespace YaqraApi.Repositories
 
 
         }
+        public async Task<int> FindBooksCount(BookFinderDto dto, IBookProxyService bookProxyService)
+        {
+            if (dto.MinimumRate == null && dto.AuthorIds == null && dto.GenreIds == null)
+                return GetCount();
 
+            IQueryable<Book> books = _context.Books
+                    .Include(b => b.Genres)
+                    .Include(b => b.Authors);
+
+            if (dto.GenreIds.IsNullOrEmpty() == false)
+                books = books.Where(b => b.Genres.Any(g => dto.GenreIds.Contains(g.Id)));
+
+            if (dto.AuthorIds.IsNullOrEmpty() == false)
+                books = books.Where(b => b.Authors.Any(a => dto.AuthorIds.Contains(a.Id)));
+
+            var result = _mapper.Map<List<BookDto>>(books.ToList());
+
+            if (dto.MinimumRate != null)
+            {
+                var elementsToRemove = new List<BookDto>();
+                foreach (var b in result)
+                {
+                    var bookRate = await bookProxyService.CalculateRate(b.Id);
+                    if (bookRate == null)
+                    {
+                        elementsToRemove.Add(b);
+                        continue;
+                    }
+
+                    if (bookRate < dto.MinimumRate)
+                    {
+                        elementsToRemove.Add(b);
+                        continue;
+                    }
+                }
+                foreach (var item in elementsToRemove)
+                {
+                    result.Remove(item);
+                }
+            }
+
+            return result.Count();
+        }
         public async Task<List<BookDto>> FindBooks(BookFinderDto dto, IBookProxyService bookProxyService)
         {
             if (dto.MinimumRate == null && dto.AuthorIds == null && dto.GenreIds == null)
@@ -233,7 +288,7 @@ namespace YaqraApi.Repositories
             }         
 
             return result
-                .Skip((dto.Page - 1) * Pagination.BookTitlesAndIds).Take(Pagination.BookTitlesAndIds)
+                .Skip((dto.Page - 1) * Pagination.Books).Take(Pagination.Books)
                 .ToList();
         }
 
@@ -255,6 +310,13 @@ namespace YaqraApi.Repositories
         {
             await _context.TrendingBooks.AddAsync(trending);
             await SaveChangesAsync();
+        }
+
+        public int GetUpcomingBooksCount()
+        {
+            return _context.Books
+                .Where(b => b.AddedDate > DateTime.UtcNow)
+                .Count();
         }
 
         public async Task<List<Book>> GetUpcomingBooks(int page)

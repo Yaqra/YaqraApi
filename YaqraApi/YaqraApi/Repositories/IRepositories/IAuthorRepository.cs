@@ -11,7 +11,7 @@ namespace YaqraApi.Repositories.IRepositories
         Task<List<Book>> GetAuthorBooks(int authorId, int page);
         Task<IQueryable<Author>> GetAll(int page);
         Task<Author> GetByIdAsync(int authorId);
-        Task<IQueryable<Author>> GetByName(string authorName, int page);
+        Task<IQueryable<Author>> GetByName(string authorName);
         Task<Author?> AddAsync(Author newAuthor);
         void UpdateAll(Author editedAuthor);//all author details
         void Delete(Author author);

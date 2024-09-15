@@ -48,21 +48,37 @@ namespace YaqraApi.Services
             return new GenericResultDto<AuthorDto?> { Succeeded = true, Result= _mapper.Map<AuthorDto>(result) };
         }
 
-        public async Task<GenericResultDto<List<AuthorDto>>> GetAll(int page)
+        public async Task<GenericResultDto<PagedResult<AuthorDto>>> GetAll(int page)
         {
             page = page == 0 ? 1 : page;
             var authors = (await _authorRepository.GetAll(page)).ToList();
             var authorsDto = _mapper.Map<List<AuthorDto>>(authors);
             authorsDto = await AssignRate(authorsDto);
 
-            return new GenericResultDto<List<AuthorDto>> { Succeeded = true, Result = authorsDto};
+            var result = new PagedResult<AuthorDto>
+            {
+                PageSize = Pagination.Authors,
+                Data = authorsDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_authorRepository.GetCount(), Pagination.Authors)
+            };
+
+            return new GenericResultDto<PagedResult<AuthorDto>> { Succeeded = true, Result = result};
         }
 
-        public async Task<GenericResultDto<List<AuthorNameAndIdDto>>> GetAllNamesAndIds(int page)
+        public async Task<GenericResultDto<PagedResult<AuthorNameAndIdDto>>> GetAllNamesAndIds(int page)
         {
             page = page == 0 ? 1 : page;
             var authorNamesAndIdsDto = (await _authorRepository.GetAllNamesAndIds(page)).ToList();
-            return new GenericResultDto<List<AuthorNameAndIdDto>> { Succeeded = true,Result =authorNamesAndIdsDto};
+            var result = new PagedResult<AuthorNameAndIdDto>
+            {
+                PageSize = Pagination.AuthorNamesAndIds,
+                Data = authorNamesAndIdsDto,    
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_authorRepository.GetCount(), Pagination.AuthorNamesAndIds)
+
+            };
+            return new GenericResultDto<PagedResult<AuthorNameAndIdDto>> { Succeeded = true,Result = result};
         }
 
         public async Task<GenericResultDto<AuthorDto>> GetByIdAsync(int authorId)
@@ -78,10 +94,9 @@ namespace YaqraApi.Services
             return new GenericResultDto<AuthorDto> { Succeeded = true, Result = dto };
         }
 
-        public async Task<GenericResultDto<List<AuthorDto>>> GetByName(string authorName, int page)
+        public async Task<GenericResultDto<List<AuthorDto>>> GetByName(string authorName)
         {
-            page = page == 0 ? 1 : page;
-            var authors =( await _authorRepository.GetByName(authorName, page)).ToList();
+            var authors =( await _authorRepository.GetByName(authorName)).ToList();
             if (authors == null)
                 return new GenericResultDto<List<AuthorDto>> { Succeeded = false, ErrorMessage = "no authors with that name were found" };
             
@@ -147,14 +162,24 @@ namespace YaqraApi.Services
             return new GenericResultDto<AuthorPagesCount> { Succeeded = true, Result = result };
         }
 
-        public async Task<GenericResultDto<List<BookDto>>> GetAuthorBooks(int authorId, int page)
+        public async Task<GenericResultDto<PagedResult<BookDto>>> GetAuthorBooks(int authorId, int page)
         {
+            page = page == 0 ? 1 : page;
             var books = await _authorRepository.GetAuthorBooks(authorId, page);
-            var result = BookHelpers.ConvertBooksToBookDtos(books);
-            return new GenericResultDto<List<BookDto>>
+            var booksDto = BookHelpers.ConvertBooksToBookDtos(books);
+
+            var result = new PagedResult<BookDto>
+            {
+                PageSize = Pagination.Books,
+                Data = booksDto.Skip((page - 1) * Pagination.Books).Take(Pagination.Books).ToList(),
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(booksDto.Count, Pagination.Books)
+            };
+
+            return new GenericResultDto<PagedResult<BookDto>>
             {
                 Succeeded = true,
-                Result = result.ToList()
+                Result = result
             };
         }
         private async Task<GenericResultDto<List<int>>> GetAuthorBooksIds(int authorId)
@@ -200,6 +225,11 @@ namespace YaqraApi.Services
             var authorsDto = authors.ProjectTo<AuthorDto>(_mapper.ConfigurationProvider);
 
             return new GenericResultDto<IQueryable<AuthorDto>> { Succeeded = true, Result = authorsDto };
+        }
+
+        public int GetCount()
+        {
+            return _authorRepository.GetCount();
         }
     }
 }

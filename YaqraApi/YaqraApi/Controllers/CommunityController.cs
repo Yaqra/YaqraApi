@@ -54,8 +54,8 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetAllReviewsAsync(page);
             if (result.Succeeded == false)
                 return BadRequest(result);
-            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
-            foreach (var item in result.Result)
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Data.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result.Data)
             {
                 if (LikedPosts.Contains(item.Id) == true)
                     item.IsLiked = true;
@@ -69,8 +69,8 @@ namespace YaqraApi.Controllers
             if (result.Succeeded == false)
                 return BadRequest(result);
 
-            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
-            foreach (var item in result.Result)
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Data.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result.Data)
             {
                 if (LikedPosts.Contains(item.Id) == true)
                     item.IsLiked = true;
@@ -223,8 +223,8 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetAllDiscussionsAsync(page, tag);
             if (result.Succeeded == false)
                 return BadRequest(result);
-            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
-            foreach (var item in result.Result)
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Data.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result.Data)
             {
                 if (LikedPosts.Contains(item.Id) == true)
                     item.IsLiked = true;
@@ -237,8 +237,8 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetUserReviews(userId, page);
             if (result.Succeeded == false)
                 return BadRequest(result);
-            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
-            foreach (var item in result.Result)
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Data.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result.Data)
             {
                 if (LikedPosts.Contains(item.Id) == true)
                     item.IsLiked = true;
@@ -251,8 +251,8 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetUserPlaylists(userId, page);
             if (result.Succeeded == false)
                 return BadRequest(result);
-            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
-            foreach (var item in result.Result)
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Data.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result.Data)
             {
                 if (LikedPosts.Contains(item.Id) == true)
                     item.IsLiked = true;
@@ -265,8 +265,8 @@ namespace YaqraApi.Controllers
             var result = await _communityService.GetUserDiscussions(userId, page);
             if (result.Succeeded == false)
                 return BadRequest(result);
-            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
-            foreach (var item in result.Result)
+            var LikedPosts = await _communityService.ArePostsLiked(result.Result.Data.Select(r => r.Id).ToList(), UserHelpers.GetUserId(User));
+            foreach (var item in result.Result.Data)
             {
                 if (LikedPosts.Contains(item.Id) == true)
                     item.IsLiked = true;
@@ -363,7 +363,7 @@ namespace YaqraApi.Controllers
             if (result.Succeeded == false)
                 return BadRequest(result);
 
-            foreach (var comment in result.Result)
+            foreach (var comment in result.Result.Data)
             {
                 var commentsIds = new List<int>();
                 GetCommentsIds(comment, commentsIds);

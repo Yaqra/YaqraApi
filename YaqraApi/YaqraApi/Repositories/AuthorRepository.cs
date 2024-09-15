@@ -53,11 +53,11 @@ namespace YaqraApi.Repositories
             return author;
         }
 
-        public async Task<IQueryable<Author>> GetByName(string authorName, int page)
+        public async Task<IQueryable<Author>> GetByName(string authorName)
         {
             var authors = _context.Authors
                 .Where(a => a.Name.Contains(authorName))
-                .Skip((page - 1) * Pagination.Authors).Take(Pagination.Authors);
+                .Take(Pagination.Authors);
             return authors;
         }
         private async Task SaveChangesAsync()

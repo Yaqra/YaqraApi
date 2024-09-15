@@ -67,7 +67,7 @@ namespace YaqraApi.Controllers
         [HttpGet("name")]
         public async Task<IActionResult> GetByNameAsync([FromQuery] string authorName, [FromQuery] int page)
         {
-            var result = await _authorService.GetByName(authorName, page);
+            var result = await _authorService.GetByName(authorName);
             if (result.Succeeded == false)
                 return BadRequest(result);
             return Ok(result);

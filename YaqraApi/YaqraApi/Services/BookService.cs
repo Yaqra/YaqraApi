@@ -80,11 +80,11 @@ namespace YaqraApi.Services
             return new GenericResultDto<string> { Succeeded = true, Result = "book deleted successfully" };
         }
 
-        public async Task<GenericResultDto<List<BookDto>>> GetAll(int page)
+        public async Task<GenericResultDto<PagedResult<BookDto>>> GetAll(int page)
         {
             page = page == 0 ? 1 : page;
             var books = await _bookRepository.GetAll(page);
-            var result = new List<BookDto>();
+            var booksDto = new List<BookDto>();
             foreach (var book in books)
             {
                 var dto = _mapper.Map<BookDto>(book);
@@ -95,17 +95,34 @@ namespace YaqraApi.Services
 
                 dto.Rate = BookHelpers.FormatRate(await _bookProxyService.CalculateRate(dto.Id));
 
-                result.Add(dto);
+                booksDto.Add(dto);
             }
 
-            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = result };
+            var result = new PagedResult<BookDto>
+            {
+                PageSize = Pagination.Books,
+                Data = booksDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_bookRepository.GetCount(), Pagination.Books)
+            };
+
+            return new GenericResultDto<PagedResult<BookDto>> { Succeeded = true, Result = result };
         }
 
-        public async Task<GenericResultDto<List<BookTitleAndIdDto>>> GetAllTitlesAndIds(int page)
+        public async Task<GenericResultDto<PagedResult<BookTitleAndIdDto>>> GetAllTitlesAndIds(int page)
         {
             page = page==0? 1 : page;
             var bookTitlesAndIdsDto = (await _bookRepository.GetAllTitlesAndIds(page)).ToList();
-            return new GenericResultDto<List<BookTitleAndIdDto>> { Succeeded = true, Result = bookTitlesAndIdsDto };
+
+            var result = new PagedResult<BookTitleAndIdDto>
+            {
+                PageSize = Pagination.BookTitlesAndIds,
+                Data = bookTitlesAndIdsDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_bookRepository.GetCount(), Pagination.BookTitlesAndIds)
+            };
+
+            return new GenericResultDto<PagedResult<BookTitleAndIdDto>> { Succeeded = true, Result = result};
         }
 
         public async Task<GenericResultDto<BookPagesCount>> GetBooksPagesCount()
@@ -135,10 +152,9 @@ namespace YaqraApi.Services
             return new GenericResultDto<BookDto> { Succeeded = true, Result = result };
         }
 
-        public async Task<GenericResultDto<List<BookDto>>> GetByTitle(string BookName, int page)
+        public async Task<GenericResultDto<List<BookDto>>> GetByTitle(string BookName)
         {
-            page = page == 0 ? 1 : page;
-            var books = await _bookRepository.GetByTitle(BookName, page);
+            var books = await _bookRepository.GetByTitle(BookName);
             if (books == null)
                 return new GenericResultDto<List<BookDto>> { Succeeded = false, ErrorMessage = "no books with that title were found" };
 
@@ -242,13 +258,23 @@ namespace YaqraApi.Services
             _authorService.Attach(book.Authors);
             return book;
         }
-        public async Task<GenericResultDto<List<BookDto>>> GetRecent(int page)
+        public async Task<GenericResultDto<PagedResult<BookDto>>> GetRecent(int page)
         {
+            page = page == 0 ? 1 : page;
+
             var books = await _bookRepository.GetRecent(page);
 
-            var result = BookHelpers.ConvertBooksToBookDtos(books.ToList());
+            var booksDto = BookHelpers.ConvertBooksToBookDtos(books.ToList());
 
-            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = result.ToList()};
+            var result = new PagedResult<BookDto>
+            {
+                PageSize = Pagination.Books,
+                Data = booksDto.ToList(),
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_bookRepository.GetRecentCount(), Pagination.Books)
+            };
+
+            return new GenericResultDto<PagedResult<BookDto>> { Succeeded = true, Result = result};
         }
 
         public async Task<GenericResultDto<BookDto>> AddGenresToBook(HashSet<int> genresIds, int bookId)
@@ -329,21 +355,39 @@ namespace YaqraApi.Services
             return result;
         }
 
-        public async Task<GenericResultDto<List<ReviewDto>>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field)
+        public async Task<GenericResultDto<PagedResult<ReviewDto>>> GetReviews(int bookId, int page, SortType type, ReviewsSortField field)
         {
             page = page == 0 ? 1 : page;
             var reviews = await _bookRepository.GetReviews(bookId, page, type, field);
             var reviewsDto = _mapper.Map<List<ReviewDto>>(reviews);
 
-            return new GenericResultDto<List<ReviewDto>> { Succeeded = true, Result = reviewsDto };
+            var result = new PagedResult<ReviewDto>
+            {
+                PageSize = Pagination.Posts,
+                Data = reviewsDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_bookRepository.GetReviewsCount(bookId), Pagination.Posts)
+            };
+
+            return new GenericResultDto<PagedResult<ReviewDto>> { Succeeded = true, Result = result };
     
         }
 
-        public async Task<GenericResultDto<List<BookDto>>> FindBooks(BookFinderDto dto)
+        public async Task<GenericResultDto<PagedResult<BookDto>>> FindBooks(BookFinderDto dto)
         {
-            dto.Page = dto.Page == 0 ? 1 : dto.Page;   
+            dto.Page = dto.Page == 0 ? 1 : dto.Page;
 
-            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = await _bookRepository.FindBooks(dto, _bookProxyService) };
+            var booksDto = await _bookRepository.FindBooks(dto, _bookProxyService);
+
+            var result = new PagedResult<BookDto>
+            {
+                PageSize = Pagination.Books,
+                Data = booksDto,
+                PageNumber = dto.Page,
+                TotalPages = Pagination.CalculatePagesCount(await _bookRepository.FindBooksCount(dto, _bookProxyService), Pagination.Books)
+            };
+
+            return new GenericResultDto<PagedResult<BookDto>> { Succeeded = true, Result = result };
         }
 
         public async Task<GenericResultDto<List<BookDto>>> GetTrendingBooks()
@@ -370,11 +414,21 @@ namespace YaqraApi.Services
             await _bookRepository.AddTrendingBook(new TrendingBook { BookId = bookId });
         }
 
-        public async Task<GenericResultDto<List<BookDto>>> GetUpcomingBooks(int page)
+        public async Task<GenericResultDto<PagedResult<BookDto>>> GetUpcomingBooks(int page)
         {
             page = page == 0 ? 1 : page;
             var books = await _bookRepository.GetUpcomingBooks(page);
-            return new GenericResultDto<List<BookDto>> { Succeeded = true, Result = _mapper.Map<List<BookDto>>(books) };
+            var booksDto = _mapper.Map<List<BookDto>>(books);
+
+            var result = new PagedResult<BookDto>
+            {
+                PageSize = Pagination.Books,
+                Data = booksDto,
+                PageNumber = page,
+                TotalPages = Pagination.CalculatePagesCount(_bookRepository.GetUpcomingBooksCount(), Pagination.Books)
+            };
+
+            return new GenericResultDto<PagedResult<BookDto>> { Succeeded = true, Result = result };
         }
 
         public async Task<GenericResultDto<IQueryable<Book>>> GetRangeAsync(HashSet<int> booksIds)
