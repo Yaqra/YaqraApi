@@ -209,9 +209,9 @@ namespace YaqraApi.Controllers
         }
         [Authorize]
         [HttpGet("allGoals")]
-        public async Task<IActionResult> GetAllReadingGoalsAsync([FromQuery] int page)
+        public async Task<IActionResult> GetAllReadingGoalsAsync(string userId, int page)
         {
-            var result = await _userService.GetAllReadingGoalsAsync(UserHelpers.GetUserId(User), page);
+            var result = await _userService.GetAllReadingGoalsAsync(userId, page);
             if (result.Succeeded == false)
                 return BadRequest(result);
             return Ok(result);
