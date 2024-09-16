@@ -130,26 +130,41 @@ namespace YaqraApi.Services
                 };
             return new GenericResultDto<ApplicationUser> { Succeeded = true, Result = user };
         }
-        public async Task<GenericResultDto<UserFollowerDto>> FollowUserAsync(UserIdDto dto, string userId)
+        public async Task<GenericResultDto<FollowDto>> FollowUserAsync(UserIdDto dto, string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.Users.Include(u=>u.Followings).SingleOrDefaultAsync(u=>u.Id == userId);
             if (user == null)
-                return new GenericResultDto<UserFollowerDto> { Succeeded = false, ErrorMessage = "user not found" };
-            
-            var followedUser = await _userManager.FindByIdAsync(dto.UserId);
-            if (followedUser == null)
-                return new GenericResultDto<UserFollowerDto> { Succeeded = false, ErrorMessage = "the user you want to follow not found" };
+                return new GenericResultDto<FollowDto> { Succeeded = false, ErrorMessage = "user not found" };
 
-            user.Followings = new List<ApplicationUser> { followedUser };
+            var result = new FollowDto();
+
+            var followedUser = user.Followings.FirstOrDefault(f => f.Id == dto.UserId);
+            if (followedUser != null)//unfollow
+            {
+                user.Followings.Remove(followedUser);
+                result.IsFollowed = false;
+            }
+            else//follow
+            {
+                followedUser = await _userManager.FindByIdAsync(dto.UserId);
+                if (followedUser == null)
+                    return new GenericResultDto<FollowDto> { Succeeded = false, ErrorMessage = "the user you want to follow not found" };
+
+                user.Followings.Add(followedUser);
+                result.IsFollowed = true;
+            }
 
             var identityResult = await _userManager.UpdateAsync(user);
             if(identityResult.Succeeded == false)
-                return new GenericResultDto<UserFollowerDto>
+                return new GenericResultDto<FollowDto>
                 {
                     Succeeded = false,
                     ErrorMessage = UserHelpers.GetErrors(identityResult)
                 };
-            return new GenericResultDto<UserFollowerDto> { Succeeded = true, Result = new UserFollowerDto {Follower= user, Followed= followedUser} };
+
+            result.FollowersCount = GetUserFollowersNamesCount(dto.UserId);
+
+            return new GenericResultDto<FollowDto> { Succeeded = true, Result = result };
         }
         public async Task<GenericResultDto<UserDto>> GetUserAsync(string userId, string followerId)
         {

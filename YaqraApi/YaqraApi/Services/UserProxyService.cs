@@ -46,7 +46,7 @@ namespace YaqraApi.Services
             return await _userService.UpdateProfileCoverAsync(pic, userId);
         }
 
-        public async Task<GenericResultDto<UserFollowerDto>> FollowUserAsync(UserIdDto dto, string userId)
+        public async Task<GenericResultDto<FollowDto>> FollowUserAsync(UserIdDto dto, string userId)
         {
             Users.Remove(userId);
             Users.Remove(dto.UserId);
