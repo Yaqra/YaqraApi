@@ -86,7 +86,7 @@ namespace YaqraApi.Controllers
             var result = await _userProxyService.FollowUserAsync(dto, UserHelpers.GetUserId(User));
             if(result.Succeeded == false)
                 return BadRequest(result);
-            return Ok(new GenericResultDto<string> { Succeeded = true, Result = $"{result.Result.Follower.UserName} followed {result.Result.Followed.UserName} successfully" });
+            return Ok(result);
         }
         [Authorize]
         [HttpGet("user")]
