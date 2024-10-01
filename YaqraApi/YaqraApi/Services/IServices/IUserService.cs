@@ -13,7 +13,7 @@ namespace YaqraApi.Services.IServices
 {
     public interface IUserService
     {
-        Task<GenericResultDto<ApplicationUser>> UpdateAllAsync(IFormFile? pic, IFormFile? cover, UserDto dto);
+        Task<GenericResultDto<UserDto>> UpdateAllAsync(IFormFile? pic, IFormFile? cover, UserDto dto);
         Task<GenericResultDto<ApplicationUser>> UpdatePasswordAsync(PasswordUpdateDto dto, string userId);
         Task<GenericResultDto<ApplicationUser>> UpdateProfilePictureAsync(IFormFile pic, string userId);
         Task<GenericResultDto<ApplicationUser>> UpdateProfileCoverAsync(IFormFile pic, string userId);

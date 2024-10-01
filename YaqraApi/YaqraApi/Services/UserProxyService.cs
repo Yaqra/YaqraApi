@@ -28,7 +28,7 @@ namespace YaqraApi.Services
             return userResult;
         }
 
-        public async Task<GenericResultDto<ApplicationUser>> UpdateAllAsync(IFormFile? pic, IFormFile? cover, UserDto dto)
+        public async Task<GenericResultDto<UserDto>> UpdateAllAsync(IFormFile? pic, IFormFile? cover, UserDto dto)
         {
             Users.Remove(dto.UserId);
             return await _userService.UpdateAllAsync(pic, cover, dto);

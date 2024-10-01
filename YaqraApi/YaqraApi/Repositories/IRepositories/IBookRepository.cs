@@ -32,5 +32,6 @@ namespace YaqraApi.Repositories.IRepositories
         Task<IQueryable<Book>> GetRange(HashSet<int> booksIds);
         Task LoadGenres(Book book);
         Task<int> GetBookReviewsCount(int bookId);
+        bool IsEntityTracked(Book book);
     }
 }

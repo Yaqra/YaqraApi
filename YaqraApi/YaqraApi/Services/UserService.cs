@@ -359,11 +359,11 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<string> { Succeeded = true, Result = "genre deleted successfully from ur favourite genres" };
         }
-        public async Task<GenericResultDto<ApplicationUser>> UpdateAllAsync(IFormFile? pic, IFormFile? cover, UserDto dto)
+        public async Task<GenericResultDto<UserDto>> UpdateAllAsync(IFormFile? pic, IFormFile? cover, UserDto dto)
         {
             var user = await _userManager.FindByIdAsync(dto.UserId);
             if (user == null)
-                return new GenericResultDto<ApplicationUser> { Succeeded = false, ErrorMessage = "user not found" };
+                return new GenericResultDto<UserDto> { Succeeded = false, ErrorMessage = "user not found" };
 
             if (pic != null)
                 await UpdateProfilePictureAsync(pic, user.Id);
@@ -377,13 +377,23 @@ namespace YaqraApi.Services
 
             var identityResult = await _userManager.UpdateAsync(user);
             if (identityResult.Succeeded == false)
-                return new GenericResultDto<ApplicationUser>
+                return new GenericResultDto<UserDto>
                 {
                     Succeeded = false,
                     ErrorMessage = UserHelpers.GetErrors(identityResult)
                 };
 
-            return new GenericResultDto<ApplicationUser> { Succeeded = true, Result = user };
+            var userDto = new UserDto
+            {
+                UserId = user.Id,
+                Username = user.UserName,
+                Bio = user.Bio,
+                ProfilePicture = user.ProfilePicture,
+                ProfileCover = user.ProfileCover,
+                FollowersCount = GetUserFollowersNamesCount(user.Id),
+                FollowingsCount = GetUserFollowingsNamesCount(user.Id),
+            };
+            return new GenericResultDto<UserDto> { Succeeded = true, Result = userDto };
         }
         public async Task<GenericResultDto<List<AuthorDto>>> AddFavouriteAuthorsAsync(List<AuthorIdDto> authors, string userId, int page)
         {
@@ -581,15 +591,10 @@ namespace YaqraApi.Services
             if (goalToEdit == null)
                 return new GenericResultDto<ReadingGoalDto> { Succeeded = false, ErrorMessage = "reading goal not found" };
 
-            if(dto.StartDate != null)
-                goalToEdit.StartDate = dto.StartDate.Value;
-            if(dto.DurationInDays != null)
-                goalToEdit.DurationInDays = dto.DurationInDays.Value;
-            if(dto.NumberOfBooksToRead != null)
-                goalToEdit.NumberOfBooksToRead = dto.NumberOfBooksToRead.Value;
-            if(dto.Description != null)
+                goalToEdit.StartDate = dto.StartDate;
+                goalToEdit.DurationInDays = dto.DurationInDays;
+                goalToEdit.NumberOfBooksToRead = dto.NumberOfBooksToRead;
                 goalToEdit.Description = dto.Description;
-            if(dto.Title != null)
                 goalToEdit.Title = dto.Title;
 
             var identityResult = await _userManager.UpdateAsync(user);

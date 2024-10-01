@@ -19,9 +19,11 @@ namespace YaqraApi.DTOs.Community
     }
     public class UpdatePlaylistDto : UpdatePostDto
     {
+        public List<int> BooksIds { get; set; }
     }
     public class UpdateDiscussionArticleNewsDto : UpdatePostDto
     {
+        public List<int>? BooksIds { get; set; }
         public DiscussionArticleNewsTag Tag { get; set; }
     }
 }

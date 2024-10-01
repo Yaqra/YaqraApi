@@ -47,6 +47,12 @@ namespace YaqraApi.Services
 
             return new GenericResultDto<string> { Succeeded = true, Result = "genre deleted successfully" };
         }
+
+        public void Detach(IEnumerable<Genre> genres)
+        {
+            _genreRepository.Detach(genres);
+        }
+
         public async Task<GenericResultDto<PagedResult<GenreDto>>> GetAllAsync(int page)
         {
             page = page==0? 1 : page;

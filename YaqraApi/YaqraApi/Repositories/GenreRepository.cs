@@ -86,7 +86,13 @@ namespace YaqraApi.Repositories
 
         public async Task<IQueryable<Genre>> GetRangeAsync(HashSet<int> genreIds)
         {
-            return _context.Genres.Where(g => genreIds.Contains(g.Id));
+            return _context.Genres.AsNoTracking().Where(g => genreIds.Contains(g.Id));
+        }
+
+        public void Detach(IEnumerable<Genre> genres)
+        {
+            foreach (var genre in genres)
+                _context.Entry(genre).State = EntityState.Detached;
         }
     }
 }

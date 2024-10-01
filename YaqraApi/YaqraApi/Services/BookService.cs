@@ -173,22 +173,16 @@ namespace YaqraApi.Services
             var book = await _bookRepository.GetByIdAsync(dto.Id);
             if (book == null)
                 return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "book not found" };
-            
+
             book.Authors = null;
             book.Genres = null;
-
-            if (dto.NumberOfPages != null)
-                book.NumberOfPages = dto.NumberOfPages;
-
-            if (dto.Description != null)
-                book.Description = dto.Description;
-
-            if (dto.Title != null)
-                book.Title = dto.Title;
+            book.NumberOfPages = dto.NumberOfPages;
+            book.Description = dto.Description;
+            book.Title = dto.Title;
 
             _bookRepository.UpdateAll(book);
 
-            return new GenericResultDto<BookDto> { Succeeded = true, Result = _mapper.Map<BookDto>(book) };
+            return await GetByIdAsync(book.Id);
         }
 
         public async Task<GenericResultDto<BookDto>> UpdateImageAsync(IFormFile img, int bookId)
@@ -222,7 +216,7 @@ namespace YaqraApi.Services
         }
         private async Task<Book> AddGenresToBook(HashSet<int> genresIds, Book book)
         {
-            if(book.Genres != null)
+            if (book.Genres != null)
             {
                 foreach (var genre in book.Genres)
                 {
@@ -285,7 +279,7 @@ namespace YaqraApi.Services
             book.Authors = null;
             var firstGenre = book.Genres.FirstOrDefault();
             book = await AddGenresToBook(genresIds, book);
-            if(book.Genres.FirstOrDefault() == firstGenre)
+            if (book.Genres.FirstOrDefault() == firstGenre)
             {
                 return new GenericResultDto<BookDto> { Succeeded = false, ErrorMessage = "genres already exist" };
             }
@@ -440,5 +434,11 @@ namespace YaqraApi.Services
         {
             await _bookRepository.LoadGenres(book);
         }
+
+        public bool IsEntityTracked(Book book)
+        {
+            return _bookRepository.IsEntityTracked(book);
+        }
+
     }
 }

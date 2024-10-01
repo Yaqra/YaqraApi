@@ -54,7 +54,7 @@ namespace YaqraApi.Repositories
             return _context.Books
                 .Include(b=>b.Authors)
                 .Include(b=>b.Genres)
-                .Skip((page-1)*Pagination.BookTitlesAndIds).Take(Pagination.BookTitlesAndIds)
+                .Skip((page-1)* Pagination.Books).Take(Pagination.Books)
                 .AsNoTracking().ToList();
         }
 
@@ -341,5 +341,12 @@ namespace YaqraApi.Repositories
         {
             return _context.Reviews.Where(r=>r.BookId==bookId).Count();
         }
+
+        public bool IsEntityTracked(Book book)
+        {
+            var tracked = _context.Entry(book).State != EntityState.Detached;
+            return tracked;
+        }
+
     }
 }

@@ -46,11 +46,11 @@ namespace YaqraApi.Controllers
             [FromForm] string? userName,
             [FromForm] string? userBio)
         {
-            var userDto = new UserDto { Bio = userBio, UserId = UserHelpers.GetUserId(User), Username=userName };
+            var userDto = new UserDto { Bio = userBio, UserId = UserHelpers.GetUserId(User), Username = userName };
             var result = await _userProxyService.UpdateAllAsync(pic, cover, userDto);
             if (result.Succeeded == false)
                 return BadRequest(result);
-            return Ok("user updated successfully");
+            return Ok(result);
         }
         [Authorize]
         [HttpPut("pass")]

@@ -145,7 +145,12 @@ namespace YaqraApi.Repositories.Context
                 .HasOne(n => n.Post)
                 .WithMany(p => p.Notifications)
                 .HasForeignKey(n => n.PostId)
-                .OnDelete(DeleteBehavior.Cascade);  
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<CommentLikes>()
+                .HasOne(c => c.Comment)
+                .WithMany(c=>c.CommentLikes)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(builder);
         }

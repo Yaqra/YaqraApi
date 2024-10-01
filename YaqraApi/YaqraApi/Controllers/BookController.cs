@@ -107,7 +107,7 @@ namespace YaqraApi.Controllers
                 Id = bookId,
                 Title = bookTitle,
                 NumberOfPages = numberOfPages,
-                Description = bookDescription,
+                Description = bookDescription
             };
             if (dto == null)
                 return BadRequest("something went wrong");
