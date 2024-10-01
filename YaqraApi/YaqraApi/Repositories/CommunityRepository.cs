@@ -351,5 +351,10 @@ namespace YaqraApi.Repositories
             var result = _context.CommentLikes.Where(x => x.UserId == userId && commentsIds.Contains(x.CommentId));
             return new HashSet<int>(await result.Select(r => r.CommentId).ToListAsync());
         }
+
+        public async Task LoadPlaylistBooks(Playlist playlist)
+        {
+            await _context.Entry(playlist).Collection(b => b.Books).LoadAsync();
+        }
     }
 }

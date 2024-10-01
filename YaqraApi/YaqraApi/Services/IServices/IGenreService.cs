@@ -17,5 +17,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<List<BookDto>?>> RandomizeBooksBasedOnGenre(int genreId, int count);
         Task<GenericResultDto<IQueryable<GenreDto>>> GetRangeAsync(HashSet<int> genreIds);
         void Attach(IEnumerable<Genre> genres);
+        void Detach(IEnumerable<Genre> genres);
+
     }
 }

@@ -64,6 +64,7 @@ namespace YaqraApi.Repositories
         public void Delete(RecommendationStatistics obj)
         {
             _context.RecommendationStatistics.Remove(obj);
+            SaveChanges();
         }
 
         public async Task<List<RecommendationStatistics>> GetByUserId(string userId)

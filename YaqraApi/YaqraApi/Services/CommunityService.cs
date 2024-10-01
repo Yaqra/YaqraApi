@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.EntityFrameworkCore.Storage.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
@@ -176,22 +177,48 @@ namespace YaqraApi.Services
         {
             if (editedPlaylist.UserId != userId)
                 return new GenericResultDto<PlaylistDto> { Succeeded = false, ErrorMessage = "this playlist isn't yours to update" };
-            var playlist = _mapper.Map<Playlist>(editedPlaylist);
-            var result = await _communityRepository.UpdatePlaylistAsync(playlist);
+
+            var existingPlaylist = await _communityRepository.GetPlaylistAsync(editedPlaylist.Id);
+            if (existingPlaylist == null)
+                return new GenericResultDto<PlaylistDto> { Succeeded = false, ErrorMessage = "Playlist not found" };
+
+            if (existingPlaylist.UserId != userId)
+                return new GenericResultDto<PlaylistDto> { Succeeded = false, ErrorMessage = "this playlist isn't yours to update" };
+
+            _mapper.Map(editedPlaylist, existingPlaylist);
+
+            var removeBooksResult = await RemoveBooksFromPlaylist(existingPlaylist.Id, existingPlaylist.Books.Select(b => b.Id).ToHashSet(), existingPlaylist.UserId);
+            if(removeBooksResult.Succeeded == true)
+            {
+                var addBooksResult = await AddBooksToPlaylist(existingPlaylist.Id, editedPlaylist.BooksIds.ToHashSet(), existingPlaylist.UserId);
+            }
+
+            var result = await _communityRepository.UpdatePlaylistAsync(existingPlaylist);
             if (result == null)
                 return new GenericResultDto<PlaylistDto> { Succeeded = false, ErrorMessage = "something went wrong" };
 
             var dto = (await GetPlaylistAsync(result.Id)).Result;
             return new GenericResultDto<PlaylistDto> { Succeeded = true, Result = dto };
         }
+
         public async Task<GenericResultDto<ReviewDto>> UpdateReviewAsync(UpdateReviewDto editedReview, string userId)
         {
             if (editedReview.UserId != userId)
                 return new GenericResultDto<ReviewDto> { Succeeded = false, ErrorMessage = "this review isn't yours to update" };
-            var review = _mapper.Map<Review>(editedReview);
-            var result = await _communityRepository.UpdateReviewAsync(review);
+
+            var existingReview = await _communityRepository.GetReviewAsync(editedReview.Id);
+            if (existingReview == null)
+                return new GenericResultDto<ReviewDto> { Succeeded = false, ErrorMessage = "Review not found" };
+
+            if (existingReview.UserId != userId)
+                return new GenericResultDto<ReviewDto> { Succeeded = false, ErrorMessage = "this review isn't yours to update" };
+
+            _mapper.Map(editedReview, existingReview);
+
+            var result = await _communityRepository.UpdateReviewAsync(existingReview);
             if (result == null)
                 return new GenericResultDto<ReviewDto> { Succeeded = false, ErrorMessage = "something went wrong" };
+
             var dto = (await GetReviewAsync(result.Id)).Result;
             return new GenericResultDto<ReviewDto> { Succeeded = true, Result = dto };
         }
@@ -266,11 +293,30 @@ namespace YaqraApi.Services
         public async Task<GenericResultDto<DiscussionArticlesNewsDto>> UpdateDiscussionAsync(UpdateDiscussionArticleNewsDto editedDiscussion, string userId)
         {
             if (editedDiscussion.UserId != userId)
-                return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = false, ErrorMessage = "this post isn't your to update" };
-            var discussion = _mapper.Map<DiscussionArticleNews>(editedDiscussion);
-            var result = await _communityRepository.UpdateDiscussionAsync(discussion);
+                return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = false, ErrorMessage = "this Topic isn't yours to update" };
+
+            var existingDiscussion = await _communityRepository.GetDiscussionAsync(editedDiscussion.Id);
+            if (existingDiscussion == null)
+                return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = false, ErrorMessage = "Topic not found" };
+
+            if (existingDiscussion.UserId != userId)
+                return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = false, ErrorMessage = "this Topic isn't yours to update" };
+
+            _mapper.Map(editedDiscussion, existingDiscussion);
+
+            if(editedDiscussion.BooksIds != null)
+            {
+                var removeBooksResult = await RemoveBooksFromDiscussion(existingDiscussion.Id, existingDiscussion.Books.Select(b => b.Id).ToHashSet(), existingDiscussion.UserId);
+                if (removeBooksResult.Succeeded == true)
+                {
+                    var addBooksResult = await AddBooksToDiscussion(existingDiscussion.Id, editedDiscussion.BooksIds.ToHashSet(), existingDiscussion.UserId);
+                }
+            }
+
+            var result = await _communityRepository.UpdateDiscussionAsync(existingDiscussion);
             if (result == null)
                 return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = false, ErrorMessage = "something went wrong" };
+
             var dto = (await GetDiscussionAsync(result.Id)).Result;
             return new GenericResultDto<DiscussionArticlesNewsDto> { Succeeded = true, Result = dto };
         }

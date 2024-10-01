@@ -4,6 +4,7 @@ using YaqraApi.Models;
 using YaqraApi.DTOs.Community;
 using Microsoft.AspNetCore.Mvc;
 using YaqraApi.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace YaqraApi.Services.IServices
 {
@@ -31,5 +32,7 @@ namespace YaqraApi.Services.IServices
         Task<GenericResultDto<PagedResult<BookDto>>> GetUpcomingBooks(int page);
         Task<GenericResultDto<IQueryable<Book>>> GetRangeAsync(HashSet<int> booksIds);
         Task LoadGenres(Book book);
+        bool IsEntityTracked(Book book);
+
     }
 }

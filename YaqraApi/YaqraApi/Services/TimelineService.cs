@@ -55,11 +55,15 @@ namespace YaqraApi.Services
                         }
                     }
                 }
+                
+                if(page == 1)
+                {
+                    //add recommended books
+                    var recommendedBooks = (await _recommendationService.RecommendBooks(userId)).Result;
+                    if (recommendedBooks.IsNullOrEmpty() == false)
+                        arr.Add(recommendedBooks);
+                }
 
-                //add recommended books
-                var recommendedBooks = (await _recommendationService.RecommendBooks(userId)).Result;
-                if (recommendedBooks.IsNullOrEmpty() == false)
-                    arr.AddRange(recommendedBooks);
             }
 
             return new GenericResultDto<ArrayList> { Succeeded = true, Result = arr };

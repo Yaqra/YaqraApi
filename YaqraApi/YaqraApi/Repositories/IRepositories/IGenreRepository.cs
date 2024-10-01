@@ -15,5 +15,7 @@ namespace YaqraApi.Repositories.IRepositories
         void Attach(IEnumerable<Genre> genres);
         Task<List<Book>?> RandomizeBooksBasedOnGenre(int genreId, int count);
         Task<IQueryable<Genre>> GetRangeAsync(HashSet<int> genreIds);
+        void Detach(IEnumerable<Genre> genres);
+
     }
 }

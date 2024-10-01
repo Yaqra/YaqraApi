@@ -47,6 +47,7 @@ namespace YaqraApi.Repositories.IRepositories
         Task<HashSet<int>> ArePostsLiked(HashSet<int> postsIds, string userId);
         Task<bool> IsCommentLiked(int commentId, string userId);
         Task<HashSet<int>> AreCommentsLiked(HashSet<int> commentsIds, string userId);
+        Task LoadPlaylistBooks(Playlist playlist);
 
     }
 }
