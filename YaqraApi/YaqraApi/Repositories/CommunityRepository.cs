@@ -361,5 +361,16 @@ namespace YaqraApi.Repositories
         {
             return await _context.Reviews.AnyAsync(r=>r.UserId == userId && r.BookId == bookId);
         }
+
+        public async Task<string> GetPostType(int postId)
+        {
+            var post = await GetPostAsync(postId);
+            if (post is Review)
+                return "Review";
+            else if (post is DiscussionArticleNews)
+                return "DiscussionArticleNews";
+            else
+                return "Playlist";
+        }
     }
 }

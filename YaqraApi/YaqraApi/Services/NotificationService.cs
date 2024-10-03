@@ -63,6 +63,10 @@ namespace YaqraApi.Services
                 .Skip((page-1)*Pagination.Notifications).Take(Pagination.Notifications)
                 .Select(n=> _mapper.Map<NotificationDto>(n))
                 .ToList();
+
+            foreach (var notification in notifications)
+                notification.PostType = await _communityRepository.GetPostType(notification.PostId);
+            
             return notifications;
         }
     }
