@@ -24,10 +24,12 @@ namespace YaqraApi
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173")
+                    policy.WithOrigins("https://yaqra.vercel.app", "http://localhost:5173")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
-                    .AllowCredentials();
+                    .AllowCredentials()
+                    .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
+
                 });
             });
 
@@ -109,7 +111,6 @@ namespace YaqraApi
             builder.Services.AddSignalR();
 
             var app = builder.Build();
-            app.UseOptions();
             // Configure the HTTP request pipeline.
             app.UseSwagger();
             if (app.Environment.IsDevelopment())
@@ -126,10 +127,9 @@ namespace YaqraApi
 
             app.UseStaticFiles();
 
-            app.UseCors("AllowAll");
-
             app.UseRouting();
 
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -137,8 +137,6 @@ namespace YaqraApi
 
             app.MapControllers();
             app.MapHub<NotificationHub>("/Notification");
-
-            //app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173").AllowCredentials());
 
             app.Run();
         }

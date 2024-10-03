@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using YaqraApi.DTOs;
 using YaqraApi.DTOs.Auth;
@@ -44,7 +45,7 @@ namespace YaqraApi.Controllers
             if(result.IsAuthenticated == false)
                 return BadRequest(result);
 
-            SetRefreshTokenInCookies(result.RefreshToken,result.RefreshTokenExpiration);
+            SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
             return Ok(result);
         }
         private void SetRefreshTokenInCookies(string refreshToken, DateTime expiration)
