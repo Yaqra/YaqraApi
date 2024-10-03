@@ -5,6 +5,7 @@ using Microsoft.VisualBasic;
 using YaqraApi.AutoMapperConfigurations;
 using YaqraApi.DTOs.Author;
 using YaqraApi.DTOs.Book;
+using YaqraApi.DTOs.Genre;
 using YaqraApi.Helpers;
 using YaqraApi.Models;
 using YaqraApi.Models.Enums;
@@ -259,7 +260,15 @@ namespace YaqraApi.Repositories
             if (dto.AuthorIds.IsNullOrEmpty() == false)
                    books = books.Where(b => b.Authors.Any(a => dto.AuthorIds.Contains(a.Id)));
 
-            var result = _mapper.Map<List<BookDto>>(books.ToList());
+            var result = new List<BookDto>();
+
+            foreach (var book in books)
+            {
+                var bookDto = _mapper.Map<BookDto>(book);
+                bookDto.AuthorsDto = _mapper.Map<List<AuthorDto>>(book.Authors);
+                bookDto.GenresDto = book.Genres.Select(genre => new GenreDto { GenreId = genre.Id, GenreName = genre.Name }).ToList();
+                result.Add(bookDto);
+            }
 
             if (dto.MinimumRate != null)
             {
