@@ -356,5 +356,10 @@ namespace YaqraApi.Repositories
         {
             await _context.Entry(playlist).Collection(b => b.Books).LoadAsync();
         }
+
+        public async Task<bool> IsBookReviewRepeated(string userId, int bookId)
+        {
+            return await _context.Reviews.AnyAsync(r=>r.UserId == userId && r.BookId == bookId);
+        }
     }
 }

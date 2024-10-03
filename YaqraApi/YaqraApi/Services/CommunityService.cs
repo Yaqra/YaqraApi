@@ -109,6 +109,9 @@ namespace YaqraApi.Services
         public async Task<GenericResultDto<ReviewDto>> AddReviewAsync(AddReviewDto review, string userId)
         {
             var original = _mapper.Map<Review>(review);
+
+            if (await _communityRepository.IsBookReviewRepeated(review.UserId, review.BookId))
+                return new GenericResultDto<ReviewDto> { Succeeded = false, ErrorMessage = "You already reviewed this book" };
             
             original.Book = null;
 
