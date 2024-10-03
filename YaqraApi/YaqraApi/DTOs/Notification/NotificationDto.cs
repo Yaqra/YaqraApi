@@ -11,5 +11,6 @@ namespace YaqraApi.DTOs.Notification
         public string Message { get; set; }
         public bool IsAck { get; set; } = false;
         public DateTime CreatedDate { get; set; }
+        public string PostType { get; set; }
     }
 }

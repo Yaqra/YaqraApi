@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "RJ9hkosLjvcWjakTsMIbMl6AKILEuWbAfrsVi7qTrA0=",
+  "Hash": "Jf9XgQePLEhKtO0U4zAlFBQMkd5Bcgfg52iIPtMLKi4=",
   "Source": "YaqraApi",
   "BasePath": "_content/YaqraApi",
   "Mode": "Default",
@@ -91,25 +91,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Authors\\4rt6f8bd366598-1dd6-4306-a99d-e7b151a0e85c.jpg"
-    },
-    {
-      "Identity": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Authors\\أحمد_يوسف_السيد02fc99d8-ebc3-4045-a175-bd007a1d81a0.jpg",
-      "SourceId": "YaqraApi",
-      "SourceType": "Discovered",
-      "ContentRoot": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\",
-      "BasePath": "_content/YaqraApi",
-      "RelativePath": "Authors/أحمد_يوسف_السيد02fc99d8-ebc3-4045-a175-bd007a1d81a0.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\Authors\\أحمد_يوسف_السيد02fc99d8-ebc3-4045-a175-bd007a1d81a0.jpg"
     },
     {
       "Identity": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Authors\\artworks-000527446572-ypnrbm-t240x240203fbfdc-7ff4-4d8d-9dcd-e455b0000939.jpg",
@@ -205,6 +186,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Authors\\thumb_267770_1200_1200_0_0_auto2b18e319-2244-4079-b388-1074a06d2008.jpg"
+    },
+    {
+      "Identity": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Authors\\أحمد_يوسف_السيد02fc99d8-ebc3-4045-a175-bd007a1d81a0.jpg",
+      "SourceId": "YaqraApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\",
+      "BasePath": "_content/YaqraApi",
+      "RelativePath": "Authors/أحمد_يوسف_السيد02fc99d8-ebc3-4045-a175-bd007a1d81a0.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Authors\\أحمد_يوسف_السيد02fc99d8-ebc3-4045-a175-bd007a1d81a0.jpg"
     },
     {
       "Identity": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\Books\\52ccefe5e7c249c171d1cebd68a99ddc150f800b-758c-4648-975c-d5b9eefbe29c.png",
@@ -511,25 +511,6 @@
       "OriginalItemSpec": "wwwroot\\ProfilePictures\\2ajqpf9ccfb55d-d682-4e11-b384-69cb83d8c940.jpg"
     },
     {
-      "Identity": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\ProfilePictures\\هفكd6265875-4ba7-4185-aec5-908b4cbd3c7b.jpg",
-      "SourceId": "YaqraApi",
-      "SourceType": "Discovered",
-      "ContentRoot": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\",
-      "BasePath": "_content/YaqraApi",
-      "RelativePath": "ProfilePictures/هفكd6265875-4ba7-4185-aec5-908b4cbd3c7b.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\ProfilePictures\\هفكd6265875-4ba7-4185-aec5-908b4cbd3c7b.jpg"
-    },
-    {
       "Identity": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\ProfilePictures\\horizon-sunset-skyline-night-building-city-19137-pxhere6b0dd5b8-4c4e-4f93-a1c5-212c9600ec16.jpg",
       "SourceId": "YaqraApi",
       "SourceType": "Discovered",
@@ -566,6 +547,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\ProfilePictures\\horizon-sunset-skyline-night-building-city-19137-pxhere70eda8dd-03aa-4aaa-94a4-17e7f688c1b4.jpg"
+    },
+    {
+      "Identity": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\ProfilePictures\\هفكd6265875-4ba7-4185-aec5-908b4cbd3c7b.jpg",
+      "SourceId": "YaqraApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Computer Science\\MyProjects\\YaqraApi\\YaqraApi\\YaqraApi\\wwwroot\\",
+      "BasePath": "_content/YaqraApi",
+      "RelativePath": "ProfilePictures/هفكd6265875-4ba7-4185-aec5-908b4cbd3c7b.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\ProfilePictures\\هفكd6265875-4ba7-4185-aec5-908b4cbd3c7b.jpg"
     }
   ]
 }
