@@ -86,20 +86,12 @@ YaqraApi project is organized into the following key components:
 - **Purpose**: The worker service is a background service designed to clean up unwanted items from the database, such as revoked or expired tokens, to maintain database efficiency and integrity.
 - **Implementation**: This service uses Dapper for efficient database operations, leveraging its lightweight and high-performance capabilities for direct SQL execution.
 
-## API Documentation
-
-For detailed API documentation, visit: [Postman Documentation](https://documenter.getpostman.com/view/33136211/2sAXjDfGAY)
-
 ## Unit Testing
 
 Unit tests are implemented using:
 - **NUnit**
 - **Moq**
 - **SQL Server InMemory**
-
-## Frontend
-
-_Coming soon!_
 
 ## Demo
 
