@@ -12,6 +12,7 @@ using System.Text;
 using YaqraApi.Repositories.IRepositories;
 using YaqraApi.Repositories;
 using YaqraApi.Hubs;
+using System.Security.Claims;
 namespace YaqraApi
 {
     public class Program
@@ -27,8 +28,7 @@ namespace YaqraApi
                     policy.WithOrigins("https://yaqra.vercel.app", "http://localhost:5173")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
-                    .AllowCredentials()
-                    .SetPreflightMaxAge(TimeSpan.FromMinutes(10));
+                    .AllowCredentials();
 
                 });
             });
@@ -55,41 +55,66 @@ namespace YaqraApi
                 options.User.RequireUniqueEmail = true;
             });
 
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(options =>
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = true;
+                options.SaveToken = false;
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.RequireHttpsMetadata = false;
-                    options.SaveToken = false;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidIssuer = builder.Configuration["JWT:Issuer"],
-                        ValidAudience = builder.Configuration["JWT:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
-                    };
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            var accessToken = context.Request.Query["access_token"];
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = builder.Configuration["JWT:Issuer"],
+                    ValidAudience = builder.Configuration["JWT:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+                };
 
-                            // If the request is for SignalR, try to read the token from the query string
-                            var path = context.HttpContext.Request.Path;
-                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notification"))
-                            {
-                                context.Token = accessToken;
-                            }
-                            return Task.CompletedTask;
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
+
+                        // Remove the existing NameIdentifier claim (if it exists)
+                        var existingNameIdentifierClaim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                        if (existingNameIdentifierClaim != null)
+                        {
+                            claimsIdentity.RemoveClaim(existingNameIdentifierClaim);
                         }
-                    };
-                });
+
+                        // Add uid claim as the new NameIdentifier
+                        var userId = claimsIdentity.FindFirst("uid")?.Value; // Extract userId from the JWT
+                        if (userId != null)
+                        {
+                            claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, userId));
+                        }
+
+                        return Task.CompletedTask;
+                    },
+
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+
+                        // Read the token for SignalR connections
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/Notification"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+
 
             builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JWT"));
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -108,7 +133,11 @@ namespace YaqraApi
             builder.Services.AddScoped<INotificationService, NotificationService>();
             builder.Services.AddScoped<IUserProxyService, UserProxyService>();
             builder.Services.AddScoped<IBookProxyService, BookProxyService>();
-            builder.Services.AddSignalR();
+            builder.Services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;  // Enable detailed error reporting for easier debugging
+            });
+
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.

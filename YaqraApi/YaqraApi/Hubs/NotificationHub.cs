@@ -18,6 +18,13 @@ namespace YaqraApi.Hubs
         }
         public override async Task OnConnectedAsync()
         {
+            if(Context.UserIdentifier == null)
+                await Console.Out.WriteLineAsync("UserIdentifier is null");
+            else
+                await Console.Out.WriteLineAsync(Context.UserIdentifier);
+
+            await Console.Out.WriteLineAsync($"conId: {Context.ConnectionId}");
+
             await _userService.AddConnectionIdToUser(Context.UserIdentifier, Context.ConnectionId);
             var notifications = await _notificationService.GetAll(Context.UserIdentifier, 1);
             foreach (var notification in notifications)
@@ -26,7 +33,7 @@ namespace YaqraApi.Hubs
             }
             await base.OnConnectedAsync();
         }
-
+        
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             await _userService.RemoveConnectionIdFromUser(Context.UserIdentifier, Context.ConnectionId);

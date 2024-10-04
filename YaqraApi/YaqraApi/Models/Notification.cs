@@ -13,5 +13,8 @@ namespace YaqraApi.Models
         public string Message { get; set; }
         public bool IsAck { get; set; } = false;
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        [NotMapped]
+        public string PostType { get; set; }
+
     }
 }

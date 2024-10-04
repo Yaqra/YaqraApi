@@ -152,6 +152,9 @@ namespace YaqraApi.Controllers
             if (userResult.Succeeded == false)
                 return Ok(likeResult);
             
+            if(likeResult.Result.IsLiked == false)
+                return Ok(likeResult);
+
             var receiver = (await _communityService.GetPostAsync(postId)).Result.User;
             if(receiver == null || userResult.Result.UserId == receiver.Id) 
                 return Ok(likeResult);
@@ -383,6 +386,9 @@ namespace YaqraApi.Controllers
 
             var userResult = await _userService.GetUserAsync(UserHelpers.GetUserId(User), null);
             if (userResult.Succeeded == false)
+                return Ok(result);
+
+            if (result.Result.IsLiked == false)
                 return Ok(result);
 
             var comment = (await _communityService.GetCommentAsync(commentId)).Result;
