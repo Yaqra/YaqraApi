@@ -190,6 +190,7 @@ namespace YaqraApi.AutoMapperConfigurations
                    .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreatedDate))
                    .ForMember(dest => dest.IsAck, opt => opt.MapFrom(src => src.IsAck))
                    .ForMember(dest => dest.ReceiverId, opt => opt.MapFrom(src => src.ReceiverId))
+                   .ForMember(dest => dest.PostType, opt => opt.MapFrom(src => src.PostType))
                    .ReverseMap();
             });
 

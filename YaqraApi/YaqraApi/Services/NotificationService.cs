@@ -48,6 +48,7 @@ namespace YaqraApi.Services
                 PostId = postId,
                 ReceiverId = receiverId,
                 Message = message,
+                PostType = await _communityRepository.GetPostType(postId)
             };
             await AddNotification(notification);
 
