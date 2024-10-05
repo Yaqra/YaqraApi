@@ -2,6 +2,12 @@
 
 YaqraApi is a robust API designed for Yaqra platform, a social media website tailored for book enthusiasts. It provides a rich set of features allowing users to review books, create playlists, engage in discussions, and stay updated with articles and news. This API facilitates a comprehensive social media experience for book geeks.
 
+## Hosted Application
+
+Yaqra is deployed and can be accessed online for testing and exploration. The hosted API provides real-time features, secure access, and all the functionalities described in this document. You can interact with the API endpoints for book discovery, user management, and social engagement.
+
+- **URL**:  [Yaqra](https://yaqra.vercel.app)
+
 ## Tech Stack
 
 - **.NET 8**
